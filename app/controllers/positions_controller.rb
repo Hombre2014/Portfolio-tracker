@@ -4,15 +4,18 @@ class PositionsController < ApplicationController
   # GET /positions or /positions.json
   def index
     @positions = Position.all
+    @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
   # GET /positions/1 or /positions/1.json
   def show
+    @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
   # GET /positions/new
   def new
     @position = Position.new
+    @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
   # GET /positions/1/edit
@@ -25,7 +28,7 @@ class PositionsController < ApplicationController
 
     respond_to do |format|
       if @position.save
-        format.html { redirect_to position_url(@position), notice: "Position was successfully created." }
+        format.html { redirect_to portfolio_positions_url(@position), notice: "Position was successfully created." }
         format.json { render :show, status: :created, location: @position }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -65,6 +68,6 @@ class PositionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def position_params
-      params.require(:position).permit(:symbol, :quantity)
+      params.require(:position).permit(:symbol, :quantity, :portfolio_id)
     end
 end

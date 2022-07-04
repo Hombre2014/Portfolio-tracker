@@ -10,8 +10,8 @@
   </p>
 
   <% if action_name != "show" %>
-    <%= link_to "Show this position", position, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to 'Edit this position', edit_position_path(position), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to "Show this position", portfolio_positions_path, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to 'Edit this position', "/portfolios/#{params[:portfolio_id]}/positions/#{params[:id]}", class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
     <hr class="mt-6">
   <% end %>
 </div>

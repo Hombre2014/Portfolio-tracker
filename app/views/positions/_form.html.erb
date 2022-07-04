@@ -1,4 +1,4 @@
-<%= form_with(model: position, class: "contents") do |form| %>
+<%= form_with(model: @position, url: "/portfolios/#{params[:portfolio_id]}/positions/", class: "contents") do |form| %>
   <% if position.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(position.errors.count, "error") %> prohibited this position from being saved:</h2>
@@ -18,8 +18,10 @@
 
   <div class="my-5">
     <%= form.label :quantity %>
-    <%= form.text_field :quantity, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.number_field :quantity, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
+
+  <%= form.hidden_field :portfolio_id, value: @portfolio.id %>
 
   <div class="inline">
     <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
