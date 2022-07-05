@@ -18,7 +18,12 @@
 
   <div class="my-5">
     <%= form.label :quantity %>
-    <%= form.number_field :quantity, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.number_field :quantity, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :cost_per_share %>
+    <%= form.number_field :cost_per_share, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <%= form.hidden_field :portfolio_id, value: @portfolio.id %>
