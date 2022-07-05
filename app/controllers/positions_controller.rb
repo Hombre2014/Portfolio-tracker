@@ -4,19 +4,24 @@ class PositionsController < ApplicationController
   # GET /positions or /positions.json
   def index
     @positions = Position.all
+    @portfolio = Portfolio.find(params[:portfolio_id])
+    # @position = Position.find(position_params[:portfolio_id])
   end
 
   # GET /positions/1 or /positions/1.json
   def show
+    @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
   # GET /positions/new
   def new
     @position = Position.new
+    @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
   # GET /positions/1/edit
   def edit
+    @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
   # POST /positions or /positions.json
@@ -25,7 +30,7 @@ class PositionsController < ApplicationController
 
     respond_to do |format|
       if @position.save
-        format.html { redirect_to position_url(@position), notice: "Position was successfully created." }
+        format.html { redirect_to portfolio_positions_path, notice: "Position was successfully created." }
         format.json { render :show, status: :created, location: @position }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +43,7 @@ class PositionsController < ApplicationController
   def update
     respond_to do |format|
       if @position.update(position_params)
-        format.html { redirect_to position_url(@position), notice: "Position was successfully updated." }
+        format.html { redirect_to portfolio_position_url, notice: "Position was successfully updated." }
         format.json { render :show, status: :ok, location: @position }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -52,7 +57,7 @@ class PositionsController < ApplicationController
     @position.destroy
 
     respond_to do |format|
-      format.html { redirect_to positions_url, notice: "Position was successfully destroyed." }
+      format.html { redirect_to portfolio_positions_url, notice: "Position was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -65,6 +70,6 @@ class PositionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def position_params
-      params.require(:position).permit(:symbol, :quantity)
+      params.require(:position).permit(:symbol, :quantity, :cost_per_share, :portfolio_id)
     end
 end

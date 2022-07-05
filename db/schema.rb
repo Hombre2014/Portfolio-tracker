@@ -25,6 +25,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_184355) do
   create_table "positions", force: :cascade do |t|
     t.string "symbol"
     t.decimal "quantity"
+    t.decimal "cost_per_share"
     t.bigint "portfolio_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
