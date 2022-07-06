@@ -1,42 +1,43 @@
 <div id="<%= dom_id portfolio %>" >
 
   <span class="my-5 inline-block mr-5">
-    <strong class="block font-medium mb-1">Name:</strong>
-    <%= portfolio.name %>
+    <span class="block font-medium mb-1 inline-block">Name:</span>
+    <span class="font-bold"><%= portfolio.name %></span>
   </span>
 
   <span class="my-5 inline-block mr-5">
-    <strong class="block font-medium mb-1">Acc number:</strong>
-    <%= portfolio.acc_number %>
+    <span class="block font-medium mb-1 inline-block">Acc. number:</span>
+    <span class="font-bold"><%= portfolio.acc_number %></span>
   </span>
 
-  <span class="my-5 inline-block">
-    <strong class="block font-medium mb-1">Balance:</strong>
-    <%= portfolio.balance %>
-  </span>
-
-  <table>
+  <table class="table-auto mb-6 border-collapse border border-slate-400">
     <thead>
       <tr>
-        <th>Symbol</th>
-        <th>Quantity</th>
-        <th>Average price</th>
-        <th>Market value</th>
+        <th class="border border-slate-300 px-4">Symbol</th>
+        <th class="border border-slate-300 px-4">Quantity</th>
+        <th class="border border-slate-300 px-4">Average price</th>
+        <th class="border border-slate-300 px-4">Market value</th>
       </tr>
     </thead>
     <tbody>
     <% @positions.each do |position| %>
       <% if position.portfolio_id == portfolio.id %>
         <tr>
-          <td><%= position.symbol %></td>
-          <td><%= position.quantity %></td>
-          <td><%= position.cost_per_share %></td>
-          <td><%= position.quantity * position.cost_per_share %></td>
+          <td class="border border-slate-300 px-4"><%= position.symbol %></td>
+          <td class="border border-slate-300 px-4"><%= position.quantity %></td>
+          <td class="border border-slate-300 px-4"><%= number_to_currency(position.cost_per_share) %></td>
+          <td class="border border-slate-300 px-4"><%= number_to_currency(position.quantity * position.cost_per_share) %></td>
         </tr>
+        <% @total = @total + position.quantity * position.cost_per_share %>
       <% end %>
     <% end %>
     </tbody>
   </table>
+
+  <span class="my-5 block">
+    <span class="block font-medium mb-1 inline-block">Balance:</span>
+    <span class="font-bold"><%= number_to_currency(portfolio.balance + @total) %></span>
+  </span>
 
   <% if action_name != "show" %>
     <%= link_to "Show this portfolio", portfolio, class: "rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
