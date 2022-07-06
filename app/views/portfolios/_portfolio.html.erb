@@ -1,18 +1,42 @@
-<div id="<%= dom_id portfolio %>">
-  <p class="my-5">
+<div id="<%= dom_id portfolio %>" >
+
+  <span class="my-5 inline-block mr-5">
     <strong class="block font-medium mb-1">Name:</strong>
     <%= portfolio.name %>
-  </p>
+  </span>
 
-  <p class="my-5">
+  <span class="my-5 inline-block mr-5">
     <strong class="block font-medium mb-1">Acc number:</strong>
     <%= portfolio.acc_number %>
-  </p>
+  </span>
 
-  <p class="my-5">
+  <span class="my-5 inline-block">
     <strong class="block font-medium mb-1">Balance:</strong>
     <%= portfolio.balance %>
-  </p>
+  </span>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Quantity</th>
+        <th>Average price</th>
+        <th>Market value</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @positions.each do |position| %>
+      <% if position.portfolio_id == portfolio.id %>
+        <tr>
+          <td><%= position.symbol %></td>
+          <td><%= position.quantity %></td>
+          <td><%= position.cost_per_share %></td>
+          <td><%= position.quantity * position.cost_per_share %></td>
+        </tr>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
 
   <% if action_name != "show" %>
     <%= link_to "Show this portfolio", portfolio, class: "rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
