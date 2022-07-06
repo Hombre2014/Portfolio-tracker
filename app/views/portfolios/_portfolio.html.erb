@@ -17,6 +17,7 @@
   <% if action_name != "show" %>
     <%= link_to "Show this portfolio", portfolio, class: "rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
     <%= link_to 'Edit this portfolio', edit_portfolio_path(portfolio), class: "rounded-lg py-3 ml-2 px-5 bg-cyan-500 inline-block font-medium" %>
+    <%= link_to 'New position', "/portfolios/#{portfolio.id}/positions/new", class: "rounded-lg ml-2 py-3 px-5 inline-block bg-blue-600 text-white block font-medium" %>
     <hr class="mt-6">
   <% end %>
 </div>
