@@ -42,7 +42,7 @@ class PortfoliosController < ApplicationController
   def update
     respond_to do |format|
       if @portfolio.update(portfolio_params)
-        format.html { redirect_to portfolio_url(@portfolio), notice: "Portfolio was successfully updated." }
+        format.html { redirect_to user_portfolio_url(@portfolio), notice: "Portfolio was successfully updated." }
         format.json { render :show, status: :ok, location: @portfolio }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -56,7 +56,7 @@ class PortfoliosController < ApplicationController
     @portfolio.destroy
 
     respond_to do |format|
-      format.html { redirect_to portfolios_url, notice: "Portfolio was successfully destroyed." }
+      format.html { redirect_to user_portfolios_url, notice: "Portfolio was successfully destroyed." }
       format.json { head :no_content }
     end
   end
