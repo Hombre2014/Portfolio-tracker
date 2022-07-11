@@ -3,7 +3,7 @@ class PortfoliosController < ApplicationController
 
   # GET /portfolios or /portfolios.json
   def index
-    @portfolios = Portfolio.all
+    @portfolios = Portfolio.where(user_id: current_user.id)
     @positions = Position.all
     @total = 0
   end

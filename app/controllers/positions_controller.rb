@@ -3,7 +3,7 @@ class PositionsController < ApplicationController
 
   # GET /positions or /positions.json
   def index
-    @positions = Position.all
+    @positions = Position.where(portfolio_id: params[:portfolio_id])
     @portfolio = Portfolio.find(params[:portfolio_id])
     # @position = Position.find(position_params[:portfolio_id])
   end
