@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-  resources :portfolios do
-    resources :positions
+  resources :users do
+    resources :portfolios do
+      resources :positions
+    end
   end
 
-  root "portfolios#index"
+  root "users#index"
 end
