@@ -6,10 +6,10 @@
 
     <%= render @portfolio %>
 
-    <%= link_to 'Edit this portfolio', edit_portfolio_path(@portfolio), class: "mt-2 rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
+    <%= link_to 'Edit this portfolio', edit_user_portfolio_path(@portfolio), class: "mt-2 rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
     <div class="inline-block ml-2">
-      <%= button_to 'Destroy this portfolio', portfolio_path(@portfolio), method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-red-600 font-medium" %>
+      <%= button_to 'Destroy this portfolio', user_portfolio_path(@portfolio), method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-red-600 font-medium" %>
     </div>
-    <%= link_to 'Back to portfolios', portfolios_path, class: "ml-2 rounded-lg py-3 px-5 bg-cyan-500 inline-block font-medium" %>
+    <%= link_to 'Back to portfolios', user_portfolios_path, class: "ml-2 rounded-lg py-3 px-5 bg-cyan-500 inline-block font-medium" %>
   </div>
 </div>

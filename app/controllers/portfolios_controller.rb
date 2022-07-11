@@ -29,7 +29,7 @@ class PortfoliosController < ApplicationController
 
     respond_to do |format|
       if @portfolio.save
-        format.html { redirect_to portfolio_url(@portfolio), notice: "Portfolio was successfully created." }
+        format.html { redirect_to user_portfolio_url(@portfolio), notice: "Portfolio was successfully created." }
         format.json { render :show, status: :created, location: @portfolio }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -42,7 +42,7 @@ class PortfoliosController < ApplicationController
   def update
     respond_to do |format|
       if @portfolio.update(portfolio_params)
-        format.html { redirect_to portfolio_url(@portfolio), notice: "Portfolio was successfully updated." }
+        format.html { redirect_to user_portfolio_url(@portfolio), notice: "Portfolio was successfully updated." }
         format.json { render :show, status: :ok, location: @portfolio }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -56,7 +56,7 @@ class PortfoliosController < ApplicationController
     @portfolio.destroy
 
     respond_to do |format|
-      format.html { redirect_to portfolios_url, notice: "Portfolio was successfully destroyed." }
+      format.html { redirect_to user_portfolios_url, notice: "Portfolio was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -69,6 +69,6 @@ class PortfoliosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def portfolio_params
-      params.require(:portfolio).permit(:name, :acc_number, :balance)
+      params.require(:portfolio).permit(:name, :acc_number, :balance, :user_id)
     end
 end

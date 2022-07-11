@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
-  resources :portfolios do
-    resources :positions
+  devise_for :users
+  resources :users, only: [:index, :show] do
+    resources :portfolios do
+      resources :positions
+    end
   end
 
-  root "portfolios#index"
+  root "users#index"
 end

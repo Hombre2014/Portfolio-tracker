@@ -12,7 +12,27 @@
   </head>
 
   <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+    <main class="container mx-auto mt-12 px-5 flex-col">
+      <% if notice %>
+        <p class="alert alert-success"><%= notice %></p>
+      <% end %>
+      <% if alert %>
+        <p class="alert alert-danger"><%= alert %></p>
+      <% end %>
+      <header class="container bg-purple-400">
+        <nav class="mb-6">
+          <% if current_user.nil? %>
+            <div class="flex justify-end">
+              <%= link_to 'LOG IN', new_user_session_path, { class: 'my-4 mr-6'} %>
+              <%= link_to 'SIGN UP', new_user_registration_path, { class: 'my-4 mr-6'} %>
+            </div>
+          <% else %>
+            <div class="flex justify-end">
+              <%= button_to 'LOG OUT', destroy_user_session_path, method: :delete, class: 'my-4 mr-6' %>
+            </div>
+          <% end %>
+        </nav>
+      </header>
       <%= yield %>
     </main>
   </body>
