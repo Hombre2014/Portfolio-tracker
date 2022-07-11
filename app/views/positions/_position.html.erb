@@ -15,8 +15,8 @@
   </p>
 
   <% if action_name != "show" %>
-    <%= link_to "Show this position", "/portfolios/#{params[:portfolio_id]}/positions/#{position.id}", class: "rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
-    <%= link_to 'Edit this position', "/portfolios/#{params[:portfolio_id]}/positions/#{position.id}/edit", class: "rounded-lg py-3 ml-2 px-5 bg-cyan-500 inline-block font-medium" %>
+    <%= link_to "Show this position", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/positions/#{position.id}", class: "rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
+    <%= link_to 'Edit this position', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/positions/#{position.id}/edit", class: "rounded-lg py-3 ml-2 px-5 bg-cyan-500 inline-block font-medium" %>
     <hr class="mt-6">
   <% end %>
 </div>
