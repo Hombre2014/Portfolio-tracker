@@ -37,6 +37,7 @@
   <span class="my-5 block">
     <span class="block font-medium mb-1 inline-block">Balance:</span>
     <span class="font-bold"><%= number_to_currency(portfolio.balance + @total) %></span>
+    <% @total = 0 %>
   </span>
 
   <% if action_name != "show" %>
