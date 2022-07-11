@@ -308,4 +308,9 @@ Devise.setup do |config|
   # When set to false, does not sign a user in automatically after their password is
   # changed. Defaults to true, so a user is signed in automatically after changing a password.
   # config.sign_in_after_change_password = true
+
+  # Add this after getting error: NoMethodError in Devise::RegistrationsController#create. This is a known issue with Devise. See: https://github.com/heartcombo/devise/issues/5439 Restart the server. This fix the problem.
+  # Also helps when sign_out and not redirect_to root_path. Error: Processing by UsersController#index as TURBO_STREAM
+  # Completed 401 Unauthorized
+  config.navigational_formats = ['*/*', :html, :turbo_stream]
 end
