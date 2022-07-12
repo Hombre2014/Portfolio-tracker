@@ -3,7 +3,7 @@ class PortfoliosController < ApplicationController
 
   # GET /portfolios or /portfolios.json
   def index
-    @portfolios = Portfolio.all
+    @portfolios = Portfolio.where(user_id: current_user.id)
     @positions = Position.all
     @total = 0
   end
@@ -29,7 +29,7 @@ class PortfoliosController < ApplicationController
 
     respond_to do |format|
       if @portfolio.save
-        format.html { redirect_to user_portfolios_url(@portfolio), notice: "Portfolio was successfully created." }
+        format.html { redirect_to "/users/#{current_user.id}/portfolios/#{@portfolio.id}", notice: "Portfolio was successfully created." }
         format.json { render :show, status: :created, location: @portfolio }
       else
         format.html { render :new, status: :unprocessable_entity }

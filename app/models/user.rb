@@ -5,4 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :portfolios, dependent: :destroy
+  # has_many :positions, through: :portfolios
+  # has_many :positions, dependent: :destroy
+  validates :name, presence: true, length: { minimum: 5, maximum: 20 }
 end

@@ -1,5 +1,4 @@
 <div id="<%= dom_id portfolio %>" >
-
   <span class="my-5 inline-block mr-5">
     <span class="block font-medium mb-1 inline-block">Name:</span>
     <span class="font-bold"><%= portfolio.name %></span>
@@ -37,8 +36,8 @@
   <span class="my-5 block">
     <span class="block font-medium mb-1 inline-block">Balance:</span>
     <span class="font-bold"><%= number_to_currency(portfolio.balance + @total) %></span>
+    <% @total = 0 %>
   </span>
-
   <% if action_name != "show" %>
     <%= link_to "Show this portfolio", "/users/#{current_user.id}/portfolios/#{portfolio.id}", class: "rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
     <%= link_to 'Edit this portfolio', "/users/#{current_user.id}/portfolios/#{portfolio.id}/edit", class: "rounded-lg py-3 ml-2 px-5 bg-cyan-500 inline-block font-medium" %>

@@ -14,10 +14,10 @@
   <body>
     <main class="container mx-auto mt-12 px-5 flex-col">
       <% if notice %>
-        <p class="alert alert-success"><%= notice %></p>
+        <span class="bg-green-50 text-green-500"><%= notice %></span>
       <% end %>
       <% if alert %>
-        <p class="alert alert-danger"><%= alert %></p>
+        <span class="bg-red-50 text-red-500"><%= alert %></span>
       <% end %>
       <header class="container bg-purple-400">
         <nav class="mb-6">
