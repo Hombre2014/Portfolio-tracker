@@ -1,0 +1,42 @@
+<div id="<%= dom_id transaction %>">
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Tr type:</strong>
+    <%= transaction.tr_type %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Trade date:</strong>
+    <%= transaction.trade_date %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Symbol:</strong>
+    <%= transaction.symbol %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Quantity:</strong>
+    <%= transaction.quantity %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Price:</strong>
+    <%= transaction.price %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Commission:</strong>
+    <%= transaction.commission %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Fee:</strong>
+    <%= transaction.fee %>
+  </p>
+
+  <% if action_name != "show" %>
+    <%= link_to "Show this transaction", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}", class: "rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
+    <%= link_to 'Edit this transaction', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}/edit", class: "rounded-lg py-3 ml-2 px-5 bg-cyan-500 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+</div>
