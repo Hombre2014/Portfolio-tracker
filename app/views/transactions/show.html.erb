@@ -1,0 +1,15 @@
+<div class="mx-auto md:w-3/4 w-full flex">
+  <div class="mx-auto">
+    <% if notice.present? %>
+      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+    <% end %>
+
+    <%= render @transaction %>
+
+    <%= link_to 'Edit this transaction', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}/edit", class: "mt-2 rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
+    <div class="inline-block ml-2">
+      <%= button_to 'Destroy this transaction', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-red-600 font-medium" %>
+    </div>
+    <%= link_to 'Back to transactions', user_portfolio_transactions_path, class: "ml-2 rounded-lg py-3 px-5 bg-cyan-500 inline-block font-medium" %>
+  </div>
+</div>

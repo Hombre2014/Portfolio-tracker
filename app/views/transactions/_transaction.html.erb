@@ -1,0 +1,48 @@
+<div id="<%= dom_id transaction %>" class="flex flex-row">
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Type: </span>
+    <span class="font-bold"><%= transaction.tr_type %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Trade date: </span>
+    <span class="font-bold"><%= transaction.trade_date %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Symbol: </span>
+    <span class="font-bold"><%= transaction.symbol %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Quantity: </span>
+    <span class="font-bold"><%= transaction.quantity %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Price: </span>
+    <span class="font-bold"><%= number_to_currency(transaction.price) %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Commission: </span>
+    <span class="font-bold"><%= number_to_currency(transaction.commission) %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Fee: </span>
+    <span class="font-bold"><%= number_to_currency(transaction.fee) %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Total: </span>
+    <span class="font-bold"><%= number_to_currency(transaction.price * transaction.quantity + transaction.commission + transaction.fee) %></span>
+  </div>
+</div>
+
+  <% if action_name != "show" %>
+    <%= link_to "Show this transaction", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}", class: "rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
+    <%= link_to 'Edit this transaction', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}/edit", class: "rounded-lg py-3 ml-2 px-5 bg-cyan-500 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+
