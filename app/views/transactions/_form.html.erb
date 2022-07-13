@@ -15,33 +15,27 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :trade_date %>
-    <%= form.date_field :trade_date, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true %>
+    <%= form.date_field :trade_date, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Trade date" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :symbol %>
-    <%= form.text_field :symbol, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true %>
+    <%= form.text_field :symbol, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Symbol" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :quantity %>
-    <%= form.number_field :quantity, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true %>
+    <%= form.number_field :quantity, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Quantity" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :price %>
-    <%= form.text_field :price, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true %>
+    <%= form.text_field :price, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Price" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :commission %>
-    <%= form.text_field :commission, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.text_field :commission, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Commission" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :fee %>
-    <%= form.text_field :fee, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.text_field :fee, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Fee" %>
   </div>
 
   <%= form.hidden_field :portfolio_id, value: @portfolio.id %>
