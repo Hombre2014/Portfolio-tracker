@@ -12,6 +12,11 @@
   <% end %>
 
   <div class="my-5">
+    <%= form.label :open_date %>
+    <%= form.date_field :open_date, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true %>
+  </div>
+
+  <div class="my-5">
     <%= form.label :symbol %>
     <%= form.text_field :symbol, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>

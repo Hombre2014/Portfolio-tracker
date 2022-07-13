@@ -25,6 +25,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_12_162130) do
   end
 
   create_table "positions", force: :cascade do |t|
+    t.date "open_date"
     t.string "symbol"
     t.decimal "quantity"
     t.decimal "cost_per_share"

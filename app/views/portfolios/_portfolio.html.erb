@@ -12,6 +12,7 @@
   <table class="table-auto mb-6 border-collapse border border-slate-400">
     <thead>
       <tr>
+        <th class="border border-slate-300 px-4">Date</th>
         <th class="border border-slate-300 px-4">Symbol</th>
         <th class="border border-slate-300 px-4">Quantity</th>
         <th class="border border-slate-300 px-4">Average price</th>
@@ -22,6 +23,7 @@
     <% @positions.each do |position| %>
       <% if position.portfolio_id == portfolio.id %>
         <tr>
+          <td class="border border-slate-300 px-4"><%= position.open_date %></td>
           <td class="border border-slate-300 px-4"><%= position.symbol %></td>
           <td class="border border-slate-300 px-4"><%= position.quantity %></td>
           <td class="border border-slate-300 px-4"><%= number_to_currency(position.cost_per_share) %></td>
