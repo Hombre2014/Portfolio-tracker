@@ -13,12 +13,14 @@
 
   <body>
     <main class="container mx-auto mt-12 px-5 flex-col">
-      <% if notice %>
-        <span class="bg-green-50 text-green-500"><%= notice %></span>
-      <% end %>
-      <% if alert %>
-        <span class="bg-red-50 text-red-500"><%= alert %></span>
-      <% end %>
+      <div class="container flex justify-center align-center">
+        <% if notice %>
+          <span class="bg-green-100 text-green-500 mb-2 p-2 rounded-md"><%= notice %></span>
+        <% end %>
+        <% if alert %>
+          <span class="bg-red-100 text-red-500 mb-2 p-2 rounded-md"><%= alert %></span>
+        <% end %>
+      </div>
       <header class="container bg-purple-400">
         <nav class="mb-6">
           <div class="flex justify-between">
