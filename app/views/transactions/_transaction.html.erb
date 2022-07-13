@@ -36,13 +36,14 @@
 
   <div class="my-5 mr-5">
     <span class="inline-block font-medium mb-1">Total: </span>
+    <% transaction.commission == nil ? transaction.commission = 0 : transaction.commission %>
+    <% transaction.fee == nil ? transaction.fee = 0 : transaction.fee %>
     <span class="font-bold"><%= number_to_currency(transaction.price * transaction.quantity + transaction.commission + transaction.fee) %></span>
   </div>
 </div>
 
-  <% if action_name != "show" %>
-    <%= link_to "Show this transaction", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}", class: "rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
-    <%= link_to 'Edit this transaction', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}/edit", class: "rounded-lg py-3 ml-2 px-5 bg-cyan-500 inline-block font-medium" %>
-    <hr class="mt-6">
-  <% end %>
-
+<% if action_name != "show" %>
+  <%= link_to "Show", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}", class: "rounded-lg py-1 px-3 bg-cyan-300 inline-block font-medium" %>
+  <%= link_to 'Edit', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}/edit", class: "rounded-lg py-1 ml-2 px-3 bg-cyan-500 inline-block font-medium" %>
+  <hr class="mt-6">
+<% end %>

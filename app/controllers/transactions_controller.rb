@@ -26,6 +26,7 @@ class TransactionsController < ApplicationController
   # POST /transactions or /transactions.json
   def create
     @transaction = Transaction.new(transaction_params)
+    @portfolio = Portfolio.find(params[:portfolio_id])
 
     respond_to do |format|
       if @transaction.save
