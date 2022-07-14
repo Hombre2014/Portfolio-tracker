@@ -41,7 +41,6 @@ class TransactionsController < ApplicationController
       if is_enough_cash?(@transaction)
         @positions.each do |position|
           position_total = position.quantity * position.cost_per_share
-
           if position.symbol == @transaction.symbol
             position.update(quantity: position.quantity + @transaction.quantity)
             position.update(cost_per_share: (position_total + @transaction_cost) / position.quantity)
@@ -62,7 +61,6 @@ class TransactionsController < ApplicationController
     @transaction = Transaction.new(transaction_params)
     @portfolio = Portfolio.find(params[:portfolio_id])
 
-    create_new_position
     respond_to do |format|
       if is_enough_cash?(@transaction)
         if @transaction.save
@@ -76,6 +74,7 @@ class TransactionsController < ApplicationController
         format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: "Not enough cash to complete transaction." }
       end
     end
+    create_new_position
   end
 
   # PATCH/PUT /transactions/1 or /transactions/1.json
