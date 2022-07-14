@@ -9,7 +9,6 @@ class PortfoliosController < ApplicationController
   end
 
   def create_cash_position
-    # @portfolio = Portfolio.find(params[:id])
     @portfolio.cash == nil ? @portfolio.cash = 0 : @portfolio.cash
     @position = Position.new(portfolio_id: @portfolio.id, symbol: "Cash", quantity: @portfolio.cash, cost_per_share: 1, open_date: @portfolio.opened_date)
     @position.save
@@ -28,6 +27,9 @@ class PortfoliosController < ApplicationController
 
   # GET /portfolios/1/edit
   def edit
+    @portfolio = Portfolio.find(params[:id])
+    @cash_position = Position.where(portfolio_id: params[:id], symbol: "Cash").first
+    @portfolio.update(cash: @cash_position.quantity.to_f)
   end
 
   # POST /portfolios or /portfolios.json

@@ -26,6 +26,7 @@ class TransactionsController < ApplicationController
   def create_new_position
     @portfolio = Portfolio.find(params[:portfolio_id])
     @positions = Position.where(portfolio_id: params[:portfolio_id])
+    @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: "Cash").first
     case @transaction.tr_type
     when "Buy"
       @positions.each do |position|
@@ -36,7 +37,8 @@ class TransactionsController < ApplicationController
           position.update(cost_per_share: (position_total + transaction_total) / position.quantity)
           @transaction.commission == nil ? @transaction.commission = 0 : @transaction.commission
           @transaction.fee == nil ? @transaction.fee = 0 : @transaction.fee
-          @portfolio.cash = @portfolio.cash - (transaction_total + @transaction.commission + @transaction.fee)
+          transaction_cost = transaction_total + @transaction.commission + @transaction.fee
+          @cash_position.update(quantity: @cash_position.quantity - transaction_cost)
         end
       end
       else
