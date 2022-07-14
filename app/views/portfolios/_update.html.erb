@@ -11,6 +11,8 @@
     </div>
   <% end %>
 
+  Portfolio cash is: <%= portfolio.cash %>
+
   <div class="my-5">
     <%= form.label :name %>
     <%= form.text_field :name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
@@ -22,8 +24,8 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :balance %>
-    <%= form.number_field :balance, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :cash %>
+    <%= form.number_field :cash, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <%= form.hidden_field :user_id, value: current_user.id %>

@@ -8,6 +8,12 @@ class PortfoliosController < ApplicationController
     @total = 0
   end
 
+  def create_cash_position
+    @portfolio.cash == nil ? @portfolio.cash = 0 : @portfolio.cash
+    @position = Position.new(portfolio_id: @portfolio.id, symbol: "Cash", quantity: @portfolio.cash, cost_per_share: 1, open_date: @portfolio.opened_date)
+    @position.save
+  end
+
   # GET /portfolios/1 or /portfolios/1.json
   def show
     @positions = Position.all
@@ -21,6 +27,9 @@ class PortfoliosController < ApplicationController
 
   # GET /portfolios/1/edit
   def edit
+    @portfolio = Portfolio.find(params[:id])
+    @cash_position = Position.where(portfolio_id: params[:id], symbol: "Cash").first
+    @portfolio.update(cash: @cash_position.quantity.to_f)
   end
 
   # POST /portfolios or /portfolios.json
@@ -30,6 +39,7 @@ class PortfoliosController < ApplicationController
     respond_to do |format|
       if @portfolio.save
         format.html { redirect_to "/users/#{current_user.id}/portfolios/#{@portfolio.id}", notice: "Portfolio was successfully created." }
+        create_cash_position
         format.json { render :show, status: :created, location: @portfolio }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -69,6 +79,6 @@ class PortfoliosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def portfolio_params
-      params.require(:portfolio).permit(:name, :acc_number, :balance, :user_id)
+      params.require(:portfolio).permit(:name, :acc_number, :cash, :opened_date, :user_id)
     end
 end

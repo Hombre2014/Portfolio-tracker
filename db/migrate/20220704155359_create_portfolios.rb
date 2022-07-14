@@ -3,7 +3,8 @@ class CreatePortfolios < ActiveRecord::Migration[7.0]
     create_table :portfolios do |t|
       t.string :name
       t.string :acc_number
-      t.decimal :balance
+      t.float :cash
+      t.date :opened_date
 
       t.timestamps
     end

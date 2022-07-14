@@ -4,7 +4,7 @@ class CreatePositions < ActiveRecord::Migration[7.0]
       t.date :open_date
       t.string :symbol
       t.decimal :quantity
-      t.decimal :cost_per_share
+      t.float :cost_per_share
       t.references :portfolio, null: false, foreign_key: true
 
       t.timestamps
