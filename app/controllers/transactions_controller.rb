@@ -36,7 +36,7 @@ class TransactionsController < ApplicationController
           position.update(cost_per_share: (position_total + transaction_total) / position.quantity)
           @transaction.commission == nil ? @transaction.commission = 0 : @transaction.commission
           @transaction.fee == nil ? @transaction.fee = 0 : @transaction.fee
-          @portfolio.balance -= @transaction.price * @transaction.quantity + @transaction.commission + @transaction.fee
+          @portfolio.cash -= @transaction.price * @transaction.quantity + @transaction.commission + @transaction.fee
         end
       end
     else

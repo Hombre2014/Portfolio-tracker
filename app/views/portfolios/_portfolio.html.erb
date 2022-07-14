@@ -12,22 +12,22 @@
   <table class="table-auto mb-6 border-collapse border border-slate-400">
     <thead>
       <tr>
-        <th class="border border-slate-300 px-4">Date</th>
         <th class="border border-slate-300 px-4">Symbol</th>
         <th class="border border-slate-300 px-4">Quantity</th>
         <th class="border border-slate-300 px-4">Average price</th>
-        <th class="border border-slate-300 px-4">Market value</th>
+        <th class="border border-slate-300 px-4">Cost</th>
+        <th class="border border-slate-300 px-4">Opened date</th>
       </tr>
     </thead>
     <tbody>
     <% @positions.each do |position| %>
       <% if position.portfolio_id == portfolio.id %>
         <tr>
-          <td class="border border-slate-300 px-4"><%= position.open_date %></td>
           <td class="border border-slate-300 px-4"><%= position.symbol %></td>
           <td class="border border-slate-300 px-4"><%= position.quantity %></td>
           <td class="border border-slate-300 px-4"><%= number_to_currency(position.cost_per_share) %></td>
           <td class="border border-slate-300 px-4"><%= number_to_currency(position.quantity * position.cost_per_share) %></td>
+          <td class="border border-slate-300 px-4"><%= position.open_date %></td>
         </tr>
         <% @total = @total + position.quantity * position.cost_per_share %>
       <% end %>
@@ -36,8 +36,9 @@
   </table>
 
   <span class="my-5 block">
-    <span class="block font-medium mb-1 inline-block">Balance:</span>
-    <span class="font-bold"><%= number_to_currency(portfolio.balance + @total) %></span>
+    <span class="block font-medium mb-1 inline-block">Portfolio Balance:</span>
+    <% portfolio.cash == nil ? portfolio.cash = 0 : portfolio.cash %>
+    <span class="font-bold"><%= number_to_currency(@total) %></span>
     <% @total = 0 %>
   </span>
   <% if action_name != "show" %>

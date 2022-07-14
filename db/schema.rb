@@ -17,7 +17,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_12_162130) do
   create_table "portfolios", force: :cascade do |t|
     t.string "name"
     t.string "acc_number"
-    t.decimal "balance"
+    t.float "cash"
+    t.date "opened_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -28,7 +29,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_12_162130) do
     t.date "open_date"
     t.string "symbol"
     t.decimal "quantity"
-    t.decimal "cost_per_share"
+    t.float "cost_per_share"
     t.bigint "portfolio_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -40,9 +41,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_12_162130) do
     t.date "trade_date"
     t.string "symbol"
     t.integer "quantity"
-    t.decimal "price"
-    t.decimal "commission"
-    t.decimal "fee"
+    t.float "price"
+    t.float "commission"
+    t.float "fee"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "portfolio_id", null: false
