@@ -12,6 +12,11 @@
   <% end %>
 
   <div class="my-5">
+    <%= form.label :open_date %>
+    <%= form.date_field :open_date, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true %>
+  </div>
+
+  <div class="my-5">
     <%= form.label :symbol %>
     <%= form.text_field :symbol, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
@@ -29,6 +34,6 @@
   <%= form.hidden_field :portfolio_id, value: @portfolio.id %>
 
   <div class="inline">
-    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit class: "rounded-lg py-1 px-3 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
   </div>
 <% end %>

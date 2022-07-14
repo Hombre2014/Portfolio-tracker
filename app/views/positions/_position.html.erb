@@ -1,22 +1,22 @@
-<div id="<%= dom_id position %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Symbol:</strong>
-    <%= position.symbol %>
-  </p>
+<div id="<%= dom_id position %>", class="container flex">
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Symbol:</span>
+    <span class="font-bold"><%= position.symbol %></span>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Quantity:</strong>
-    <%= position.quantity %>
-  </p>
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Quantity:</span>
+    <span class="font-bold"><%= position.quantity %></span>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Cost per share:</strong>
-    <%= position.cost_per_share %>
-  </p>
-
-  <% if action_name != "show" %>
-    <%= link_to "Show this position", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/positions/#{position.id}", class: "rounded-lg py-3 px-5 bg-cyan-300 inline-block font-medium" %>
-    <%= link_to 'Edit this position', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/positions/#{position.id}/edit", class: "rounded-lg py-3 ml-2 px-5 bg-cyan-500 inline-block font-medium" %>
-    <hr class="mt-6">
-  <% end %>
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Cost per share:</span>
+    <span class="font-bold"><%= position.cost_per_share %></span>
+  </div>
 </div>
+
+<% if action_name != "show" %>
+  <%= link_to "Show this position", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/positions/#{position.id}", class: "rounded-lg py-1 px-3 bg-cyan-300 inline-block font-medium" %>
+  <%= link_to 'Edit this position', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/positions/#{position.id}/edit", class: "rounded-lg py-1 ml-2 px-3 bg-cyan-500 inline-block font-medium" %>
+  <hr class="mt-6">
+<% end %>

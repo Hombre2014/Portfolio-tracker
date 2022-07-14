@@ -23,9 +23,33 @@ class TransactionsController < ApplicationController
     @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
+  def create_new_position
+    @portfolio = Portfolio.find(params[:portfolio_id])
+    @positions = Position.where(portfolio_id: params[:portfolio_id])
+    case @transaction.tr_type
+    when "Buy"
+      @positions.each do |position|
+        if position.symbol == @transaction.symbol
+          position_total = position.quantity * position.cost_per_share
+          transaction_total = @transaction.quantity * @transaction.price
+          position.update(quantity: position.quantity + @transaction.quantity)
+          position.update(cost_per_share: (position_total + transaction_total) / position.quantity)
+          @transaction.commission == nil ? @transaction.commission = 0 : @transaction.commission
+          @transaction.fee == nil ? @transaction.fee = 0 : @transaction.fee
+          @portfolio.balance -= @transaction.price * @transaction.quantity + @transaction.commission + @transaction.fee
+        end
+      end
+    else
+    end
+    # new_position = Position.new(open_date: @transaction.trade_date, symbol: @transaction.symbol, quantity: @transaction.quantity, cost_per_share: @transaction.price, portfolio_id: @portfolio.id)
+    # new_position.save
+  end
+
   # POST /transactions or /transactions.json
   def create
     @transaction = Transaction.new(transaction_params)
+    @portfolio = Portfolio.find(params[:portfolio_id])
+    create_new_position
 
     respond_to do |format|
       if @transaction.save
