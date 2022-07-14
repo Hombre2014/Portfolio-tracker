@@ -23,44 +23,48 @@ class TransactionsController < ApplicationController
     @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
+  def is_enough_cash?(transaction)
+    @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: "Cash").first
+    transaction.commission == nil ? transaction.commission = 0 : transaction.commission
+    transaction.fee == nil ? transaction.fee = 0 : transaction.fee
+    @transaction_cost = transaction.quantity * transaction.price + transaction.commission + transaction.fee
+    @cash_position.quantity >= @transaction_cost
+  end
+
   def create_new_position
     @portfolio = Portfolio.find(params[:portfolio_id])
     @positions = Position.where(portfolio_id: params[:portfolio_id])
-    @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: "Cash").first
+    # @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: "Cash").first
+
     case @transaction.tr_type
     when "Buy"
-      @positions.each do |position|
-        if position.symbol == @transaction.symbol
+      if is_enough_cash?(@transaction)
+        @positions.each do |position|
           position_total = position.quantity * position.cost_per_share
-          transaction_total = @transaction.quantity * @transaction.price
-          position.update(quantity: position.quantity + @transaction.quantity)
-          position.update(cost_per_share: (position_total + transaction_total) / position.quantity)
-          @transaction.commission == nil ? @transaction.commission = 0 : @transaction.commission
-          @transaction.fee == nil ? @transaction.fee = 0 : @transaction.fee
-          
-          @transaction_cost = transaction_total + @transaction.commission + @transaction.fee
-          # if transaction_cost > @cash_position.quantity
-          #   render :show, notice: "Transaction failed. You do not have enough cash to complete this transaction."
-          # else
-          #   @cash_position.update(quantity: @cash_position.quantity - transaction_cost)
-          # end
+
+          if position.symbol == @transaction.symbol
+            position.update(quantity: position.quantity + @transaction.quantity)
+            position.update(cost_per_share: (position_total + @transaction_cost) / position.quantity)
+            @cash_position.update(quantity: @cash_position.quantity - (@transaction.quantity * @transaction.price + @transaction.commission + @transaction.fee))
+            break
+          else
+            # new_position = Position.new(open_date: @transaction.trade_date, symbol: @transaction.symbol, quantity: @transaction.quantity, cost_per_share: @transaction.price, portfolio_id: @portfolio.id)
+            # new_position.save
+            # break
+          end
         end
       end
-      else
     end
-    # new_position = Position.new(open_date: @transaction.trade_date, symbol: @transaction.symbol, quantity: @transaction.quantity, cost_per_share: @transaction.price, portfolio_id: @portfolio.id)
-    # new_position.save
   end
 
   # POST /transactions or /transactions.json
   def create
     @transaction = Transaction.new(transaction_params)
     @portfolio = Portfolio.find(params[:portfolio_id])
-    create_new_position
 
-    if @transaction_cost < @cash_position.quantity
-      @cash_position.update(quantity: @cash_position.quantity - transaction_cost)
-      respond_to do |format|
+    create_new_position
+    respond_to do |format|
+      if is_enough_cash?(@transaction)
         if @transaction.save
           format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", notice: "Transaction was successfully created." }
           format.json { render :show, status: :created, location: @transaction }
@@ -68,9 +72,9 @@ class TransactionsController < ApplicationController
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @transaction.errors, status: :unprocessable_entity }
         end
+      else
+        format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: "Not enough cash to complete transaction." }
       end
-    else
-      redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", alert: "Transaction failed. You do not have enough cash to complete this transaction."
     end
   end
 
