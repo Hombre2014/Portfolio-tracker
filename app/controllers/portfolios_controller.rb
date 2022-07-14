@@ -9,7 +9,7 @@ class PortfoliosController < ApplicationController
   end
 
   def create_cash_position
-    @portfolio = Portfolio.find(params[:id])
+    # @portfolio = Portfolio.find(params[:id])
     @portfolio.cash == nil ? @portfolio.cash = 0 : @portfolio.cash
     @position = Position.new(portfolio_id: @portfolio.id, symbol: "Cash", quantity: @portfolio.cash, cost_per_share: 1, open_date: @portfolio.opened_date)
     @position.save
@@ -17,7 +17,6 @@ class PortfoliosController < ApplicationController
 
   # GET /portfolios/1 or /portfolios/1.json
   def show
-    create_cash_position
     @positions = Position.all
     @total = 0
   end
@@ -38,6 +37,7 @@ class PortfoliosController < ApplicationController
     respond_to do |format|
       if @portfolio.save
         format.html { redirect_to "/users/#{current_user.id}/portfolios/#{@portfolio.id}", notice: "Portfolio was successfully created." }
+        create_cash_position
         format.json { render :show, status: :created, location: @portfolio }
       else
         format.html { render :new, status: :unprocessable_entity }
