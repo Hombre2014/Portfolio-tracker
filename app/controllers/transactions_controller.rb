@@ -37,8 +37,13 @@ class TransactionsController < ApplicationController
           position.update(cost_per_share: (position_total + transaction_total) / position.quantity)
           @transaction.commission == nil ? @transaction.commission = 0 : @transaction.commission
           @transaction.fee == nil ? @transaction.fee = 0 : @transaction.fee
-          transaction_cost = transaction_total + @transaction.commission + @transaction.fee
-          @cash_position.update(quantity: @cash_position.quantity - transaction_cost)
+          
+          @transaction_cost = transaction_total + @transaction.commission + @transaction.fee
+          # if transaction_cost > @cash_position.quantity
+          #   render :show, notice: "Transaction failed. You do not have enough cash to complete this transaction."
+          # else
+          #   @cash_position.update(quantity: @cash_position.quantity - transaction_cost)
+          # end
         end
       end
       else
@@ -53,14 +58,19 @@ class TransactionsController < ApplicationController
     @portfolio = Portfolio.find(params[:portfolio_id])
     create_new_position
 
-    respond_to do |format|
-      if @transaction.save
-        format.html { redirect_to user_portfolio_transactions_url(@transaction), notice: "Transaction was successfully created." }
-        format.json { render :show, status: :created, location: @transaction }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @transaction.errors, status: :unprocessable_entity }
+    if @transaction_cost < @cash_position.quantity
+      @cash_position.update(quantity: @cash_position.quantity - transaction_cost)
+      respond_to do |format|
+        if @transaction.save
+          format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", notice: "Transaction was successfully created." }
+          format.json { render :show, status: :created, location: @transaction }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @transaction.errors, status: :unprocessable_entity }
+        end
       end
+    else
+      redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", alert: "Transaction failed. You do not have enough cash to complete this transaction."
     end
   end
 
