@@ -50,14 +50,19 @@ class TransactionsController < ApplicationController
   # PATCH/PUT /transactions/1 or /transactions/1.json
   def update
     respond_to do |format|
-      if @transaction.update(transaction_params)
-        format.html { redirect_to user_portfolio_transaction_url(@transaction), notice: "Transaction was successfully updated." }
-        format.json { render :show, status: :ok, location: @transaction }
+      if is_enough_cash?(@transaction)
+        if @transaction.update(transaction_params)
+          format.html { redirect_to user_portfolio_transaction_url(@transaction), notice: "Transaction was successfully updated." }
+          format.json { render :show, status: :ok, location: @transaction }
+        else
+          format.html { render :edit, status: :unprocessable_entity }
+          format.json { render json: @transaction.errors, status: :unprocessable_entity }
+        end
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @transaction.errors, status: :unprocessable_entity }
+        format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: "Not enough cash to complete transaction." }
       end
     end
+    # update_new_position
   end
 
   # DELETE /transactions/1 or /transactions/1.json
