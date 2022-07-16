@@ -1,4 +1,7 @@
+require_relative "../helpers/transactions_helper"
+
 class TransactionsController < ApplicationController
+  include TransactionsHelper
   before_action :set_transaction, only: %i[ show edit update destroy ]
 
   # GET /transactions or /transactions.json
@@ -23,58 +26,43 @@ class TransactionsController < ApplicationController
     @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
-  def create_new_position
-    @portfolio = Portfolio.find(params[:portfolio_id])
-    @positions = Position.where(portfolio_id: params[:portfolio_id])
-    @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: "Cash").first
-    case @transaction.tr_type
-    when "Buy"
-      @positions.each do |position|
-        if position.symbol == @transaction.symbol
-          position_total = position.quantity * position.cost_per_share
-          transaction_total = @transaction.quantity * @transaction.price
-          position.update(quantity: position.quantity + @transaction.quantity)
-          position.update(cost_per_share: (position_total + transaction_total) / position.quantity)
-          @transaction.commission == nil ? @transaction.commission = 0 : @transaction.commission
-          @transaction.fee == nil ? @transaction.fee = 0 : @transaction.fee
-          transaction_cost = transaction_total + @transaction.commission + @transaction.fee
-          @cash_position.update(quantity: @cash_position.quantity - transaction_cost)
-        end
-      end
-      else
-    end
-    # new_position = Position.new(open_date: @transaction.trade_date, symbol: @transaction.symbol, quantity: @transaction.quantity, cost_per_share: @transaction.price, portfolio_id: @portfolio.id)
-    # new_position.save
-  end
-
   # POST /transactions or /transactions.json
   def create
     @transaction = Transaction.new(transaction_params)
     @portfolio = Portfolio.find(params[:portfolio_id])
-    create_new_position
 
     respond_to do |format|
-      if @transaction.save
-        format.html { redirect_to user_portfolio_transactions_url(@transaction), notice: "Transaction was successfully created." }
-        format.json { render :show, status: :created, location: @transaction }
+      if is_enough_cash?(@transaction)
+        if @transaction.save
+          format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", notice: "Transaction was successfully created." }
+          format.json { render :show, status: :created, location: @transaction }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @transaction.errors, status: :unprocessable_entity }
+        end
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @transaction.errors, status: :unprocessable_entity }
+        format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: "Not enough cash to complete transaction." }
       end
     end
+    create_new_position
   end
 
   # PATCH/PUT /transactions/1 or /transactions/1.json
   def update
     respond_to do |format|
-      if @transaction.update(transaction_params)
-        format.html { redirect_to user_portfolio_transaction_url(@transaction), notice: "Transaction was successfully updated." }
-        format.json { render :show, status: :ok, location: @transaction }
+      if is_enough_cash?(@transaction)
+        if @transaction.update(transaction_params)
+          format.html { redirect_to user_portfolio_transaction_url(@transaction), notice: "Transaction was successfully updated." }
+          format.json { render :show, status: :ok, location: @transaction }
+        else
+          format.html { render :edit, status: :unprocessable_entity }
+          format.json { render json: @transaction.errors, status: :unprocessable_entity }
+        end
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @transaction.errors, status: :unprocessable_entity }
+        format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: "Not enough cash to complete transaction." }
       end
     end
+    # update_new_position
   end
 
   # DELETE /transactions/1 or /transactions/1.json
