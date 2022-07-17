@@ -1,10 +1,16 @@
+require 'finnhub_ruby'
+require_relative "../helpers/portfolios_helper"
+
 class PortfoliosController < ApplicationController
+  include PortfoliosHelper
+
   before_action :set_portfolio, only: %i[ show edit update destroy ]
 
   # GET /portfolios or /portfolios.json
   def index
     @portfolios = Portfolio.where(user_id: current_user.id)
     @positions = Position.all
+    @finnhub_client = FinnhubRuby::DefaultApi.new
     @total = 0
   end
 

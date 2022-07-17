@@ -84,6 +84,11 @@ GEM
       warden (~> 1.2.3)
     digest (3.1.0)
     erubi (1.10.0)
+    ethon (0.15.0)
+      ffi (>= 1.15.0)
+    ffi (1.15.5)
+    finnhub_ruby (1.1.16)
+      typhoeus (~> 1.0, >= 1.0.1)
     globalid (1.0.0)
       activesupport (>= 5.0)
     i18n (1.10.0)
@@ -182,6 +187,8 @@ GEM
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
       railties (>= 6.0.0)
+    typhoeus (1.4.0)
+      ethon (>= 0.9.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     warden (1.2.9)
@@ -203,6 +210,7 @@ DEPENDENCIES
   bootsnap
   debug
   devise (~> 4.7)
+  finnhub_ruby (~> 1.1.16)
   importmap-rails
   jbuilder
   pg (~> 1.1)

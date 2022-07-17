@@ -17,6 +17,7 @@
         <th class="border border-slate-300 px-4">Average price</th>
         <th class="border border-slate-300 px-4">Cost</th>
         <th class="border border-slate-300 px-4">Opened date</th>
+        <th class="border border-slate-300 px-4">Price</th>
       </tr>
     </thead>
     <tbody>
@@ -28,6 +29,10 @@
           <td class="border border-slate-300 px-4"><%= number_to_currency(position.cost_per_share) %></td>
           <td class="border border-slate-300 px-4"><%= number_to_currency(position.quantity * position.cost_per_share) %></td>
           <td class="border border-slate-300 px-4"><%= position.open_date %></td>
+          <% if position.symbol != 'Cash' %>
+            <% price = @finnhub_client.quote(position.symbol) %>
+            <td class="border border-slate-300 px-4"><%= number_to_currency(price.c) %></td>  
+          <% end %>
         </tr>
         <% @total = @total + position.quantity * position.cost_per_share %>
       <% end %>
