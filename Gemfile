@@ -48,6 +48,9 @@ gem "bootsnap", require: false
 # Add devise for authentication
 gem "devise", "~> 4.7"
 
+# Add finnhub gem for stock data
+gem 'finnhub_ruby', '~> 1.1.16'
+
 # Use Sass to process CSS
 # gem "sassc-rails"
 
