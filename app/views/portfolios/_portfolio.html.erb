@@ -14,10 +14,18 @@
       <tr>
         <th class="border border-slate-300 px-4">Symbol</th>
         <th class="border border-slate-300 px-4">Quantity</th>
-        <th class="border border-slate-300 px-4">Average price</th>
-        <th class="border border-slate-300 px-4">Cost</th>
-        <th class="border border-slate-300 px-4">Opened date</th>
+        <th class="border border-slate-300 px-4">Cost/share</th>
         <th class="border border-slate-300 px-4">Price</th>
+        <th class="border border-slate-300 px-4">Change</th>
+        <th class="border border-slate-300 px-4">Change %</th>
+        <th class="border border-slate-300 px-4">Day gain</th>
+        <th class="border border-slate-300 px-4">Day gain %</th>
+        <th class="border border-slate-300 px-4">Gain</th>
+        <th class="border border-slate-300 px-4">Gain %</th>
+        <th class="border border-slate-300 px-4">Cost</th>
+        <th class="border border-slate-300 px-4">Value</th>
+        <th class="border border-slate-300 px-4">Opened date</th>
+        
       </tr>
     </thead>
     <tbody>
@@ -27,12 +35,21 @@
           <td class="border border-slate-300 px-4"><%= position.symbol %></td>
           <td class="border border-slate-300 px-4"><%= position.quantity %></td>
           <td class="border border-slate-300 px-4"><%= number_to_currency(position.cost_per_share) %></td>
-          <td class="border border-slate-300 px-4"><%= number_to_currency(position.quantity * position.cost_per_share) %></td>
-          <td class="border border-slate-300 px-4"><%= position.open_date %></td>
           <% if position.symbol != 'Cash' %>
             <% price = @finnhub_client.quote(position.symbol) %>
+            <% position_cost = position.quantity * position.cost_per_share %>
+            <% position_value = position.quantity * price.c %>
             <td class="border border-slate-300 px-4"><%= number_to_currency(price.c) %></td>  
+            <td class="border border-slate-300 px-4"><%= number_to_currency(price.d) %></td>
+            <td class="border border-slate-300 px-4"><%= number_to_currency(price.dp) %></td>
+            <td class="border border-slate-300 px-4"><%= number_to_currency(position.quantity * price.d) %></td>
+            <td class="border border-slate-300 px-4"><%= number_to_percentage((position.quantity * price.d / position_cost * 100).round(2)).to_f %>%</td>
+            <td class="border border-slate-300 px-4"><%= number_to_currency(position_value - position_cost) %></td>
+            <td class="border border-slate-300 px-4"><%= number_to_percentage(((position_value - position_cost) / position_cost * 100).round(2)).to_f %>%</td>
+            <td class="border border-slate-300 px-4"><%= number_to_currency(position_cost) %></td>
+            <td class="border border-slate-300 px-4"><%= number_to_currency(position_value) %></td>
           <% end %>
+          <td class="border border-slate-300 px-4"><%= position.open_date %></td>
         </tr>
         <% @total = @total + position.quantity * position.cost_per_share %>
       <% end %>
