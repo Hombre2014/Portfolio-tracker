@@ -51,6 +51,9 @@ gem "devise", "~> 4.7"
 # Add finnhub gem for stock data
 gem 'finnhub_ruby', '~> 1.1.16'
 
+# Add dotenv gem for environment variables
+gem 'dotenv-rails', groups: [:development, :test]
+
 # Use Sass to process CSS
 # gem "sassc-rails"
 
