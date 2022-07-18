@@ -39,15 +39,17 @@
             <% price = @finnhub_client.quote(position.symbol) %>
             <% position_cost = position.quantity * position.cost_per_share %>
             <% position_value = position.quantity * price.c %>
-            <td class="border border-slate-300 px-4"><%= number_to_currency(price.c) %></td>  
-            <td class="border border-slate-300 px-4"><%= number_to_currency(price.d) %></td>
-            <td class="border border-slate-300 px-4"><%= number_to_currency(price.dp) %></td>
-            <td class="border border-slate-300 px-4"><%= number_to_currency(position.quantity * price.d) %></td>
-            <td class="border border-slate-300 px-4"><%= number_to_percentage((position.quantity * price.d / position_cost * 100).round(2)).to_f %>%</td>
-            <td class="border border-slate-300 px-4"><%= number_to_currency(position_value - position_cost) %></td>
-            <td class="border border-slate-300 px-4"><%= number_to_percentage(((position_value - position_cost) / position_cost * 100).round(2)).to_f %>%</td>
+            <% red_or_green = price.d > 0 ? 'text-green-600' : 'text-red-600' %>
+            <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(price.c) %></td>
+            <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(price.d) %></td>
+            <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(price.dp) %></td>
+            <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(position.quantity * price.d) %></td>
+            <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_percentage((position.quantity * price.d / position_cost * 100).round(2)).to_f %>%</td>
+            <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(position_value - position_cost) %></td>
+            <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_percentage(((position_value - position_cost) / position_cost * 100).round(2)).to_f %>%</td>
             <td class="border border-slate-300 px-4"><%= number_to_currency(position_cost) %></td>
             <td class="border border-slate-300 px-4"><%= number_to_currency(position_value) %></td>
+            
           <% end %>
           <td class="border border-slate-300 px-4"><%= position.open_date %></td>
         </tr>
