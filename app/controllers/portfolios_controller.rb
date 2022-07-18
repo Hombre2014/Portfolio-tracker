@@ -12,6 +12,10 @@ class PortfoliosController < ApplicationController
     @positions = Position.all
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @total = 0
+    @total_day_gain = 0
+    @total_last_close = 0
+    @total_position_gain = 0
+    @total_portfolio_value = 0
   end
 
   def create_cash_position
@@ -24,6 +28,10 @@ class PortfoliosController < ApplicationController
   def show
     @positions = Position.all
     @total = 0
+    @total_day_gain = 0
+    @total_last_close = 0
+    @total_position_gain = 0
+    @total_portfolio_value = 0
   end
 
   # GET /portfolios/new

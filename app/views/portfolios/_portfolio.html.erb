@@ -25,11 +25,11 @@
         <th class="border border-slate-300 px-4">Cost</th>
         <th class="border border-slate-300 px-4">Value</th>
         <th class="border border-slate-300 px-4">Opened date</th>
-        
       </tr>
     </thead>
     <tbody>
     <% @positions.each do |position| %>
+      <% position_cost = position.quantity * position.cost_per_share %>
       <% if position.portfolio_id == portfolio.id %>
         <tr>
           <td class="border border-slate-300 px-4"><%= position.symbol %></td>
@@ -37,32 +37,58 @@
           <td class="border border-slate-300 px-4"><%= number_to_currency(position.cost_per_share) %></td>
           <% if position.symbol != 'Cash' %>
             <% price = @finnhub_client.quote(position.symbol) %>
-            <% position_cost = position.quantity * position.cost_per_share %>
+            
             <% position_value = position.quantity * price.c %>
             <% red_or_green = price.d > 0 ? 'text-green-600' : 'text-red-600' %>
             <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(price.c) %></td>
             <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(price.d) %></td>
-            <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(price.dp) %></td>
+            <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_percentage(price.dp.round(2)).to_f %>%</td>
             <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(position.quantity * price.d) %></td>
+            <% @total_day_gain += position.quantity * price.d %>
+            <% @total_last_close += position.quantity * price.pc %>
             <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_percentage((position.quantity * price.d / position_cost * 100).round(2)).to_f %>%</td>
             <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(position_value - position_cost) %></td>
+            <% @total_position_gain += position_value - position_cost %>
             <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_percentage(((position_value - position_cost) / position_cost * 100).round(2)).to_f %>%</td>
             <td class="border border-slate-300 px-4"><%= number_to_currency(position_cost) %></td>
             <td class="border border-slate-300 px-4"><%= number_to_currency(position_value) %></td>
-            
+            <% @total_portfolio_value += position_value %>
+            <% @total_last_close += position.quantity * price.pc %>
+            <td class="border border-slate-300 px-4"><%= position.open_date %></td>
+          <% else %>
+            <td class="border border-slate-300 px-4"><%= number_to_currency(1) %></td>
+            <%= 7.times do %>
+              <td class="border border-slate-300 px-4"> - </td>
+            <% end %>
+            <td class="border border-slate-300 px-4"><%= number_to_currency(position_cost) %></td>
+            <% @total_portfolio_value += position.quantity %>
+            <td class="border border-slate-300 px-4"><%= position.open_date %></td>
           <% end %>
-          <td class="border border-slate-300 px-4"><%= position.open_date %></td>
         </tr>
-        <% @total = @total + position.quantity * position.cost_per_share %>
+        <% @total = @total + position_cost %>
       <% end %>
     <% end %>
+      <tr>
+        <td class="border border-slate-300 px-4">Total</td>
+        <%= 5.times do %>
+          <td class="border border-slate-300 px-4"> - </td>
+        <% end %>
+        <% red_or_green = @total_day_gain > 0 ? 'text-green-600' : 'text-red-600' %>
+        <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(@total_day_gain) %></td>
+        <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_percentage((@total_day_gain / @total_last_close * 100).round(2)).to_f %>%</td>
+        <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(@total_position_gain) %></td>
+        <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_percentage((@total_position_gain / portfolio.cash * 100).round(2)).to_f %>%</td>
+        <td class="border border-slate-300 px-4"> - </td>
+        <td class="border border-slate-300 px-4"><%= number_to_currency(@total_portfolio_value) %></td>
+        <td class="border border-slate-300 px-4"></td>
+      </tr>
     </tbody>
   </table>
 
   <span class="my-5 block">
     <span class="block font-medium mb-1 inline-block">Portfolio Balance:</span>
     <% portfolio.cash == nil ? portfolio.cash = 0 : portfolio.cash %>
-    <span class="font-bold"><%= number_to_currency(@total) %></span>
+    <span class="font-bold"><%= number_to_currency(@total_portfolio_value) %></span>
     <% @total = 0 %>
   </span>
   <% if action_name != "show" %>
