@@ -11,19 +11,20 @@ class PortfoliosController < ApplicationController
     @portfolios = Portfolio.where(user_id: current_user.id)
     @positions = Position.all
     @finnhub_client = FinnhubRuby::DefaultApi.new
-    @total = 0
-  end
-
-  def create_cash_position
-    @portfolio.cash == nil ? @portfolio.cash = 0 : @portfolio.cash
-    @position = Position.new(portfolio_id: @portfolio.id, symbol: "Cash", quantity: @portfolio.cash, cost_per_share: 1, open_date: @portfolio.opened_date)
-    @position.save
+    @total_day_gain = 0
+    @total_last_close = 0
+    @total_position_gain = 0
+    @total_portfolio_value = 0
   end
 
   # GET /portfolios/1 or /portfolios/1.json
   def show
     @positions = Position.all
-    @total = 0
+    @finnhub_client = FinnhubRuby::DefaultApi.new
+    @total_day_gain = 0
+    @total_last_close = 0
+    @total_position_gain = 0
+    @total_portfolio_value = 0
   end
 
   # GET /portfolios/new
