@@ -57,7 +57,7 @@
             <td class="border border-slate-300 px-4"><%= position.open_date %></td>
           <% else %>
             <td class="border border-slate-300 px-4"><%= number_to_currency(1) %></td>
-            <%= 7.times do %>
+            <% 7.times do %>
               <td class="border border-slate-300 px-4"> - </td>
             <% end %>
             <td class="border border-slate-300 px-4"><%= number_to_currency(position_cost) %></td>
@@ -71,7 +71,7 @@
     <tfoot>
       <tr>
         <td class="border border-slate-300 px-4">Total</td>
-        <%= 5.times do %>
+        <% 5.times do %>
           <td class="border border-slate-300 px-4"> - </td>
         <% end %>
         
