@@ -27,13 +27,21 @@ module TransactionsHelper
           @existing_position = Position.where(portfolio_id: params[:portfolio_id], symbol: @transaction.symbol).first
           current_position_total = @existing_position.quantity * @existing_position.cost_per_share
           @existing_position.update(quantity: @existing_position.quantity + @transaction.quantity)
-          @existing_position.update(cost_per_share: (current_position_total + @transaction_cost + add_cost(@transaction)) / @existing_position.quantity)
-          @cash_position.update(quantity: @cash_position.quantity - (@transaction.quantity * @transaction.price + add_cost(@transaction)))
+          @existing_position.update(cost_per_share: (current_position_total + @transaction_cost) / @existing_position.quantity)
+          @cash_position.update(quantity: @cash_position.quantity - @transaction_cost)
         else
-          new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol, quantity: @transaction.quantity, cost_per_share: ((@transaction.price * @transaction.quantity + add_cost(@transaction)) / @transaction.quantity), portfolio_id: @portfolio.id)
-          @cash_position.update(quantity: @cash_position.quantity - (@transaction.quantity * @transaction.price + add_cost(@transaction)))
+          new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol, quantity: @transaction.quantity, cost_per_share: (@transaction_cost / @transaction.quantity), portfolio_id: @portfolio.id)
+          @cash_position.update(quantity: @cash_position.quantity - @transaction_cost)
         end
       end
     end
+  # when "Sell"
+  #   if is_symbol_exist?(@transaction)
+  #     @existing_position = Position.where(portfolio_id: params[:portfolio_id], symbol: @transaction.symbol).first
+  #     current_position_total = @existing_position.quantity * @existing_position.cost_per_share
+  #     @existing_position.update(quantity: @existing_position.quantity - @transaction.quantity)
+  #     @existing_position.update(cost_per_share: (current_position_total - @transaction_cost - add_cost(@transaction)) / @existing_position.quantity)
+  #     @cash_position.update(quantity: @cash_position.quantity + (@transaction.quantity * @transaction.price - add_cost(@transaction)))
+  #   end
   end
 end
