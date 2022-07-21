@@ -40,13 +40,13 @@ module TransactionsHelper
         current_position_total = @existing_position.quantity * @existing_position.cost_per_share
         if @existing_position.quantity >= @transaction.quantity
           @existing_position.update(quantity: @existing_position.quantity - @transaction.quantity)
-          @existing_position.update(cost_per_share: (current_position_total - @transaction_cost - add_cost(@transaction)) / @existing_position.quantity)
-          @cash_position.update(quantity: @cash_position.quantity + (@transaction.quantity * @transaction.price - add_cost(@transaction)))
+          @existing_position.update(cost_per_share: (current_position_total - @transaction_cost) / @existing_position.quantity)
+          @cash_position.update(quantity: @cash_position.quantity + @transaction.quantity * @transaction.price - add_cost(@transaction))
         else
-          redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: "Not enough shares to sell."
+          { alert: "Not enough shares to sell." }
         end
       else
-        redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: "You do not own #{@transaction.symbol}."
+        { alert: "You do not own #{@transaction.symbol}." }
       end
     end
   end
