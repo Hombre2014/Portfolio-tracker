@@ -30,6 +30,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_12_162130) do
     t.string "symbol"
     t.decimal "quantity"
     t.float "cost_per_share"
+    t.float "commission_and_fee"
     t.bigint "portfolio_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
