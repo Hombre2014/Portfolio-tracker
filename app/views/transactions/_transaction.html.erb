@@ -1,17 +1,20 @@
 <div id="<%= dom_id transaction %>" class="flex flex-col">
-  <% transaction.commission == nil ? transaction.commission = 0 : transaction.commission %>
-  <% transaction.fee == nil ? transaction.fee = 0 : transaction.fee %>
-  <% added_cost = transaction.commission + transaction.fee %>
-  <% transaction_total_cost = transaction.quantity * transaction.price + added_cost %>
   <tr>
+    <% transaction.commission == nil ? transaction.commission = 0 : transaction.commission %>
+    <% transaction.fee == nil ? transaction.fee = 0 : transaction.fee %>
+    <% added_cost = transaction.commission + transaction.fee %>
     <td class="border border-slate-300 px-4"><%= transaction.tr_type %></td>
     <td class="border border-slate-300 px-4"><%= transaction.trade_date %></td>
     <td class="border border-slate-300 px-4"><%= transaction.symbol %></td>
     <td class="border border-slate-300 px-4"><%= transaction.quantity %></td>
-    <td class="border border-slate-300 px-4"><%= transaction.price %></td>
-    <td class="border border-slate-300 px-4"><%= transaction.commission %></td>
-    <td class="border border-slate-300 px-4"><%= transaction.fee %></td>
-    <td class="border border-slate-300 px-4"><%= transaction_total_cost %></td>
+    <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.price) %></td>
+    <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.commission) %></td>
+    <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.fee) %></td>
+    <% if transaction.tr_type == 'Buy' %>
+      <td class="border border-slate-300 px-4 text-red-600">-<%= number_to_currency(transaction.quantity * transaction.price + added_cost) %></td>
+    <% else %>
+      <td class="border border-slate-300 px-4 text-green-600"><%= number_to_currency(transaction.quantity * transaction.price - added_cost) %></td>
+    <% end %>
     <% if action_name != "show" %>
       <td class="border border-slate-300 px-4"><%= link_to "Show", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}", class: "rounded-lg py-1 px-3 bg-cyan-300 block font-medium" %></td>
       <td class="border border-slate-300 px-4"><%= link_to 'Edit', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}/edit", class: "rounded-lg py-1 ml-2 px-3 bg-cyan-500 inline-block font-medium" %></td>
