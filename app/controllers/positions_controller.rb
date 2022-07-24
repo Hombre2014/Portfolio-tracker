@@ -25,7 +25,9 @@ class PositionsController < ApplicationController
 
   # POST /positions or /positions.json
   def create
+    @transaction = Transaction.find(params[:transaction_id])
     @position = Position.new(position_params)
+    # @position.commission_and_fee += @transaction.commission + @transaction.fee
 
     respond_to do |format|
       if @position.save
@@ -69,6 +71,6 @@ class PositionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def position_params
-      params.require(:position).permit(:open_date, :symbol, :quantity, :cost_per_share, :portfolio_id)
+      params.require(:position).permit(:open_date, :symbol, :quantity, :cost_per_share, :commission_and_fee, :portfolio_id)
     end
 end

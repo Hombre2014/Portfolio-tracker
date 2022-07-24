@@ -44,7 +44,7 @@ class TransactionsController < ApplicationController
         format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: "Not enough cash to complete transaction." }
       end
     end
-    create_new_position
+    create_new_position(@transaction)
   end
 
   # PATCH/PUT /transactions/1 or /transactions/1.json

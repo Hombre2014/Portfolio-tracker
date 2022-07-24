@@ -16,9 +16,10 @@ module TransactionsHelper
     @position != nil
   end
 
-  def create_new_position
+  def create_new_position(transaction)
     @portfolio = Portfolio.find(params[:portfolio_id])
     @positions = Position.where(portfolio_id: params[:portfolio_id])
+    @position = Position.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
 
     case @transaction.tr_type
     when "Buy"
@@ -29,9 +30,12 @@ module TransactionsHelper
           @existing_position.update(quantity: @existing_position.quantity + @transaction.quantity)
           @existing_position.update(cost_per_share: (current_position_total + @transaction_cost) / @existing_position.quantity)
           @cash_position.update(quantity: @cash_position.quantity - @transaction_cost)
+          @position.update(commission_and_fee: @position.commission_and_fee + @add_cost)
         else
-          new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol, quantity: @transaction.quantity, cost_per_share: (@transaction_cost / @transaction.quantity), portfolio_id: @portfolio.id)
+          new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol, quantity: @transaction.quantity, cost_per_share: (@transaction_cost / @transaction.quantity), commission_and_fee: @add_cost, portfolio_id: @portfolio.id)
           @cash_position.update(quantity: @cash_position.quantity - @transaction_cost)
+          # new_position.commission_and_fee = @add_cost
+          # @commission_and_fee += @add_cost
         end
       end
     when "Sell"
@@ -42,7 +46,7 @@ module TransactionsHelper
           @existing_position.update(quantity: @existing_position.quantity - @transaction.quantity)
           @existing_position.update(cost_per_share: (current_position_total - @transaction_cost) / @existing_position.quantity)
           @cash_position.update(quantity: @cash_position.quantity + @transaction.quantity * @transaction.price - add_cost(@transaction))
-          # delete the position if the same number of shares is sold
+          @position.update(commission_and_fee: @position.commission_and_fee + @add_cost)
           if @existing_position.quantity == 0
             @existing_position.destroy
           end

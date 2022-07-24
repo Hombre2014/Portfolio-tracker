@@ -13,6 +13,7 @@ class PortfoliosController < ApplicationController
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @total_day_gain = 0
     @total_last_close = 0
+    @total_comm_and_fee = 0
     @total_position_gain = 0
     @total_portfolio_value = 0
   end
@@ -23,6 +24,7 @@ class PortfoliosController < ApplicationController
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @total_day_gain = 0
     @total_last_close = 0
+    @total_comm_and_fee = 0
     @total_position_gain = 0
     @total_portfolio_value = 0
   end
