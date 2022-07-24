@@ -24,6 +24,7 @@
         <th class="border border-slate-300 px-4">Gain %</th>
         <th class="border border-slate-300 px-4">Fee</th>
         <th class="border border-slate-300 px-4">Cost</th>
+        <th class="border border-slate-300 px-4">R P/L</th>
         <th class="border border-slate-300 px-4">Value</th>
         <th class="border border-slate-300 px-4">Opened date</th>
       </tr>
@@ -55,6 +56,7 @@
             <td class="border border-slate-300 px-4"><%= number_to_currency(position.commission_and_fee) %></td>
             <% @total_comm_and_fee += position.commission_and_fee %>
             <td class="border border-slate-300 px-4"><%= number_to_currency(position_cost) %></td>
+            <td class="border border-slate-300 px-4"> - </td>
             <td class="border border-slate-300 px-4"><%= number_to_currency(position_value) %></td>
             <% @total_portfolio_value += position_value %>
             <% @total_last_close += position.quantity * price.pc %>
@@ -64,6 +66,7 @@
             <% 8.times do %>
               <td class="border border-slate-300 px-4"> - </td>
             <% end %>
+            <td class="border border-slate-300 px-4"> - </td>
             <td class="border border-slate-300 px-4"><%= number_to_currency(position_cost) %></td>
             <% @total_portfolio_value += position.quantity %>
             <td class="border border-slate-300 px-4"><%= position.open_date %></td>
@@ -74,7 +77,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <td class="border border-slate-300 px-4">Total</td>
+        <td class="border border-slate-300 px-4 font-bold">Total</td>
         <% 5.times do %>
           <td class="border border-slate-300 px-4"></td>
         <% end %>
@@ -86,6 +89,7 @@
         <td class="border border-slate-300 px-4 <%= red_or_green_all %>"><%= number_to_percentage((@total_position_gain / portfolio.cash * 100).round(2)).to_f %>%</td>
         <td class="border border-slate-300 px-4 text-red-600">-<%= number_to_currency(@total_comm_and_fee) %></td>
         <td class="border border-slate-300 px-4"></td>
+        <td class="border border-slate-300 px-4 text-red-600">-<%= number_to_currency(@income_spent) %></td>
         <td class="border border-slate-300 px-4"><%= number_to_currency(@total_portfolio_value) %></td>
         <td class="border border-slate-300 px-4"></td>
       </tr>
