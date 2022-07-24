@@ -38,25 +38,40 @@ class TransactionsController < ApplicationController
     @portfolio = Portfolio.find(params[:portfolio_id])
 
     respond_to do |format|
-      if is_enough_cash?(@transaction)
-        if @transaction.save
-          format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", notice: "Transaction was successfully created." }
-          format.json { render :show, status: :created, location: @transaction }
+      case @transaction.tr_type
+      when "Buy"
+        if enough_cash?(@transaction)
+          if @transaction.save
+            format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", notice: "Transaction was successfully created." }
+            format.json { render :show, status: :created, location: @transaction }
+          else
+            format.html { render :new, status: :unprocessable_entity }
+            format.json { render json: @transaction.errors, status: :unprocessable_entity }
+          end
         else
-          format.html { render :new, status: :unprocessable_entity }
-          format.json { render json: @transaction.errors, status: :unprocessable_entity }
+          format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: "Not enough cash to complete transaction." }
         end
-      else
-        format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: "Not enough cash to complete transaction." }
+      when "Sell"
+        if enough_shares?(@transaction)
+          if @transaction.save
+            format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", notice: "Transaction was successfully created." }
+            format.json { render :show, status: :created, location: @transaction }
+          else
+            format.html { render :new, status: :unprocessable_entity }
+            format.json { render json: @transaction.errors, status: :unprocessable_entity }
+          end
+        else
+          format.html { redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: "Not enough shares to complete transaction." }
+        end
       end
     end
-    create_new_position(@transaction)
+    create_update_position(@transaction)
   end
 
   # PATCH/PUT /transactions/1 or /transactions/1.json
   def update
     respond_to do |format|
-      if is_enough_cash?(@transaction)
+      if enough_cash?(@transaction)
         if @transaction.update(transaction_params)
           format.html { redirect_to user_portfolio_transaction_url(@transaction), notice: "Transaction was successfully updated." }
           format.json { render :show, status: :ok, location: @transaction }
