@@ -101,7 +101,11 @@
   <% @total_day_gain = 0 %>
   <% @total_position_gain = 0 %>
   <% @total_portfolio_value = 0 %>
-  <% @total_comm_and_fee = 0 %>
+  <%
+=begin%>
+ <% @total_comm_and_fee = 0 %> 
+<%
+=end%>
 
   <% if action_name != "show" %>
     <%= link_to "Show", "/users/#{current_user.id}/portfolios/#{portfolio.id}", class: "rounded-lg py-1 px-3 bg-cyan-300 inline-block font-medium" %>
