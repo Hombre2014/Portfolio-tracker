@@ -4,11 +4,28 @@
   <% end %>
 
   <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Transactions</h1>
+    <h1 class="font-bold text-4xl mb-8">Transactions</h1>
     <%= link_to 'New transaction', new_user_portfolio_transaction_path, class: "rounded-lg py-1 px-3 bg-blue-600 text-white block font-medium" %>
   </div>
 
   <div id="transactions" class="min-w-full">
-    <%= render @transactions %>
+    <table class="table-auto mb-6 border-collapse border border-slate-400">
+      <thead>
+        <tr>
+          <th class="border border-slate-300 px-4">Type</th>
+          <th class="border border-slate-300 px-4">Date</th>
+          <th class="border border-slate-300 px-4">Symbol</th>
+          <th class="border border-slate-300 px-4">Quantity</th>
+          <th class="border border-slate-300 px-4">Price</th>
+          <th class="border border-slate-300 px-4">Commission</th>
+          <th class="border border-slate-300 px-4">Fee</th>
+          <th class="border border-slate-300 px-4">Total</th>
+          <th colspan="2" class="border border-slate-300 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render @transactions %>
+      </tbody>
+    </table>
   </div>
 </div>
