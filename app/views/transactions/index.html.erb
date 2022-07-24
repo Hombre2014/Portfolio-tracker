@@ -27,7 +27,17 @@
         <%= render @transactions %>
       </tbody>
       <tfoot>
-        
+        <tr>
+          <td class="border border-slate-300 px-4 font-bold">Total</td>
+          <% 4.times do %>
+            <td class="border border-slate-300 px-4"></td>
+          <% end %>
+          <td class="border border-slate-300 px-4 text-red-600">-<%= number_to_currency(@total_commissions) %></td>
+          <td class="border border-slate-300 px-4 text-red-600">-<%= number_to_currency(@total_fees) %></td>
+          <% red_or_green = @income_spent > 0 ? 'text-green-600' : 'text-red-600' %>
+          <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(@income_spent) %></td>
+          <td colspan="2"  class="border border-slate-300 px-4"></td>
+        </tr>
       </tfoot>
     </table>
   </div>

@@ -6,12 +6,18 @@ class TransactionsController < ApplicationController
 
   # GET /transactions or /transactions.json
   def index
+    @total_fees = 0
+    @income_spent = 0
+    @total_commissions = 0
     @transactions = Transaction.where(portfolio_id: params[:portfolio_id])
     @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
   # GET /transactions/1 or /transactions/1.json
   def show
+    @total_fees = 0
+    @income_spent = 0
+    @total_commissions = 0
     @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
