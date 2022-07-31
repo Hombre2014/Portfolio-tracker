@@ -6,7 +6,7 @@
 
   <div class="my-5 mr-5">
     <span class="inline-block font-medium mb-1">Quantity:</span>
-    <span class="font-bold"><%= position.quantity %></span>
+    <span class="font-bold"><%= number_to_currency(position.quantity.round(2).to_f) %></span>
   </div>
 
   <div class="my-5 mr-5">

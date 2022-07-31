@@ -6,19 +6,29 @@ class TransactionsController < ApplicationController
 
   # GET /transactions or /transactions.json
   def index
+    @pl = 0
+    @tr_cost = 0
+    @buy_total = 0
     @total_fees = 0
     @income_spent = 0
+    # @tr_comm_and_fee = 0
     @total_commissions = 0
     @transactions = Transaction.where(portfolio_id: params[:portfolio_id])
     @portfolio = Portfolio.find(params[:portfolio_id])
+    @positions = Position.where(portfolio_id: params[:portfolio_id])
   end
 
   # GET /transactions/1 or /transactions/1.json
   def show
+    @pl = 0
+    @tr_cost = 0
+    @buy_total = 0
     @total_fees = 0
     @income_spent = 0
+    # @tr_comm_and_fee = 0
     @total_commissions = 0
     @portfolio = Portfolio.find(params[:portfolio_id])
+    @positions = Position.where(portfolio_id: params[:portfolio_id])
   end
 
   # GET /transactions/new
@@ -36,6 +46,11 @@ class TransactionsController < ApplicationController
   def create
     @transaction = Transaction.new(transaction_params)
     @portfolio = Portfolio.find(params[:portfolio_id])
+    @positions = Position.where(portfolio_id: params[:portfolio_id])
+
+    @tr_cost = 0
+    @buy_total = 0
+    # @tr_comm_and_fee = 0
 
     respond_to do |format|
       case @transaction.tr_type
