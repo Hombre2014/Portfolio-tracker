@@ -54,7 +54,7 @@ module TransactionsHelper
         if @existing_position.quantity >= @transaction.quantity
           @transaction_sell_income = transaction.quantity * transaction.price - add_cost(transaction)
           @existing_position.update(quantity: @existing_position.quantity - @transaction.quantity)
-          @existing_position.update(cost_per_share: (current_position_total - @transaction_sell_income) / @existing_position.quantity)
+          @existing_position.update(cost_per_share: (@transaction_sell_income - current_position_total) / @existing_position.quantity)
           @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
           @position.update(commission_and_fee: @position.commission_and_fee + @add_cost)
           if @existing_position.quantity == 0

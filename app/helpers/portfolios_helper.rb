@@ -8,6 +8,8 @@ module PortfoliosHelper
   def create_cash_position
     @portfolio.cash == nil ? @portfolio.cash = 0 : @portfolio.cash
     @position = Position.create(portfolio_id: @portfolio.id, symbol: "Cash", quantity: @portfolio.cash, cost_per_share: 1, open_date: @portfolio.opened_date)
+    @initial_portfolio_value = @portfolio.cash
+    @initial_portfolio_value == nil ? @initial_portfolio_value = 0 : @initial_portfolio_value = @portfolio.cash
   end
 
   def get_profit_loss
