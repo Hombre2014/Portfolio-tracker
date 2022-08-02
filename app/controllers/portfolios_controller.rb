@@ -10,17 +10,21 @@ class PortfoliosController < ApplicationController
   def index
     @portfolios = Portfolio.where(user_id: current_user.id)
     @transactions = Transaction.where(portfolio_id: @portfolios.ids)
+    # @portfolio_transactions = Transaction.where(portfolio_id: params[:id]).all
     @positions = Position.all
     @finnhub_client = FinnhubRuby::DefaultApi.new
-    @pl = 0
+    @tr_cost = 0
     @buy_total = 0
     @sell_total = 0
-    @tr_comm_and_fee = 0
-    @tr_cost = 0
+    @long_shares = 0
+    @short_shares = 0
     @total_day_gain = 0
+    @tr_comm_and_fee = 0
     @total_last_close = 0
     @total_comm_and_fee = 0
     @total_position_gain = 0
+    @position_profit_loss = 0
+    @realized_profit_loss = 0
     @total_portfolio_value = 0
   end
 
@@ -28,9 +32,10 @@ class PortfoliosController < ApplicationController
   def show
     @portfolios = Portfolio.where(user_id: current_user.id)
     @transactions = Transaction.where(portfolio_id: @portfolios.ids)
+    # @portfolio_transactions = Transaction.where(portfolio_id: params[:id]).all
     @positions = Position.all
     @finnhub_client = FinnhubRuby::DefaultApi.new
-    @pl = 0
+    @realized_profit_loss = 0
     @buy_total = 0
     @sell_total = 0
     @tr_comm_and_fee = 0
@@ -39,6 +44,7 @@ class PortfoliosController < ApplicationController
     @total_last_close = 0
     @total_comm_and_fee = 0
     @total_position_gain = 0
+    @position_profit_loss = 0
     @total_portfolio_value = 0
   end
 

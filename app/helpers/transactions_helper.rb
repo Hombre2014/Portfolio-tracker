@@ -60,7 +60,8 @@ module TransactionsHelper
         @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: "Cash").first
         if @position.quantity >= @transaction.quantity
           @transaction_sell_income = transaction.quantity * transaction.price - add_cost(transaction)
-          @position.update(quantity: @position.quantity - @transaction.quantity)
+          @existing_position.update(quantity: @existing_position.quantity - @transaction.quantity)
+          # @existing_position.update(cost_per_share: (current_position_total - @transaction_sell_income) / @existing_position.quantity)
           @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
           @position.update(commission_and_fee: @position.commission_and_fee + @add_cost)
           @pl = @transaction_sell_income - (transaction.quantity * @position.cost_per_share)
