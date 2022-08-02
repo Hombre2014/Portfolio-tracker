@@ -3,8 +3,8 @@ class PositionsController < ApplicationController
 
   # GET /positions or /positions.json
   def index
-    @positions = Position.where(portfolio_id: params[:portfolio_id])
     @portfolio = Portfolio.find(params[:portfolio_id])
+    @positions = Position.where(portfolio_id: params[:portfolio_id])
   end
 
   # GET /positions/1 or /positions/1.json
