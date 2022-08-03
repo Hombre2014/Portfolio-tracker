@@ -1,0 +1,46 @@
+<div id="<%= dom_id stock %>", class="container w-full">
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Company:</span>
+    <span class="font-bold"><%= @stock_data.name %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Ticker:</span>
+    <span class="font-bold"><%= stock.ticker %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Exchange:</span>
+    <span class="font-bold"><%= @stock_data.exchange %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Country:</span>
+    <span class="font-bold"><%= @stock_data.country %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Currency:</span>
+    <span class="font-bold"><%= @stock_data.currency %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">IPO date:</span>
+    <span class="font-bold"><%= @stock_data.ipo %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block font-medium mb-1">Web URL:</span>
+    <span class="font-bold"><%= link_to @stock_data.weburl, @stock_data.weburl %></span>
+  </div>
+
+  <div class="my-5 mr-5">
+    <span class="inline-block"><%= image_tag @stock_data.logo %></span>
+  </div>
+
+  <% if action_name != "show" %>
+    <%= link_to "Show this stock", stock, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to 'Edit this stock', edit_stock_path(stock), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+</div>
