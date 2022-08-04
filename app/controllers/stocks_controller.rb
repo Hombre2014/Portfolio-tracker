@@ -4,10 +4,14 @@ class StocksController < ApplicationController
   # GET /stocks or /stocks.json
   def index
     @stocks = Stock.all
+    @stock_symbols = Stock.all.map { |stock| stock.ticker }
   end
 
   # GET /stocks/1 or /stocks/1.json
   def show
+    @finnhub_client = FinnhubRuby::DefaultApi.new
+    @transaction = Transaction.find_by(symbol: @stock.ticker)
+    @stock_data = @finnhub_client.company_profile2({ symbol: @transaction.symbol })
   end
 
   # GET /stocks/new
@@ -65,6 +69,6 @@ class StocksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def stock_params
-      params.require(:stock).permit(:ticker, :transaction_id, :realized_profit_loss)
+      params.require(:stock).permit(:ticker, :transaction_id, :realized_profit_loss, :shares_owned)
     end
 end

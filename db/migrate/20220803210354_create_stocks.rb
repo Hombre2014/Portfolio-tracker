@@ -3,7 +3,8 @@ class CreateStocks < ActiveRecord::Migration[7.0]
     create_table :stocks do |t|
       t.string :ticker
       t.integer :transaction_id
-      t.float :realized_profit_loss
+      t.decimal :realized_profit_loss
+      t.decimal :shares_owned
 
       t.timestamps
     end

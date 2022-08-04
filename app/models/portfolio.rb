@@ -1,6 +1,7 @@
 class Portfolio < ApplicationRecord
   has_many :positions, dependent: :destroy
   has_many :transactions, dependent: :destroy
+
   belongs_to :user
 
   validates :name, presence: true, length: { maximum: 50 }, uniqueness: { scope: :user_id }, on: :create, on: :update

@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_12_162130) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "portfolios", force: :cascade do |t|
     t.string "name"
     t.string "acc_number"
-    t.float "cash"
+    t.decimal "cash"
     t.date "opened_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -29,12 +29,21 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_12_162130) do
     t.date "open_date"
     t.string "symbol"
     t.decimal "quantity"
-    t.float "cost_per_share"
-    t.float "commission_and_fee"
+    t.decimal "cost_per_share"
+    t.decimal "commission_and_fee"
     t.bigint "portfolio_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["portfolio_id"], name: "index_positions_on_portfolio_id"
+  end
+
+  create_table "stocks", force: :cascade do |t|
+    t.string "ticker"
+    t.integer "transaction_id"
+    t.decimal "realized_profit_loss"
+    t.decimal "shares_owned"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "transactions", force: :cascade do |t|
@@ -42,9 +51,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_12_162130) do
     t.date "trade_date"
     t.string "symbol"
     t.integer "quantity"
-    t.float "price"
-    t.float "commission"
-    t.float "fee"
+    t.decimal "price"
+    t.decimal "commission"
+    t.decimal "fee"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "portfolio_id", null: false

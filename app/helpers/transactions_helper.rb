@@ -26,11 +26,25 @@ module TransactionsHelper
     end
   end
 
+  def create_update_stock(transaction)
+    if @stock_symbols.include?(transaction.symbol)
+      @stock = Stock.find_by(ticker: transaction.symbol)
+      if transaction.tr_type == 'Buy'
+        @stock.shares_owned += transaction.quantity
+        @stock.save
+      elsif transaction.tr_type == 'Sell'
+        @stock.shares_owned -= transaction.quantity
+        @stock.save
+      end
+    else
+      new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, shares_owned: transaction.quantity)
+    end
+  end
+
   def create_update_position(transaction)
     @portfolio = Portfolio.find(params[:portfolio_id])
     @positions = Position.where(portfolio_id: params[:portfolio_id])
     @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first if symbol_exist?(transaction)
-
     transaction.commission == nil ? transaction.commission = 0 : transaction.commission
     transaction.fee == nil ? transaction.fee = 0 : transaction.fee
     case @transaction.tr_type
@@ -60,10 +74,9 @@ module TransactionsHelper
         @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: "Cash").first
         if @position.quantity >= @transaction.quantity
           @transaction_sell_income = transaction.quantity * transaction.price - add_cost(transaction)
-          @existing_position.update(quantity: @existing_position.quantity - @transaction.quantity)
-          # @existing_position.update(cost_per_share: (current_position_total - @transaction_sell_income) / @existing_position.quantity)
-          @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
+          @position.update(quantity: @position.quantity - @transaction.quantity)
           @position.update(commission_and_fee: @position.commission_and_fee + @add_cost)
+          @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
           @pl = @transaction_sell_income - (transaction.quantity * @position.cost_per_share)
           if @position.quantity == 0.0
             @position.destroy

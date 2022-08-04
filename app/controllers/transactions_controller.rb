@@ -11,10 +11,9 @@ class TransactionsController < ApplicationController
     @buy_total = 0
     @total_fees = 0
     @income_spent = 0
-    # @tr_comm_and_fee = 0
     @total_commissions = 0
-    @transactions = Transaction.where(portfolio_id: params[:portfolio_id])
     @portfolio = Portfolio.find(params[:portfolio_id])
+    @transactions = Transaction.where(portfolio_id: params[:portfolio_id])
     @positions = Position.where(portfolio_id: params[:portfolio_id])
   end
 
@@ -25,7 +24,6 @@ class TransactionsController < ApplicationController
     @buy_total = 0
     @total_fees = 0
     @income_spent = 0
-    # @tr_comm_and_fee = 0
     @total_commissions = 0
     @portfolio = Portfolio.find(params[:portfolio_id])
     @positions = Position.where(portfolio_id: params[:portfolio_id])
@@ -47,10 +45,12 @@ class TransactionsController < ApplicationController
     @transaction = Transaction.new(transaction_params)
     @portfolio = Portfolio.find(params[:portfolio_id])
     @positions = Position.where(portfolio_id: params[:portfolio_id])
+    @finnhub_client = FinnhubRuby::DefaultApi.new
+    @stocks = Stock.all
+    @stock_symbols = Stock.all.map { |stock| stock.ticker }
 
     @tr_cost = 0
     @buy_total = 0
-    # @tr_comm_and_fee = 0
 
     respond_to do |format|
       case @transaction.tr_type
@@ -80,6 +80,7 @@ class TransactionsController < ApplicationController
         end
       end
     end
+    create_update_stock(@transaction)
     create_update_position(@transaction)
   end
 

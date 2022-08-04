@@ -25,7 +25,6 @@ class PositionsController < ApplicationController
 
   # POST /positions or /positions.json
   def create
-    # @transaction = Transaction.find(params[:transaction_id])
     @position = Position.new(position_params)
 
     respond_to do |format|
