@@ -33,6 +33,8 @@ module TransactionsHelper
         @stock.shares_owned += transaction.quantity
         @stock.save
       elsif transaction.tr_type == 'Sell'
+        position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
+        @stock.realized_profit_loss += transaction.quantity * transaction.price - add_cost(transaction) - transaction.quantity * position.cost_per_share
         @stock.shares_owned -= transaction.quantity
         @stock.save
       end

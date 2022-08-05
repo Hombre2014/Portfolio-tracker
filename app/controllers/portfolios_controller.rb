@@ -12,6 +12,7 @@ class PortfoliosController < ApplicationController
     # @transactions = Transaction.where(portfolio_id: @portfolios.ids)
     @transactions = Transaction.all
     @positions = Position.all
+    @stocks = Stock.all
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @tr_cost = 0
     @buy_total = 0
@@ -30,6 +31,7 @@ class PortfoliosController < ApplicationController
   def show
     @portfolios = Portfolio.where(user_id: current_user.id)
     # @transactions = Transaction.where(portfolio_id: @portfolios.ids)
+    @stocks = Stock.all
     @positions = Position.all
     @transactions = Transaction.all
     @finnhub_client = FinnhubRuby::DefaultApi.new
