@@ -4,6 +4,7 @@ class CreateStocks < ActiveRecord::Migration[7.0]
       t.string :ticker
       t.integer :transaction_id
       t.decimal :realized_profit_loss
+      t.decimal :commission_and_fee
       t.decimal :shares_owned
 
       t.timestamps

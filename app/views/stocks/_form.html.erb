@@ -23,7 +23,12 @@
 
   <div class="my-5">
     <%= form.label :realized_profit_loss %>
-    <%= form.text_field :realized_profit_loss, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.number_field :realized_profit_loss, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :commission_and_fee %>
+    <%= form.number_field :commission_and_fee, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
