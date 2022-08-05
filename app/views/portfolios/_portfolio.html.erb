@@ -38,7 +38,7 @@
       <% if position.portfolio_id == portfolio.id %>
         <tr class="text-sm">
           <td class="border border-slate-300 px-3"><%= position.symbol %></td>
-          <td class="border border-slate-300 px-3"><%= position.quantity.to_f %></td>
+          <td class="border border-slate-300 px-3"><%= sprintf('%.2f', position.quantity.to_f) %></td>
           <td class="border border-slate-300 px-3"><%= number_to_currency(position.cost_per_share) %></td>
           <% if position.symbol != 'Cash' %>
             <% price = @finnhub_client.quote(position.symbol) %>
@@ -59,7 +59,7 @@
             <td class="border border-slate-300 px-3"><%= number_to_currency(position.commission_and_fee) %></td>
             <% @total_comm_and_fee += position.commission_and_fee %>
             <td class="border border-slate-300 px-3"><%= number_to_currency(position_cost) %></td>
-            <td class="border border-slate-300 px-3"> - </td>
+            <td class="border border-slate-300 px-3 text-red-600"><%= number_to_currency(-1 * stock.commission_and_fee) %></td>
             <% red_or_green = stock.realized_profit_loss >= 0 ? 'text-green-600' : 'text-red-600' %>
             <td class="border border-slate-300 px-3 <%= red_or_green %>"><%= number_to_currency(stock.realized_profit_loss) %></td>
             <td class="border border-slate-300 px-3"><%= number_to_currency(position_value) %></td>
@@ -68,11 +68,9 @@
             <td class="border border-slate-300 px-3"><%= position.open_date %></td>
           <% else %>
             <td class="border border-slate-300 px-3"><%= number_to_currency(1) %></td>
-            <% 8.times do %>
+            <% 10.times do %>
               <td class="border border-slate-300 px-3"> - </td>
             <% end %>
-            <td class="border border-slate-300 px-3"> - </td>
-            <td class="border border-slate-300 px-3"> - </td>
             <td class="border border-slate-300 px-3"><%= number_to_currency(position_cost) %></td>
             <% @total_portfolio_value += position.quantity %>
             <td class="border border-slate-300 px-3"><%= position.open_date %></td>
@@ -89,19 +87,19 @@
         <% 5.times do %>
           <td class="border border-slate-300 px-3"></td>
         <% end %>
-        <% red_or_green = @total_day_gain > 0 ? 'text-green-600' : 'text-red-600' %>
+        <% red_or_green = @total_day_gain >= 0 ? 'text-green-600' : 'text-red-600' %>
         <% red_or_green_all = (@total_portfolio_value - portfolio.cash) >= 0 ? 'text-green-600' : 'text-red-600' %>
         <td class="border border-slate-300 px-3 <%= red_or_green %>"><%= number_to_currency(@total_day_gain) %></td>
         <td class="border border-slate-300 px-3 <%= red_or_green %>"><%= number_to_percentage((@total_day_gain / portfolio.cash * 100).round(2)).to_f %>%</td>
         <td class="border border-slate-300 px-3 <%= red_or_green_all %>"><%= number_to_currency(@total_position_gain + @realized_profit_loss) %></td>
         <td class="border border-slate-300 px-3 <%= red_or_green_all %>"><%= number_to_percentage(((@total_position_gain + @realized_profit_loss) / (@total_portfolio_value - (@total_position_gain + @realized_profit_loss)) * 100).round(2)).to_f %>%</td>
-        <td class="border border-slate-300 px-3 text-red-600">-<%= number_to_currency(@total_comm_and_fee) %></td>
+        <td class="border border-slate-300 px-3 text-red-600"><%= number_to_currency(-1 * @total_comm_and_fee) %></td>
         <td class="border border-slate-300 px-3"></td>
-        <% red_or_green = @realized_profit_loss > 0 ? 'text-green-600' : 'text-red-600' %>
-        <td class="border border-slate-300 px-3 text-red-600">-<%= number_to_currency(@tr_cost) %></td>
+        <% red_or_green = @realized_profit_loss >= 0 ? 'text-green-600' : 'text-red-600' %>
+        <td class="border border-slate-300 px-3 text-red-600"><%= number_to_currency(-1 * @tr_cost) %></td>
         <td class="border border-slate-300 px-3 <%= red_or_green %>"><%= number_to_currency(@realized_profit_loss) %></td>
         <td class="border border-slate-300 px-3"><%= number_to_currency(@total_portfolio_value) %></td>
-        <td class="border border-slate-300 px-3"><%= @tr_cost %></td>
+        <td class="border border-slate-300 px-3"></td>
         <% @tr_cost = 0 %>
       </tr>
     </tfoot>

@@ -31,6 +31,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
     t.decimal "quantity"
     t.decimal "cost_per_share"
     t.decimal "commission_and_fee"
+    t.decimal "realized_profit_loss"
     t.bigint "portfolio_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -41,6 +42,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
     t.string "ticker"
     t.integer "transaction_id"
     t.decimal "realized_profit_loss"
+    t.decimal "commission_and_fee"
     t.decimal "shares_owned"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

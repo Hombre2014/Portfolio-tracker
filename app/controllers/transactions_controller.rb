@@ -47,10 +47,12 @@ class TransactionsController < ApplicationController
     @positions = Position.where(portfolio_id: params[:portfolio_id])
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @stocks = Stock.all
+    @stock = Stock.find_by(ticker: @transaction.symbol)
     @stock_symbols = Stock.all.map { |stock| stock.ticker }
 
     @tr_cost = 0
     @buy_total = 0
+    @realized_profit_loss = 0
 
     respond_to do |format|
       case @transaction.tr_type
