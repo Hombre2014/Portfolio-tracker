@@ -73,20 +73,17 @@ module TransactionsHelper
       if symbol_exist?(@transaction)
         @position.commission_and_fee += add_cost(@transaction)
         @tr_cost += @position.commission_and_fee
-        @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: @transaction.symbol).first
         current_position_total = @position.quantity * @position.cost_per_share
         @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: "Cash").first
         if @position.quantity >= @transaction.quantity
           @transaction_sell_income = transaction.quantity * transaction.price - add_cost(transaction)
           @position.update(quantity: @position.quantity - @transaction.quantity)
-          @position.update(commission_and_fee: @position.commission_and_fee + add_cost(@transaction))
+          @position.update(realized_profit_loss: @position.realized_profit_loss + (transaction.quantity * transaction.price - add_cost(transaction)) - transaction.quantity * @position.cost_per_share)
           @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
-          # @realized_profit_loss = @transaction_sell_income - (transaction.quantity * @position.cost_per_share)
-          @realized_profit_loss += @stock.realized_profit_loss
           if @position.quantity == 0.0
             @position.destroy
           end
-          @realized_profit_loss
+          # @realized_profit_loss
         end
       end
     end
