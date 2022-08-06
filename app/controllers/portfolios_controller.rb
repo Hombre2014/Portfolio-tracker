@@ -9,6 +9,8 @@ class PortfoliosController < ApplicationController
   # GET /portfolios or /portfolios.json
   def index
     @portfolios = Portfolio.where(user_id: current_user.id)
+    # @portfolio = Portfolio.find(params[:id])
+    # @portfolio_transactions = Transaction.where(portfolio_id: portfolio.id)
     # @transactions = Transaction.where(portfolio_id: @portfolios.ids)
     @transactions = Transaction.all
     @positions = Position.all
@@ -30,10 +32,12 @@ class PortfoliosController < ApplicationController
   # GET /portfolios/1 or /portfolios/1.json
   def show
     @portfolios = Portfolio.where(user_id: current_user.id)
+    @portfolio = Portfolio.find(params[:id])
     # @transactions = Transaction.where(portfolio_id: @portfolios.ids)
     @stocks = Stock.all
     @positions = Position.all
     @transactions = Transaction.all
+    # @portfolio_transactions = Transaction.where(portfolio_id: portfolio.id)
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @realized_profit_loss = 0
     @buy_total = 0
