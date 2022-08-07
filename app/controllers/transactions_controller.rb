@@ -50,7 +50,7 @@ class TransactionsController < ApplicationController
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @stocks = Stock.where(portfolio_id: params[:portfolio_id])
     @stock_symbols = @stocks.all.map { |stock| stock.ticker }
-    @stock = Stock.find_by(ticker: @transaction.symbol)
+    @stock = @stocks.find_by(ticker: @transaction.symbol)
 
     @tr_cost = 0
     @buy_total = 0
