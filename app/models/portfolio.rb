@@ -1,6 +1,7 @@
 class Portfolio < ApplicationRecord
   has_many :positions, dependent: :destroy
   has_many :transactions, dependent: :destroy
+  has_many :stocks, through: :positions
 
   belongs_to :user
 

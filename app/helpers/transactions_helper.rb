@@ -43,13 +43,14 @@ module TransactionsHelper
         @portfolio.save
       end
     else
-      new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity)
+      new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity, portfolio_id: @portfolio.id)
+      new_stock.save
     end
   end
 
   def create_update_position(transaction)
-    @stock = Stock.find_by(ticker: transaction.symbol)
-    @stock.commission_and_fee += add_cost(transaction) # Check it out! Maybe it's not needed or duplication.
+    @stock = @stocks.find_by(ticker: transaction.symbol) # Cut ", portfolio_id: params[:portfolio_id]"
+    # @stock.commission_and_fee += add_cost(transaction) # Check it out! Maybe it's not needed or duplication.
     @portfolio = Portfolio.find(params[:portfolio_id])
     # @positions = Position.where(portfolio_id: params[:portfolio_id])
     @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first if symbol_exist?(transaction)
@@ -81,7 +82,8 @@ module TransactionsHelper
           @transaction_sell_income = transaction.quantity * transaction.price - add_cost(transaction)
           @position.update(quantity: @position.quantity - @transaction.quantity)
           @position.commission_and_fee += add_cost(@transaction)
-          @position.update(realized_profit_loss: @position.realized_profit_loss + (transaction.quantity * transaction.price - add_cost(transaction)) - transaction.quantity * @position.cost_per_share)
+          @position.update(realized_profit_loss: @stock.realized_profit_loss) # Remove " + (transaction.quantity * transaction.price - add_cost(transaction)) - transaction.quantity * @position.cost_per_share"
+          @position.save
           @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
           if @position.quantity == 0.0
             @position.destroy

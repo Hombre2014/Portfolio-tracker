@@ -45,8 +45,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
     t.decimal "realized_profit_loss"
     t.decimal "commission_and_fee"
     t.decimal "shares_owned"
+    t.bigint "portfolio_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["portfolio_id"], name: "index_stocks_on_portfolio_id"
   end
 
   create_table "transactions", force: :cascade do |t|
@@ -78,5 +80,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
 
   add_foreign_key "portfolios", "users"
   add_foreign_key "positions", "portfolios"
+  add_foreign_key "stocks", "portfolios"
   add_foreign_key "transactions", "portfolios"
 end

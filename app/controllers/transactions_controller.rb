@@ -48,9 +48,9 @@ class TransactionsController < ApplicationController
     # @transactions = Transaction.where(portfolio_id: params[:portfolio_id]) # Do I need this?
     # @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: @transaction.symbol).first
     @finnhub_client = FinnhubRuby::DefaultApi.new
-    @stocks = Stock.all
+    @stocks = Stock.where(portfolio_id: params[:portfolio_id])
+    @stock_symbols = @stocks.all.map { |stock| stock.ticker }
     @stock = Stock.find_by(ticker: @transaction.symbol)
-    @stock_symbols = Stock.all.map { |stock| stock.ticker }
 
     @tr_cost = 0
     @buy_total = 0
