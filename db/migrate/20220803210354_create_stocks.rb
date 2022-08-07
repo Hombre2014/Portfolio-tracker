@@ -6,6 +6,7 @@ class CreateStocks < ActiveRecord::Migration[7.0]
       t.decimal :realized_profit_loss
       t.decimal :commission_and_fee
       t.decimal :shares_owned
+      t.references :portfolio, null: false, foreign_key: true
 
       t.timestamps
     end
