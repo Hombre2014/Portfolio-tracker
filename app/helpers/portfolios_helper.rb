@@ -12,11 +12,11 @@ module PortfoliosHelper
     @initial_portfolio_value == nil ? @initial_portfolio_value = 0 : @initial_portfolio_value = @portfolio.cash
   end
 
-  def get_tr_cost
-    @transactions.each do |transaction|
-      portfolio = @portfolios.find { |portfolio| portfolio.id == transaction.portfolio_id }
-      stock = @stocks.find { |stock| stock.ticker == transaction.symbol && stock.portfolio_id == transaction.portfolio_id }
-      portfolio.transactions_cost += stock.commission_and_fee if transaction.portfolio_id == portfolio.id
-    end
+  def clear_instant_variable
+    @total_day_gain = 0
+    @total_comm_and_fee = 0
+    @total_position_gain = 0
+    @position_profit_loss = 0
+    @total_portfolio_value = 0
   end
 end
