@@ -33,6 +33,7 @@
 
   <%= form.hidden_field :user_id, value: current_user.id %>
   <%= form.hidden_field :realized_profit_loss, value: 0 %>
+  <%= form.hidden_field :transactions_cost, value: 0 %>
 
   <div class="inline">
     <%= form.submit class: "rounded-lg py-1 px-3 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>

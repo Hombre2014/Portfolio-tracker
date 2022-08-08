@@ -6,6 +6,7 @@ class CreatePortfolios < ActiveRecord::Migration[7.0]
       t.decimal :cash
       t.date :opened_date
       t.decimal :realized_profit_loss
+      t.decimal :transactions_cost
 
       t.timestamps
     end
