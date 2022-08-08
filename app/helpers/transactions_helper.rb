@@ -33,6 +33,8 @@ module TransactionsHelper
         @stock.shares_owned += transaction.quantity
         @stock.commission_and_fee += add_cost(transaction)
         @stock.save
+        @portfolio.transactions_cost += add_cost(transaction)
+        @portfolio.save
       elsif transaction.tr_type == 'Sell'
         position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
         @stock.realized_profit_loss += transaction.quantity * transaction.price - add_cost(transaction) - transaction.quantity * position.cost_per_share
@@ -40,11 +42,14 @@ module TransactionsHelper
         @stock.commission_and_fee += add_cost(transaction)
         @stock.save
         @portfolio.realized_profit_loss += transaction.quantity * transaction.price - add_cost(transaction) - transaction.quantity * position.cost_per_share
+        @portfolio.transactions_cost += add_cost(transaction)
         @portfolio.save
       end
     else
       new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity, portfolio_id: @portfolio.id)
       new_stock.save
+      @portfolio.transactions_cost += add_cost(transaction)
+      @portfolio.save
     end
   end
 
@@ -75,7 +80,7 @@ module TransactionsHelper
       end
     when "Sell"
       if symbol_exist?(@transaction)
-        @tr_cost += @position.commission_and_fee
+        # @tr_cost += @stock.commission_and_fee
         current_position_total = @position.quantity * @position.cost_per_share # Maybe needs to move on line 53?
         @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: "Cash").first
         if @position.quantity >= @transaction.quantity
