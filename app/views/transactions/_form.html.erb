@@ -46,11 +46,11 @@
   </div>
 
   <div class="my-5">
-    <%= form.number_field :commission, step: 0.01, value: 0.00, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Commission" %>
+    <%= form.number_field :commission, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Commission" %>
   </div>
 
   <div class="my-5">
-    <%= form.number_field :fee, step: 0.01, value: 0.00, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Fee" %>
+    <%= form.number_field :fee, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Fee" %>
   </div>
 
   <%= form.hidden_field :portfolio_id, value: @portfolio.id %>
