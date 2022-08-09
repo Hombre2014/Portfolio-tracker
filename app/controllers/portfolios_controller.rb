@@ -9,43 +9,28 @@ class PortfoliosController < ApplicationController
   # GET /portfolios or /portfolios.json
   def index
     @portfolios = Portfolio.where(user_id: current_user.id)
-    # @portfolio = Portfolio.find(params[:id])
-    # @portfolio_transactions = Transaction.where(portfolio_id: portfolio.id)
-    # @transactions = Transaction.where(portfolio_id: @portfolios.ids)
+    @stock_symbols = Stock.all.map { |stock| stock.ticker }
     @transactions = Transaction.all
     @positions = Position.all
     @stocks = Stock.all
     @finnhub_client = FinnhubRuby::DefaultApi.new
-    @tr_cost = 0
-    @buy_total = 0
-    @sell_total = 0
     @total_day_gain = 0
-    @tr_comm_and_fee = 0
-    @total_last_close = 0
     @total_comm_and_fee = 0
     @total_position_gain = 0
     @position_profit_loss = 0
-    @realized_profit_loss = 0
     @total_portfolio_value = 0
   end
 
   # GET /portfolios/1 or /portfolios/1.json
   def show
     @portfolios = Portfolio.where(user_id: current_user.id)
+    @stock_symbols = Stock.all.map { |stock| stock.ticker }
     @portfolio = Portfolio.find(params[:id])
-    # @transactions = Transaction.where(portfolio_id: @portfolios.ids)
-    @stocks = Stock.all
-    @positions = Position.all
     @transactions = Transaction.all
-    # @portfolio_transactions = Transaction.where(portfolio_id: portfolio.id)
+    @positions = Position.all
+    @stocks = Stock.all
     @finnhub_client = FinnhubRuby::DefaultApi.new
-    @realized_profit_loss = 0
-    @buy_total = 0
-    @sell_total = 0
-    @tr_comm_and_fee = 0
-    @tr_cost = 0
     @total_day_gain = 0
-    @total_last_close = 0
     @total_comm_and_fee = 0
     @total_position_gain = 0
     @position_profit_loss = 0

@@ -3,6 +3,6 @@
 
   <%= render "update", portfolio: @portfolio, class:"contents" %>
 
-  <%= link_to "Show this portfolio", "/users/#{current_user.id}/portfolios/#{@portfolio.id}show", class: "ml-2 rounded-lg py-1 px-3 bg-cyan-300 inline-block font-medium" %>
-  <%= link_to "Back to portfolios", "/users/#{current_user.id}/portfolios", class: "ml-2 rounded-lg py-1 px-3 bg-cyan-500 inline-block font-medium" %>
+  <%= link_to "Show this portfolio", "/users/#{current_user.id}/portfolios/#{@portfolio.id}", class: "ml-2 rounded-lg py-1 px-3 bg-dollar-triad_blue inline-block font-medium text-white hover:bg-dollar-square_blue" %>
+  <%= link_to "Back to portfolios", "/users/#{current_user.id}/portfolios", class: "ml-2 rounded-lg py-1 px-3 bg-dollar inline-block font-medium text-white hover:bg-dollar-darker" %>
 </div>

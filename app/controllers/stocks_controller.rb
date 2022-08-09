@@ -4,7 +4,6 @@ class StocksController < ApplicationController
   # GET /stocks or /stocks.json
   def index
     @stocks = Stock.all
-    @stock_symbols = Stock.all.map { |stock| stock.ticker }
   end
 
   # GET /stocks/1 or /stocks/1.json
@@ -12,6 +11,12 @@ class StocksController < ApplicationController
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @transaction = Transaction.find_by(symbol: @stock.ticker)
     @stock_data = @finnhub_client.company_profile2({ symbol: @transaction.symbol })
+    @stock_symbols = Stock.all.map { |stock| stock.ticker }
+  end
+
+  def get_stock_id(ticker)
+    @stock = Stock.find_by(ticker: ticker)
+    @stock.id
   end
 
   # GET /stocks/new

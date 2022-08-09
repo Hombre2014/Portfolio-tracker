@@ -30,7 +30,7 @@
   </div>
 
   <div class="my-5">
-    <%= form.date_field :trade_date, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Trade date" %>
+    <%= form.date_field :trade_date, value: Date.today, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Trade date" %>
   </div>
 
   <div class="my-5">
@@ -46,16 +46,16 @@
   </div>
 
   <div class="my-5">
-    <%= form.number_field :commission, step: 0.01, value: 0.00, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Commission" %>
+    <%= form.number_field :commission, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Commission" %>
   </div>
 
   <div class="my-5">
-    <%= form.number_field :fee, step: 0.01, value: 0.00, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Fee" %>
+    <%= form.number_field :fee, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Fee" %>
   </div>
 
   <%= form.hidden_field :portfolio_id, value: @portfolio.id %>
 
   <div class="inline">
-    <%= form.submit class: "rounded-lg py-1 px-3 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white inline-block font-medium cursor-pointer" %>
   </div>
 <% end %>
