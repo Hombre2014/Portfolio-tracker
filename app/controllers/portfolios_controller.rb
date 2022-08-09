@@ -9,6 +9,7 @@ class PortfoliosController < ApplicationController
   # GET /portfolios or /portfolios.json
   def index
     @portfolios = Portfolio.where(user_id: current_user.id)
+    @stock_symbols = Stock.all.map { |stock| stock.ticker }
     @transactions = Transaction.all
     @positions = Position.all
     @stocks = Stock.all
@@ -23,6 +24,7 @@ class PortfoliosController < ApplicationController
   # GET /portfolios/1 or /portfolios/1.json
   def show
     @portfolios = Portfolio.where(user_id: current_user.id)
+    @stock_symbols = Stock.all.map { |stock| stock.ticker }
     @portfolio = Portfolio.find(params[:id])
     @transactions = Transaction.all
     @positions = Position.all

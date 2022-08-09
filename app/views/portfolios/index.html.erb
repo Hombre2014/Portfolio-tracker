@@ -4,9 +4,13 @@
   <% end %>
 
   <div class="container flex justify-between items-center">
-    <h1 class="font-bold text-4xl"><%= current_user.name %>'s Portfolios</h1>
-    <div data-controller="hello"></div>
-    <%= link_to 'New portfolio', new_user_portfolio_path, class: "rounded-lg py-1 px-3 bg-blue-600 text-white block font-medium" %>
+    <h1 class="font-bold text-4xl text-dollar-grayscale"><%= current_user.name %>'s Portfolios</h1>
+    <%
+=begin%>
+ <div data-controller="hello"></div> 
+<%
+=end%>
+    <%= link_to 'New portfolio', new_user_portfolio_path, class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white block font-medium hover:bg-dollar-triad_blue" %>
   </div>
 
   <div id="portfolios" class="min-w-full">
