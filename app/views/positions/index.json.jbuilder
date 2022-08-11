@@ -1,1 +1,1 @@
-json.array! @positions, partial: "positions/position", as: :position
+json.array! @positions, partial: 'positions/position', as: :position

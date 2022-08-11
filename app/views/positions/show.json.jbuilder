@@ -1,1 +1,1 @@
-json.partial! "positions/position", position: @position
+json.partial! 'positions/position', position: @position

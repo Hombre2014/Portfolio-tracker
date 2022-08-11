@@ -1,1 +1,1 @@
-json.partial! "portfolios/portfolio", portfolio: @portfolio
+json.partial! 'portfolios/portfolio', portfolio: @portfolio

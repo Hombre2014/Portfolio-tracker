@@ -1,3 +1,50 @@
+GIT
+  remote: https://github.com/rspec/rspec-core.git
+  revision: 814c1c1ecf79d2191718b2795b6d12d9d522f60b
+  branch: main
+  specs:
+    rspec-core (3.12.0.pre)
+      rspec-support (= 3.12.0.pre)
+
+GIT
+  remote: https://github.com/rspec/rspec-expectations.git
+  revision: 1bc30dc41665ade783340d71e1d8f30bf3c9b995
+  branch: main
+  specs:
+    rspec-expectations (3.12.0.pre)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (= 3.12.0.pre)
+
+GIT
+  remote: https://github.com/rspec/rspec-mocks.git
+  revision: eb6d7e93474308d913fe794bebdee7d50fb33e28
+  branch: main
+  specs:
+    rspec-mocks (3.12.0.pre)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (= 3.12.0.pre)
+
+GIT
+  remote: https://github.com/rspec/rspec-rails.git
+  revision: 30681313a899f2d3c8a12e8ac3cd46d50fb366f0
+  branch: main
+  specs:
+    rspec-rails (6.0.0.pre)
+      actionpack (>= 6.1)
+      activesupport (>= 6.1)
+      railties (>= 6.1)
+      rspec-core (= 3.12.0.pre)
+      rspec-expectations (= 3.12.0.pre)
+      rspec-mocks (= 3.12.0.pre)
+      rspec-support (= 3.12.0.pre)
+
+GIT
+  remote: https://github.com/rspec/rspec-support.git
+  revision: 528d88ce6fac5f83390bf430d1c47608e9d8d29a
+  branch: main
+  specs:
+    rspec-support (3.12.0.pre)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -82,6 +129,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    diff-lcs (1.5.0)
     digest (3.1.0)
     dotenv (2.7.6)
     dotenv-rails (2.7.6)
@@ -221,6 +269,11 @@ DEPENDENCIES
   pg (~> 1.1)
   puma (~> 5.0)
   rails (~> 7.0.3)
+  rspec-core!
+  rspec-expectations!
+  rspec-mocks!
+  rspec-rails!
+  rspec-support!
   sprockets-rails
   stimulus-rails
   tailwindcss-rails

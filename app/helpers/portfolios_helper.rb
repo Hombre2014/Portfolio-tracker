@@ -2,14 +2,15 @@ require 'finnhub_ruby'
 
 module PortfoliosHelper
   FinnhubRuby.configure do |config|
-    config.api_key['api_key'] = ENV['API_KEY']
+    config.api_key['api_key'] = ENV.fetch('API_KEY', nil)
   end
 
   def create_cash_position
-    @portfolio.cash == nil ? @portfolio.cash = 0 : @portfolio.cash
-    @position = Position.create(portfolio_id: @portfolio.id, symbol: "Cash", quantity: @portfolio.cash, cost_per_share: 1, open_date: @portfolio.opened_date)
+    @portfolio.cash.nil? ? @portfolio.cash = 0 : @portfolio.cash
+    @position = Position.create(portfolio_id: @portfolio.id, symbol: 'Cash', quantity: @portfolio.cash,
+                                cost_per_share: 1, open_date: @portfolio.opened_date)
     @initial_portfolio_value = @portfolio.cash
-    @initial_portfolio_value == nil ? @initial_portfolio_value = 0 : @initial_portfolio_value = @portfolio.cash
+    @initial_portfolio_value = @initial_portfolio_value.nil? ? 0 : @portfolio.cash
   end
 
   def clear_instant_variable

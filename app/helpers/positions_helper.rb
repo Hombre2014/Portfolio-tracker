@@ -8,7 +8,8 @@ module PositionsHelper
       stock.realized_profit_loss += position.realized_profit_loss
       stock.save
     else
-      new_stock = Stock.create(ticker: position.symbol, transaction_id: nil, realized_profit_loss: position.realized_profit_loss, commission_and_fee: position.commission_and_fee, shares_owned: position.quantity, portfolio_id: @portfolio.id)
+      new_stock = Stock.create(ticker: position.symbol, transaction_id: nil,
+                              realized_profit_loss: position.realized_profit_loss, commission_and_fee: position.commission_and_fee, shares_owned: position.quantity, portfolio_id: @portfolio.id)
       new_stock.save
       @portfolio.transactions_cost += position.commission_and_fee
       @portfolio.save
