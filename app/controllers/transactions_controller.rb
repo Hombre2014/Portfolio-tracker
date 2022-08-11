@@ -44,9 +44,9 @@ class TransactionsController < ApplicationController
     @stock_symbols = @stocks.all.map { |stock| stock.ticker }
     @stock = @stocks.find_by(ticker: @transaction.symbol)
 
-    @tr_cost = 0
-    @buy_total = 0
-    @realized_profit_loss = 0
+    # @tr_cost = 0
+    # @buy_total = 0
+    # @realized_profit_loss = 0
 
     respond_to do |format|
       case @transaction.tr_type

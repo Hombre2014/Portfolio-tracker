@@ -10,7 +10,8 @@ class StocksController < ApplicationController
   def show
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @transaction = Transaction.find_by(symbol: @stock.ticker)
-    @stock_data = @finnhub_client.company_profile2({ symbol: @transaction.symbol })
+    @position = Position.find_by(symbol: @stock.ticker)
+    @stock_data = @finnhub_client.company_profile2({ symbol: @position.symbol }) # Changed from @transaction to @position for Add position!
     @stock_symbols = Stock.all.map { |stock| stock.ticker }
   end
 

@@ -1,4 +1,7 @@
+require_relative "..//helpers/positions_helper"
+
 class PositionsController < ApplicationController
+  include PositionsHelper
   before_action :set_position, only: %i[ show edit update destroy ]
 
   # GET /positions or /positions.json
@@ -26,6 +29,9 @@ class PositionsController < ApplicationController
   # POST /positions or /positions.json
   def create
     @position = Position.new(position_params)
+    @finnhub_client = FinnhubRuby::DefaultApi.new
+    @stocks = Stock.where(portfolio_id: params[:portfolio_id])
+    @stock_symbols = @stocks.all.map { |stock| stock.ticker }
 
     respond_to do |format|
       if @position.save
@@ -36,6 +42,8 @@ class PositionsController < ApplicationController
         format.json { render json: @position.errors, status: :unprocessable_entity }
       end
     end
+    create_update_stock(@position)
+    @stock_data = @finnhub_client.company_profile2({ symbol: @position.symbol })
   end
 
   # PATCH/PUT /positions/1 or /positions/1.json
