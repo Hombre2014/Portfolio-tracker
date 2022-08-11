@@ -51,12 +51,6 @@ gem 'devise', '~> 4.7'
 # Add finnhub gem for stock data
 gem 'finnhub_ruby', '~> 1.1.16'
 
-# Add rubocop gem for code quality
-# gem 'rubocop', '~> 1.34', require: false
-gem 'rubocop', '>= 1.0', '< 2.0'
-# gem 'rubocop-rails', '~> 2.15', '>= 2.15.2'
-# gem 'rubocop-rspec', '~> 2.12', '>= 2.12.1'
-
 # Add dotenv gem for environment variables
 gem 'dotenv-rails', groups: %i[development test]
 
