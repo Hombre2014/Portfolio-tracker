@@ -41,8 +41,7 @@ class TransactionsController < ApplicationController
           transaction_save(@transaction, format)
         else
           format.html do
-            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}",
-                        alert: 'Not enough cash to complete transaction.'
+            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough cash to complete transaction.'
           end
         end
       when 'Sell'
@@ -50,8 +49,7 @@ class TransactionsController < ApplicationController
           transaction_save(@transaction, format)
         else
           format.html do
-            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}",
-                        alert: 'Not enough shares to complete transaction.'
+            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough shares to complete transaction.'
           end
         end
       when 'Sell short'
@@ -59,8 +57,15 @@ class TransactionsController < ApplicationController
           transaction_save(@transaction, format)
         else
           format.html do
-            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}",
-                        alert: 'You have a long position of this security.'
+            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a long position of this security.'
+          end
+        end
+      when 'Buy to cover'
+        if short_position_exist?(@transaction)
+          transaction_save(@transaction, format)
+        else
+          format.html do
+            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You do not have a short position of this security.'
           end
         end
       end
@@ -84,8 +89,7 @@ class TransactionsController < ApplicationController
         end
       else
         format.html do
-          redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}",
-                      alert: 'Not enough cash to complete transaction.'
+          redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough cash to complete transaction.'
         end
       end
     end
@@ -111,7 +115,6 @@ class TransactionsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def transaction_params
-    params.require(:transaction).permit(:tr_type, :trade_date, :symbol, :quantity, :price, :commission, :fee,
-                                        :portfolio_id)
+    params.require(:transaction).permit(:tr_type, :trade_date, :symbol, :quantity, :price, :commission, :fee, :portfolio_id)
   end
 end

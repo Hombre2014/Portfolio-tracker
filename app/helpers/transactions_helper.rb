@@ -51,6 +51,11 @@ module TransactionsHelper
     @position == nil ? false : @position.quantity.positive? ? true : false
   end
 
+  def short_position_exist?(transaction)
+    @position = @positions.find_by(portfolio_id: params[:portfolio_id], symbol: transaction.symbol)
+    @position == nil ? false : @position.quantity.negative? ? true : false
+  end
+
   def transaction_save(transaction, format)
     if transaction.save
       format.html do
@@ -82,6 +87,19 @@ module TransactionsHelper
         @portfolio.realized_profit_loss += transaction_amount(transaction) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
         @portfolio.transactions_cost += add_cost(transaction)
         @portfolio.save
+      when 'Sell Short'
+        if short_position_exist?(transaction)
+          @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
+          @stock.shares_owned += transaction.quantity
+          @stock.commission_and_fee += add_cost(transaction)
+          @stock.save
+          @portfolio.transactions_cost += add_cost(transaction)
+          @portfolio.save
+        else
+          @stock = Stock.create(portfolio_id: @portfolio.id, ticker: transaction.symbol, shares_owned: -1 * transaction.quantity, transaction_id: transaction.id, commission_and_fee: add_cost(transaction), realized_profit_loss: 0)
+          @portfolio.transactions_cost += add_cost(transaction)
+          @portfolio.save
+        end
       end
     else
       new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0,
@@ -129,14 +147,21 @@ module TransactionsHelper
     when 'Sell short'
       @transaction_sell_income = transaction_amount(transaction) - add_cost(transaction)
       unless long_position_exist?(transaction)
-        if symbol_exist?(@transaction)
-          new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol,
-          quantity: (-1 * @transaction.quantity), cost_per_share: (@transaction_sell_income / @transaction.quantity).round(6), commission_and_fee: add_cost(@transaction), realized_profit_loss: @stock.realized_profit_loss, portfolio_id: @portfolio.id)
+        if short_position_exist?(transaction)
+          @position.update(quantity: @position.quantity - @transaction.quantity)
+          current_position_total = (@position.quantity * @position.cost_per_share).abs
+          @position.update(cost_per_share: (current_position_total + @transaction_sell_income.abs) / (@transaction.quantity.abs + @position.quantity.abs).round(6))
+          @position.update(commission_and_fee: @position.commission_and_fee + add_cost(@transaction))
+          @position.save
+          @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
         else
-          new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol,
-          quantity: (-1 * @transaction.quantity), cost_per_share: (@transaction_sell_income / @transaction.quantity).round(6), commission_and_fee: add_cost(@transaction), realized_profit_loss: 0, portfolio_id: @portfolio.id)
-        end
+          if symbol_exist?(@transaction)
+            new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol, quantity: (-1 * @transaction.quantity), cost_per_share: (@transaction_sell_income / @transaction.quantity).round(6), commission_and_fee: add_cost(@transaction), realized_profit_loss: @stock.realized_profit_loss, portfolio_id: @portfolio.id)
+          else
+            new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol, quantity: (-1 * @transaction.quantity), cost_per_share: (@transaction_sell_income / @transaction.quantity).round(6), commission_and_fee: add_cost(@transaction), realized_profit_loss: 0, portfolio_id: @portfolio.id)
+          end
         @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
+        end
       end
     end
   end
