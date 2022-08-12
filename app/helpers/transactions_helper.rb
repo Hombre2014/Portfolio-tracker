@@ -15,6 +15,10 @@ module TransactionsHelper
     @stock = @stocks.find_by(ticker: @transaction.symbol)
   end
 
+  def transaction_amount(transaction)
+    transaction.quantity * transaction.price
+  end
+
   def add_cost(transaction)
     transaction.commission.nil? ? transaction.commission = 0 : transaction.commission
     transaction.fee.nil? ? transaction.fee = 0 : transaction.fee
@@ -23,7 +27,7 @@ module TransactionsHelper
 
   def enough_cash?(transaction)
     @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
-    @transaction_buy_cost = (transaction.quantity * transaction.price) + add_cost(transaction)
+    @transaction_buy_cost = transaction_amount(transaction) + add_cost(transaction)
     @cash_position.quantity >= @transaction_buy_cost
   end
 
@@ -71,11 +75,11 @@ module TransactionsHelper
         @portfolio.save
       when 'Sell'
         position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
-        @stock.realized_profit_loss += (transaction.quantity * transaction.price) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
+        @stock.realized_profit_loss += transaction_amount(transaction) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
         @stock.shares_owned -= transaction.quantity
         @stock.commission_and_fee += add_cost(transaction)
         @stock.save
-        @portfolio.realized_profit_loss += (transaction.quantity * transaction.price) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
+        @portfolio.realized_profit_loss += transaction_amount(transaction) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
         @portfolio.transactions_cost += add_cost(transaction)
         @portfolio.save
       end
@@ -113,7 +117,7 @@ module TransactionsHelper
     when 'Sell'
       if symbol_exist?(@transaction)
         if @position.quantity >= @transaction.quantity
-          @transaction_sell_income = (transaction.quantity * transaction.price) - add_cost(transaction)
+          @transaction_sell_income = transaction_amount(transaction) - add_cost(transaction)
           @position.update(quantity: @position.quantity - @transaction.quantity)
           @position.commission_and_fee += add_cost(@transaction)
           @position.update(realized_profit_loss: @stock.realized_profit_loss)
@@ -123,7 +127,7 @@ module TransactionsHelper
         end
       end
     when 'Sell short'
-      @transaction_sell_income = (transaction.quantity * transaction.price) - add_cost(transaction)
+      @transaction_sell_income = transaction_amount(transaction) - add_cost(transaction)
       unless long_position_exist?(transaction)
         if symbol_exist?(@transaction)
           new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol,
