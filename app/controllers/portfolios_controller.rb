@@ -14,11 +14,7 @@ class PortfoliosController < ApplicationController
     @positions = Position.all
     @stocks = Stock.all
     @finnhub_client = FinnhubRuby::DefaultApi.new
-    @total_day_gain = 0
-    @total_comm_and_fee = 0
-    @total_position_gain = 0
-    @position_profit_loss = 0
-    @total_portfolio_value = 0
+    clear_instant_variable
   end
 
   # GET /portfolios/1 or /portfolios/1.json
@@ -30,11 +26,7 @@ class PortfoliosController < ApplicationController
     @positions = Position.all
     @stocks = Stock.all
     @finnhub_client = FinnhubRuby::DefaultApi.new
-    @total_day_gain = 0
-    @total_comm_and_fee = 0
-    @total_position_gain = 0
-    @position_profit_loss = 0
-    @total_portfolio_value = 0
+    clear_instant_variable
   end
 
   # GET /portfolios/new

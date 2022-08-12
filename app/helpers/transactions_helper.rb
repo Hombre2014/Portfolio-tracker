@@ -1,4 +1,20 @@
 module TransactionsHelper
+  def reset_instance_variable
+    @total_fees = 0
+    @income_spent = 0
+    @total_commissions = 0
+  end
+
+  def initial_setup
+    @transaction = Transaction.new(transaction_params)
+    @portfolio = Portfolio.find(params[:portfolio_id])
+    @positions = Position.where(portfolio_id: params[:portfolio_id])
+    @finnhub_client = FinnhubRuby::DefaultApi.new
+    @stocks = Stock.where(portfolio_id: params[:portfolio_id])
+    @stock_symbols = @stocks.all.map(&:ticker)
+    @stock = @stocks.find_by(ticker: @transaction.symbol)
+  end
+
   def add_cost(transaction)
     transaction.commission.nil? ? transaction.commission = 0 : transaction.commission
     transaction.fee.nil? ? transaction.fee = 0 : transaction.fee
@@ -26,6 +42,23 @@ module TransactionsHelper
     end
   end
 
+  def long_position_exist?(transaction)
+    @position = @positions.find_by(portfolio_id: params[:portfolio_id], symbol: transaction.symbol)
+    @position == nil ? false : @position.quantity.positive? ? true : false
+  end
+
+  def transaction_save(transaction, format)
+    if transaction.save
+      format.html do
+        redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", notice: 'Transaction was successfully created.'
+      end
+      format.json { render :show, status: :created, location: transaction }
+    else
+      format.html { render :new, status: :unprocessable_entity }
+      format.json { render json: transaction.errors, status: :unprocessable_entity }
+    end
+  end
+
   def create_update_stock(transaction)
     @portfolio = Portfolio.find(params[:portfolio_id])
     if @stock_symbols.include?(transaction.symbol)
@@ -48,7 +81,7 @@ module TransactionsHelper
       end
     else
       new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0,
-                              commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity, portfolio_id: @portfolio.id)
+      commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity, portfolio_id: @portfolio.id)
       new_stock.save
       @portfolio.transactions_cost += add_cost(transaction)
       @portfolio.save
@@ -58,10 +91,8 @@ module TransactionsHelper
   def create_update_position(transaction)
     @stock = @stocks.find_by(ticker: transaction.symbol)
     @portfolio = Portfolio.find(params[:portfolio_id])
-    if symbol_exist?(transaction)
-      @position = @positions.where(portfolio_id: params[:portfolio_id],
-                                  symbol: transaction.symbol).first
-    end
+    @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first if symbol_exist?(transaction)
+    @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
     transaction.commission.nil? ? transaction.commission = 0 : transaction.commission
     transaction.fee.nil? ? transaction.fee = 0 : transaction.fee
     case @transaction.tr_type
@@ -74,14 +105,13 @@ module TransactionsHelper
           @position.update(commission_and_fee: @position.commission_and_fee + add_cost(@transaction))
         else
           new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol,
-                                        quantity: @transaction.quantity, cost_per_share: (@transaction_buy_cost / @transaction.quantity), commission_and_fee: add_cost(@transaction), realized_profit_loss: @stock.realized_profit_loss, portfolio_id: @portfolio.id)
+          quantity: @transaction.quantity, cost_per_share: (@transaction_buy_cost / @transaction.quantity).round(6), commission_and_fee: add_cost(@transaction), realized_profit_loss: @stock.realized_profit_loss, portfolio_id: @portfolio.id)
           new_position.commission_and_fee += add_cost(@transaction)
         end
         @cash_position.update(quantity: @cash_position.quantity - @transaction_buy_cost)
       end
     when 'Sell'
       if symbol_exist?(@transaction)
-        @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
         if @position.quantity >= @transaction.quantity
           @transaction_sell_income = (transaction.quantity * transaction.price) - add_cost(transaction)
           @position.update(quantity: @position.quantity - @transaction.quantity)
@@ -91,6 +121,18 @@ module TransactionsHelper
           @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
           @position.destroy if @position.quantity == 0
         end
+      end
+    when 'Sell short'
+      @transaction_sell_income = (transaction.quantity * transaction.price) - add_cost(transaction)
+      unless long_position_exist?(transaction)
+        if symbol_exist?(@transaction)
+          new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol,
+          quantity: (-1 * @transaction.quantity), cost_per_share: (@transaction_sell_income / @transaction.quantity).round(6), commission_and_fee: add_cost(@transaction), realized_profit_loss: @stock.realized_profit_loss, portfolio_id: @portfolio.id)
+        else
+          new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol,
+          quantity: (-1 * @transaction.quantity), cost_per_share: (@transaction_sell_income / @transaction.quantity).round(6), commission_and_fee: add_cost(@transaction), realized_profit_loss: 0, portfolio_id: @portfolio.id)
+        end
+        @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
       end
     end
   end

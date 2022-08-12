@@ -12,7 +12,7 @@ class StocksController < ApplicationController
     @transaction = Transaction.find_by(symbol: @stock.ticker)
     @position = Position.find_by(symbol: @stock.ticker)
     @stock_data = @finnhub_client.company_profile2({ symbol: @position.symbol })
-    # Changed from @transaction to @position for Add position!
+    # Changed above from @transaction to @position after Add position modification for nonexisting symbol!
     @stock_symbols = Stock.all.map(&:ticker)
   end
 
