@@ -41,6 +41,8 @@ module TransactionsHelper
       @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
       @position.quantity.positive? ? @position.quantity : 0
       @position.quantity >= transaction.quantity
+      @position.quantity.negative? ? @position.quantity : 0
+      @position.quantity <= transaction.quantity
     else
       false
     end
@@ -73,40 +75,75 @@ module TransactionsHelper
     if @stock_symbols.include?(transaction.symbol)
       case transaction.tr_type
       when 'Buy'
-        @stock.shares_owned += transaction.quantity
-        @stock.commission_and_fee += add_cost(transaction)
-        @stock.save
-        @portfolio.transactions_cost += add_cost(transaction)
-        @portfolio.save
+        if enough_cash?(transaction)
+          unless short_position_exist?(transaction)
+            @stock.shares_owned += transaction.quantity
+            @stock.commission_and_fee += add_cost(transaction)
+            @stock.save
+            @portfolio.transactions_cost += add_cost(transaction)
+            @portfolio.save
+          end
+        end
       when 'Sell'
-        position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
-        @stock.realized_profit_loss += transaction_amount(transaction) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
-        @stock.shares_owned -= transaction.quantity
-        @stock.commission_and_fee += add_cost(transaction)
-        @stock.save
-        @portfolio.realized_profit_loss += transaction_amount(transaction) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
-        @portfolio.transactions_cost += add_cost(transaction)
-        @portfolio.save
+        unless short_position_exist?(transaction)
+          if enough_shares?(transaction)
+            position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
+            @stock.realized_profit_loss += transaction_amount(transaction) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
+            @stock.shares_owned -= transaction.quantity
+            @stock.commission_and_fee += add_cost(transaction)
+            @stock.save
+            @portfolio.realized_profit_loss += transaction_amount(transaction) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
+            @portfolio.transactions_cost += add_cost(transaction)
+            @portfolio.save
+          end
+        end
       when 'Sell Short'
-        if short_position_exist?(transaction)
-          @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
-          @stock.shares_owned += transaction.quantity
-          @stock.commission_and_fee += add_cost(transaction)
-          @stock.save
-          @portfolio.transactions_cost += add_cost(transaction)
-          @portfolio.save
-        else
-          @stock = Stock.create(portfolio_id: @portfolio.id, ticker: transaction.symbol, shares_owned: -1 * transaction.quantity, transaction_id: transaction.id, commission_and_fee: add_cost(transaction), realized_profit_loss: 0)
-          @portfolio.transactions_cost += add_cost(transaction)
-          @portfolio.save
+        unless long_position_exist?(transaction)
+          if short_position_exist?(transaction)
+            @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
+            @stock.shares_owned -= transaction.quantity
+            @stock.commission_and_fee += add_cost(transaction)
+            @stock.save
+            @portfolio.transactions_cost += add_cost(transaction)
+            @portfolio.save
+          else
+            @stock = Stock.create(portfolio_id: @portfolio.id, ticker: transaction.symbol, shares_owned: -1 * transaction.quantity, transaction_id: transaction.id, commission_and_fee: add_cost(transaction), realized_profit_loss: 0)
+            @portfolio.transactions_cost += add_cost(transaction)
+            @portfolio.save
+          end
+        end
+      when 'Buy to Cover'
+        unless long_position_exist?(transaction)
+          if short_position_exist?(transaction)
+            if enough_cash?(transaction)
+              if enough_shares?(transaction)
+                @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
+                @stock.shares_owned += transaction.quantity
+                @stock.commission_and_fee += add_cost(transaction)
+                @stock.realized_profit_loss -= transaction_amount(transaction) + add_cost(transaction) - (transaction.quantity * position.cost_per_share)
+                @stock.save
+                @portfolio.transactions_cost += add_cost(transaction)
+                @portfolio.save
+              end
+            end
+          end
         end
       end
     else
-      new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0,
-      commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity, portfolio_id: @portfolio.id)
-      new_stock.save
-      @portfolio.transactions_cost += add_cost(transaction)
-      @portfolio.save
+      if transaction.tr_type == 'Buy'
+        new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0,
+          commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity, portfolio_id: @portfolio.id)
+        new_stock.save
+        @portfolio.transactions_cost += add_cost(transaction)
+        @portfolio.save
+      end
+      if transaction.tr_type == 'Sell short'
+        new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0,
+          commission_and_fee: add_cost(transaction), shares_owned: -1 * transaction.quantity, portfolio_id: @portfolio.id)
+        new_stock.save
+        @portfolio.transactions_cost += add_cost(transaction)
+        @portfolio.save
+      end
     end
   end
 
@@ -136,14 +173,16 @@ module TransactionsHelper
       end
     when 'Sell'
       if symbol_exist?(@transaction)
-        if @position.quantity >= @transaction.quantity
-          @transaction_sell_income = transaction_amount(transaction) - add_cost(transaction)
-          @position.update(quantity: @position.quantity - @transaction.quantity)
-          @position.commission_and_fee += add_cost(@transaction)
-          @position.update(realized_profit_loss: @stock.realized_profit_loss)
-          @position.save
-          @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
-          @position.destroy if @position.quantity == 0
+        unless short_position_exist?(@transaction)
+          if @position.quantity >= @transaction.quantity
+            @transaction_sell_income = transaction_amount(transaction) - add_cost(transaction)
+            @position.update(quantity: @position.quantity - @transaction.quantity)
+            @position.commission_and_fee += add_cost(@transaction)
+            @position.update(realized_profit_loss: @stock.realized_profit_loss)
+            @position.save
+            @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
+            @position.destroy if @position.quantity == 0
+          end
         end
       end
     when 'Sell short'
@@ -163,6 +202,22 @@ module TransactionsHelper
             new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol, quantity: (-1 * @transaction.quantity), cost_per_share: (@transaction_sell_income / @transaction.quantity).round(6), commission_and_fee: add_cost(@transaction), realized_profit_loss: 0, portfolio_id: @portfolio.id)
           end
         @cash_position.update(quantity: @cash_position.quantity + @transaction_sell_income)
+        end
+      end
+    when 'Buy to cover'
+      unless long_position_exist?(@transaction)
+        if short_position_exist?(@transaction)
+          if enough_cash?(@transaction)
+            if @position.quantity <= @transaction.quantity
+              current_position_total = @position.quantity * @position.cost_per_share
+              @position.update(quantity: @position.quantity + @transaction.quantity)
+              @position.commission_and_fee += add_cost(@transaction)
+              @position.update(realized_profit_loss: @stock.realized_profit_loss)
+              @position.save
+              @cash_position.update(quantity: @cash_position.quantity - @transaction_buy_cost)
+              @position.destroy if @position.quantity == 0
+            end
+          end
         end
       end
     end

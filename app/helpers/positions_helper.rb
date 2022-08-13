@@ -1,5 +1,5 @@
 module PositionsHelper
-  def create_update_stock(position)
+  def create_update_position(position)
     @portfolio = Portfolio.find(params[:portfolio_id])
     if @stock_symbols.include?(position.symbol)
       stock = @stocks.find_by(ticker: position.symbol)
