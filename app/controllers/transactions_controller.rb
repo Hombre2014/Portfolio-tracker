@@ -38,7 +38,13 @@ class TransactionsController < ApplicationController
       case @transaction.tr_type
       when 'Buy'
         if enough_cash?(@transaction)
-          transaction_save(@transaction, format)
+          if short_position_exist?(@transaction)
+            format.html do
+              redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a short position of this security.'
+            end
+          else
+            transaction_save(@transaction, format)
+          end
         else
           format.html do
             redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough cash to complete transaction.'

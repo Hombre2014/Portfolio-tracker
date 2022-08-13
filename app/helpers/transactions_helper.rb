@@ -121,10 +121,12 @@ module TransactionsHelper
     when 'Buy'
       if enough_cash?(@transaction)
         if symbol_exist?(@transaction)
-          current_position_total = @position.quantity * @position.cost_per_share
-          @position.update(quantity: @position.quantity + @transaction.quantity)
-          @position.update(cost_per_share: (current_position_total + @transaction_buy_cost) / @position.quantity)
-          @position.update(commission_and_fee: @position.commission_and_fee + add_cost(@transaction))
+          unless short_position_exist?(@transaction)
+            current_position_total = @position.quantity * @position.cost_per_share
+            @position.update(quantity: @position.quantity + @transaction.quantity)
+            @position.update(cost_per_share: (current_position_total + @transaction_buy_cost) / @position.quantity)
+            @position.update(commission_and_fee: @position.commission_and_fee + add_cost(@transaction))
+          end
         else
           new_position = Position.create(open_date: @transaction.trade_date, symbol: @transaction.symbol,
           quantity: @transaction.quantity, cost_per_share: (@transaction_buy_cost / @transaction.quantity).round(6), commission_and_fee: add_cost(@transaction), realized_profit_loss: @stock.realized_profit_loss, portfolio_id: @portfolio.id)
@@ -146,8 +148,8 @@ module TransactionsHelper
       end
     when 'Sell short'
       @transaction_sell_income = transaction_amount(transaction) - add_cost(transaction)
-      unless long_position_exist?(transaction)
-        if short_position_exist?(transaction)
+      unless long_position_exist?(@transaction)
+        if short_position_exist?(@transaction)
           @position.update(quantity: @position.quantity - @transaction.quantity)
           current_position_total = (@position.quantity * @position.cost_per_share).abs
           @position.update(cost_per_share: (current_position_total + @transaction_sell_income.abs) / (@transaction.quantity.abs + @position.quantity.abs).round(6))
