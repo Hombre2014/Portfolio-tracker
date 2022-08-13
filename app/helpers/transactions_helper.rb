@@ -27,7 +27,7 @@ module TransactionsHelper
 
   def enough_cash?(transaction)
     @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
-    if transaction.transaction_type == 'Buy' || transaction.transaction_type == 'Buy to cover'
+    if transaction.tr_type == 'Buy' || transaction.tr_type == 'Buy to cover'
       @transaction_buy_cost = transaction_amount(transaction) + add_cost(transaction)
     else
       @transaction_buy_cost = transaction_amount(transaction) - add_cost(transaction)
