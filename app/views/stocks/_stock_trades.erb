@@ -1,0 +1,13 @@
+<% @insider.data.first(10).each do |item| %>
+  <div class="my-5 mr-5 flex">
+    <div class="">
+      <span class="font-semibold">Name: <%= item.name %></span>
+      <span class="inline-block mb-1">Shares: <%= item.share %></span>
+      <span class="inline-block mb-1">Change: <%= item.change %></span>
+      <span class="inline-block mb-1">Filling date: <%= item.filing_date || '' %></span>
+      <span class="inline-block mb-1">Transaction date: <%= item.transaction_date || '' %></span>
+      <span class="inline-block mb-1">Transaction code: <%= item.transaction_code || '' %></span>
+      <span class="inline-block mb-1">Transaction price: <%= item.transaction_price || '' %></span>
+    </div>
+  </div>
+<% end %>

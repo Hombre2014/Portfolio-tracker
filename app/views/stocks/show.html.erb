@@ -1,5 +1,5 @@
-<div class="mx-auto md:w-2/3 w-full flex">
-  <div class="mx-auto">
+<div class="mx-auto md:w-full w-full flex">
+  <div class="">
     <% if notice.present? %>
       <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
     <% end %>
@@ -15,5 +15,12 @@
     <%= link_to 'Back to stocks', stocks_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %> 
 <%
 =end%>
+  </div>
+  <div class="w-1/2">
+    <%= render "stock_news" %>
+  </div>
+  <div class="w-1/4">
+    <h3 class="text-lg font-semibold">Insider Trading</h3>
+    <%= render "stock_trades" %>
   </div>
 </div>

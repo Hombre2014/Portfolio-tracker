@@ -1,3 +1,6 @@
+require 'date'
+require 'time'
+
 class StocksController < ApplicationController
   before_action :set_stock, only: %i[show edit update destroy]
 
@@ -14,6 +17,9 @@ class StocksController < ApplicationController
     @stock_data = @finnhub_client.company_profile2({ symbol: @position.symbol })
     # Changed above from @transaction to @position after Add position modification for nonexisting symbol!
     @stock_symbols = Stock.all.map(&:ticker)
+    @company_news = @finnhub_client.company_news(@position.symbol, Date.today - 14, Date.today)
+    # @financials = @finnhub_client.company_basic_financials(@position.symbol, 'all')
+    @insider = @finnhub_client.insider_transactions(@position.symbol)
   end
 
   def get_stock_id(ticker)
