@@ -42,7 +42,7 @@
             <td class="border border-slate-300 px-3"><%= position.symbol %></td>
           <% end %>
           <td class="border border-slate-300 px-3"><%= sprintf('%.2f', position.quantity.to_f) %></td>
-          <td class="border border-slate-300 px-3"><%= number_to_currency(position.cost_per_share, precision: 4) %></td>
+          <td class="border border-slate-300 px-3"><%= number_to_currency(position.cost_per_share, precision: 6, strip_insignificant_zeros: true) %></td>
           <% if position.symbol != 'Cash' %>
             <% price = @finnhub_client.quote(position.symbol) %>
             <% position_value = (position.quantity * price.c).round(2) %>

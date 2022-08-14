@@ -42,8 +42,9 @@ class PositionsController < ApplicationController
         format.json { render json: @position.errors, status: :unprocessable_entity }
       end
     end
-    create_update_stock(@position)
-    @stock_data = @finnhub_client.company_profile2({ symbol: @position.symbol })
+    # add_create_update_position(@position)
+    # @stock_data = @finnhub_client.company_profile2({ symbol: @position.symbol })
+    # # TODO Needs to be handled in a different way. Check it out. Have to consider all the existing positions.
   end
 
   # PATCH/PUT /positions/1 or /positions/1.json
