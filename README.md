@@ -45,6 +45,11 @@ run `rspec`
 - Twitter: [@Chamkoriyski](https://twitter.com/Chamkoriyski)
 - LinkedIn: [axebit](https://linkedin.com/in/axebit)
 
+## Attribution
+
+<a href='https://www.freepik.com/vectors/create-account'>Create account vector created by storyset - www.freepik.com</a>
+<a href='https://www.freepik.com/vectors/login-illustration'>Login illustration vector created by storyset - www.freepik.com</a>
+
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!

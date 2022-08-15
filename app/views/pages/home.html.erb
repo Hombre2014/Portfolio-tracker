@@ -1,21 +1,45 @@
 <div class="container felx">
-  <h1 class="text-center my-8 font-bold text-4xl">The home of the Portfolio tracker</h1>
+  <h1 class="text-center my-16 font-bold text-4xl">The home of the Portfolio tracker</h1>
   <div><%= image_tag 'portfolio_tracker.jpg', class:"mx-auto" %></div>
+  <div class="my-24">
+    <p class="text-2xl font-bold text-center">Finally, a portfolio tracker you ever wanted! Track your portfolios online in real time.</p>
+    <%= image_tag 'ex_2.png', class:"w-2/3 mx-auto mb-12 mt-8" %>
+    <p class="text-2xl font-bold text-center">Keep a track of your realized profit/loss from each stock.</p>
+    <%= image_tag 'ex_1.png', class:"w-2/3 mx-auto mb-12 mt-8" %>
+    <p class="text-2xl font-bold text-center">See you Net Worth moving, stay informed.</p>
+    <%= image_tag 'ex_3.png', class:"w-2/3 mx-auto mb-12 mt-8" %>
+  </div>
   <div class="flex container w-full mt-14 gap-x-8">
     <div class="flex flex-col content-center">
-      <div><%= image_tag 'portfolio1.jpg' %></div>
+      <div><%= image_tag 'portfolio1.jpg', class:"rounded-full" %></div>
       <h2 class="text-lg font-bold text-center my-4">Real time portfolio tracking</h2>
-      <p class="text-center">Record all your transactions and watch your portfolio performance in real time. Provides individual stock and total portfolio profit/loss, percentage profit/loss, realized profit/loss and transactions cost.</p>
+      <p class="text-center">Record all your transactions and watch your portfolio performance in real time. It gives you detailed individual stock and total portfolio value, daily profit/loss, percentage profit/loss, realized profit/loss and transactions cost.</p>
     </div>
     <div class="flex-col content-center">
-      <div><%= image_tag 'portfolio2.jpg' %></div>
+      <div><%= image_tag 'portfolio2.jpg', class:"rounded-full" %></div>
       <h2 class="text-lg font-bold text-center my-4">Track all of your investments</h2>
-      <p class="text-center">You can create multiple portfolios and track the investements per each portfolio, but also have the big picture. See your total Net Worth, what is your gain today in value and as a percentage. </p>
+      <p class="text-center">You can create multiple portfolios and track the investements per each portfolio, but also have the big picture. See your total Net Worth. What is your gain today as a dollar value and as a percentage. </p>
     </div>
     <div>
-      <div><%= image_tag 'portfolio3.jpg' %></div>
+      <div><%= image_tag 'portfolio3.jpg', class:"rounded-full" %></div>
       <h2 class="text-lg font-bold text-center my-4">Research, information, news</h2>
-      <p class="text-center">Get detailed information about your portfolio stocks (US market only). Read the latest company news and announcements, look for the insider tradings and the earnings surprises. </p>
+      <p class="text-center">Get detailed information about your portfolio stocks (US market only). Read the latest company news and announcements, look for the insider tradings and the company's earnings surprises. </p>
     </div>
+  </div>
+  <div class="mt-24 flex container">
+    <div class="flex justify-around">
+      <div class="flex flex-col w-1/5 items-center">
+        <div><%= image_tag 'sign_up', class:"rounded-full mb-12" %></div>
+        <div><%= link_to 'So, sign up now', new_user_registration_path, class:"text-center text-3xl font-bold text-dollar hover:text-dollar-darker" %></div>
+      </div>
+      <div class="flex flex-col w-1/5 items-center">
+        <div><%= image_tag 'sign_in', class:"rounded-full mb-12" %></div>
+        <div><%= link_to 'Or simply login', new_user_session_path, class:"text-center text-3xl font-bold text-dollar hover:text-dollar-darker" %></div>
+      </div>
+    </div>
+  </div>
+  <div class="my-16 flex-col container content-center">
+    <p class="text-center text-3xl font-bold text-dollar">Because did I say ...</p>
+    <div><%= image_tag 'free', class:" w-1/4 mx-auto mt-12" %></div>
   </div>
 </div>
