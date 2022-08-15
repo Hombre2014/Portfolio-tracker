@@ -1,6 +1,7 @@
 require_relative '..//helpers/positions_helper'
 
 class PositionsController < ApplicationController
+  before_action :authenticate_user!
   include PositionsHelper
   before_action :set_position, only: %i[show edit update destroy]
 

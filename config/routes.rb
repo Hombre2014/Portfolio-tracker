@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  # get 'pages/home'
   resources :stocks
   devise_for :users
   resources :users, only: [:index, :show] do
@@ -8,5 +9,5 @@ Rails.application.routes.draw do
     end
   end
 
-  root "users#index"
+  root "pages#home"
 end

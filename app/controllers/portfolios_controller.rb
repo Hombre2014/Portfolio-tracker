@@ -2,6 +2,7 @@ require 'finnhub_ruby'
 require_relative '../helpers/portfolios_helper'
 
 class PortfoliosController < ApplicationController
+  before_action :authenticate_user!
   include PortfoliosHelper
 
   before_action :set_portfolio, only: %i[show edit update destroy]

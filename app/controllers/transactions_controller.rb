@@ -1,8 +1,9 @@
 require_relative '../helpers/transactions_helper'
 
 class TransactionsController < ApplicationController
-  include TransactionsHelper
+  before_action :authenticate_user!
   before_action :set_transaction, only: %i[show edit update destroy]
+  include TransactionsHelper
 
   # GET /transactions or /transactions.json
   def index
