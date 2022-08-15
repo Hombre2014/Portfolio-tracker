@@ -14,6 +14,8 @@ class PortfoliosController < ApplicationController
     @positions = Position.all
     @stocks = Stock.all
     @finnhub_client = FinnhubRuby::DefaultApi.new
+    @net_worth = 0
+    @net_worth_profit = 0
     clear_instant_variable
   end
 
@@ -26,6 +28,8 @@ class PortfoliosController < ApplicationController
     @positions = Position.all
     @stocks = Stock.all
     @finnhub_client = FinnhubRuby::DefaultApi.new
+    @net_worth = 0
+    @net_worth_profit = 0
     clear_instant_variable
   end
 
