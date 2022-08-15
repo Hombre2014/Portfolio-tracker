@@ -1,0 +1,26 @@
+<% @earnings.first(4).each do |item| %>
+  <div class="my-5 mr-5 flex">
+    <div class="flex-row">
+      <div>
+        <span class="inline-block">Period: </span>
+        <span class="font-semibold"><%= item.period %></span>
+      </div>
+      <div>
+        <span class="inline-block">Estimate: </span>
+        <span class="font-semibold"><%= number_to_currency(item.estimate, precision: 4, strip_insignificant_zeros: true) %></span>
+      </div>
+      <div>
+        <span class="inline-block">Actual: </span>
+        <span class="font-semibold"><%= number_to_currency(item.actual, precision: 4, strip_insignificant_zeros: true) %></span>
+      </div>
+      <div>
+        <span class="inline-block">Surprise: </span>
+        <span class="font-semibold"><%= number_to_currency(item.surprise, precision: 4, strip_insignificant_zeros: true) %></span>
+      </div>
+      <div>
+        <span class="inline-block">Surprise percentage: </span>
+        <span class="font-semibold"><%= number_to_percentage(item.surprise_percent, precision: 2) %></span>
+      </div>
+    </div>
+  </div>
+<% end %>

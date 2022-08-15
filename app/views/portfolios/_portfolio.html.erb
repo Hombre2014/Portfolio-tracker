@@ -32,7 +32,7 @@
     <% @positions.each do |position| %>
       <% position.commission_and_fee == nil ? position.commission_and_fee = 0 : position.commission_and_fee %>
       <% stock_ticker = @stock_symbols.find { |i| i == position.symbol if position.symbol != 'Cash' } %>
-      <% stock_id = Stock.where(ticker: stock_ticker).to_a.map { |e| e.id if e.shares_owned > 0 }.first %>
+      <% stock_id = Stock.where(ticker: stock_ticker).to_a.map { |e| e.id if e.shares_owned != 0 }.first %>
       <% position_cost = position.quantity * position.cost_per_share %>
       <% if position.portfolio_id == portfolio.id %>
         <tr class="text-sm">
@@ -114,11 +114,13 @@
   <span class="my-5 block">
     <span class="block font-medium mb-1 inline-block">Portfolio Balance:</span>
     <% portfolio.cash == nil ? portfolio.cash = 0 : portfolio.cash %>
-    <span class="font-bold"><%= number_to_currency(@total_portfolio_value) %></span>
+    <span class="font-bold"><%= number_to_currency(@total_portfolio_value) %></span> *
+    <% @net_worth += @total_portfolio_value %>
     <span class="block font-medium mb-1 inline-block">Profit/Loss:</span>
     <% total_profit = @total_position_gain + portfolio.realized_profit_loss %>
     <% red_or_green = total_profit >= 0 ? 'text-green-600' : 'text-red-600' %>
-    <span class="font-bold <%= red_or_green %>"><%= number_to_currency(total_profit) %></span>
+    <span class="font-bold <%= red_or_green %>"><%= number_to_currency(total_profit) %></span> *
+    <% @net_worth_profit += total_profit %>
     <span class="block font-medium mb-1 inline-block">Profit/Loss percent:</span>
     <% red_or_green = total_profit/(@total_portfolio_value - total_profit) >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_percentage((total_profit/(@total_portfolio_value - total_profit)) * 100).to_f.round(2) %>%</span>
