@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  # get 'pages/home'
+  get 'pages/about'
   resources :stocks
   devise_for :users
   resources :users, only: [:index, :show] do

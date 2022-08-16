@@ -62,4 +62,4 @@ Give a ⭐️ if you like this project!
 
 ## 📝 License
 
-This project is [MIT](./license.md) licensed.
+This project is [Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)](./license.md) licensed.
