@@ -8,7 +8,7 @@ class PositionsController < ApplicationController
   # GET /positions or /positions.json
   def index
     @portfolio = Portfolio.find(params[:portfolio_id])
-    @positions = Position.where(portfolio_id: params[:portfolio_id])
+    @positions = Position.where(portfolio_id: params[:portfolio_id]).order(:created_at).reverse
   end
 
   # GET /positions/1 or /positions/1.json
