@@ -49,6 +49,7 @@ run `rspec`
 
 <a href='https://www.freepik.com/vectors/create-account'>Create account vector created by storyset - www.freepik.com</a>
 <a href='https://www.freepik.com/vectors/login-illustration'>Login illustration vector created by storyset - www.freepik.com</a>
+<a href='https://www.freepik.com/vectors/fintech'>Fintech vector created by pch.vector - www.freepik.com</a>
 
 ## 🤝 Contributing
 
