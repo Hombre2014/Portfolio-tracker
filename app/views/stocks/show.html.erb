@@ -1,23 +1,24 @@
-<div class="mx-auto md:w-full w-full flex mt-8">
+<h1 class="text-4xl font-bold text-center my-16 mb-8">Company info</h1>
+<div class="mx-auto md:w-full w-full flex">
   <div class="flex-col w-1/4">
     <% if notice.present? %>
       <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
     <% end %>
     <div>
-      <h3 class="text-lg font-semibold mb-4">Company Info</h3>
+      <h3 class="text-2xl font-semibold mb-4">Company Data</h3>
       <%= render @stock %>
     </div>
     <div class="mt-4">
-      <h3 class="text-lg font-semibold mb-4">Earnings surprises</h3>
+      <h3 class="text-2xl font-semibold mb-4">Earnings surprises</h3>
       <%= render "eps_surprises" %>
     </div>
   </div>
   <div class="w-1/2">
-    <h3 class="text-lg font-semibold mb-4">Company news</h3>
+    <h3 class="text-2xl font-semibold mb-4">Company news</h3>
     <%= render "stock_news" %>
   </div>
   <div class="w-1/4">
-    <h3 class="text-lg font-semibold mb-4">Insider Trading</h3>
+    <h3 class="text-2xl font-semibold mb-4">Insider Trading</h3>
     <%= render "stock_trades" %>
   </div>
 </div>

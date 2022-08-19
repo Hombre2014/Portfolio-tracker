@@ -35,7 +35,7 @@
   </div>
 
   <div class="mb-2 mr-4">
-    <span class="inline-block w-32"><%= image_tag @stock_data.logo || "company_logo.svg" %></span>
+    <span class="inline-block w-32"><%= image_tag @stock_data.logo || "company_logo.svg", alt:"company logo" %></span>
   </div>
 
   <% if action_name != "show" %>
