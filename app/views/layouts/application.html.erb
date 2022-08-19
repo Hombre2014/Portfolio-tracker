@@ -28,7 +28,11 @@
       <header class="container bg-dollar">
         <nav class="mb-6">
           <div class="flex justify-between">
-            <%= link_to 'HOME', root_path, class: 'my-4 ml-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
+            <div class="flex justify-between">
+              <%= link_to 'HOME', root_path, class: 'my-4 ml-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
+              <%= link_to 'ABOUT', pages_about_path, class: 'my-4 ml-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
+              <%= link_to 'CONTACT', pages_contact_path, class: 'my-4 ml-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
+            </div>
             <% if current_user.nil? %>
               <div class="flex justify-end">
                 <%= link_to 'LOG IN', new_user_session_path, class: 'my-4 mr-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
@@ -46,7 +50,7 @@
       <%= yield %>
       <footer class="flex flex-col justify-center items-center container bg-dollar h-14 my-16">
         <div class="">
-          <p class="">Copyright<sup>&copy;</sup> 2022 <%= link_to 'Hombre2014', 'https://github.com/Hombre2014', target: :'_blank', rel: :'noopener noreferrer', class:"text-dollar-split_blue hover:text-dollar-complement" %>. All  rights reserved.</p>
+          <p>Copyright<sup>&copy;</sup> 2022 <%= link_to 'Hombre2014', 'https://github.com/Hombre2014',  target: :'_blank', rel: :'noopener noreferrer', class:"text-dollar-split_blue font-bold hover:text-dollar-complement" %>. All  rights reserved.</p>
         </div>
       </footer>
     </main>
