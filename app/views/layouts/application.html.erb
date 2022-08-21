@@ -9,6 +9,14 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <%= favicon_link_tag asset_path('favicon.png') %>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-03RH6D64MR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-03RH6D64MR');
+    </script>
   </head>
 
   <body>
