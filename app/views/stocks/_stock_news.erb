@@ -1,7 +1,7 @@
 <% @company_news.first(10).each do |news| %>
   <div class="my-5 mr-5 flex">
     <div class="w-44">
-      <div class="block w-44 "><%= image_tag news.image.empty? ? "news.png" : news.image %></div>
+      <div class="block w-44"><%= image_tag news.image.empty? ? "news.png" : news.image, class:"rounded" %></div>
       <span class="inline-block font-medium mb-1">Source:</span>
       <span class="font-bold"><%= news.source %></span>
     </div>
