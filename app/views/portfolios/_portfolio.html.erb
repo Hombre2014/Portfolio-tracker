@@ -133,11 +133,6 @@
   <% if action_name != "show" %>
     <%= link_to "Show", "/users/#{current_user.id}/portfolios/#{portfolio.id}", class: "rounded-lg py-1 px-3 bg-dollar-split_blue inline-block font-medium text-white hover:bg-dollar-triad_blue" %>
     <%= link_to 'Edit', "/users/#{current_user.id}/portfolios/#{portfolio.id}/edit", class: "rounded-lg py-1 ml-2 px-3 bg-dollar-split_blue inline-block font-medium text-white hover:bg-dollar-triad_blue" %>
-    <%
-=begin%>
- <%= link_to 'Add position', "/users/#{current_user.id}/portfolios/#{portfolio.id}/positions/new", class: "rounded-lg ml-2 py-1 px-3 inline-block bg-dollar-split_blue text-white block font-medium hover:bg-dollar-triad_blue" %> 
-<%
-=end%>
     <%= link_to 'Add transaction', "/users/#{current_user.id}/portfolios/#{portfolio.id}/transactions/new", class: "rounded-lg ml-2 py-1 px-3 inline-block bg-dollar-split_blue text-white block font-medium hover:bg-dollar-triad_blue" %>
     <hr class="mt-6">
   <% end %>
