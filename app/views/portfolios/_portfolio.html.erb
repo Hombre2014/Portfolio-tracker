@@ -32,7 +32,7 @@
     <% @positions.order(:created_at).reverse.each do |position| %>
       <% position.commission_and_fee == nil ? position.commission_and_fee = 0 : position.commission_and_fee %>
       <% stock_ticker = @stock_symbols.find { |i| i == position.symbol if position.symbol != 'Cash' } %>
-      <% stock_id = Stock.where(ticker: stock_ticker).to_a.map { |e| e.id if e.shares_owned != 0 }.first %>
+      <% stock_id = Stock.where(ticker: stock_ticker, portfolio_id: portfolio.id).to_a.map { |e| e.id if e.shares_owned != 0 }.first %>
       <% position_cost = position.quantity * position.cost_per_share %>
       <% if position.portfolio_id == portfolio.id %>
         <tr class="text-sm">
