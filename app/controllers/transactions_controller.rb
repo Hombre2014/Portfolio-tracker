@@ -61,7 +61,7 @@ class TransactionsController < ApplicationController
             transaction_save(@transaction, format)
           else
             format.html do
-              redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough long shares to complete the transaction.'
+              redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough shares to complete the transaction.'
             end
           end
         else
