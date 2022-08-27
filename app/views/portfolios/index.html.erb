@@ -8,7 +8,9 @@
   </div>
 
   <div class="flex justify-between w-1/4 mb-8">
-    <%= link_to 'Update prices', user_portfolios_path, class: "rounded-lg py-1 px-3 bg-dollar text-white block font-medium hover:bg-dollar-darker" %>
+    <% unless @portfolios.length == 0 || @positions.length == 1 %>
+      <%= link_to 'Update prices', user_portfolios_path, class: "rounded-lg py-1 px-3 bg-dollar text-white block font-medium hover:bg-dollar-darker" %>
+    <% end %>
     <%= link_to 'New portfolio', new_user_portfolio_path, class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white block font-medium hover:bg-dollar-triad_blue" %>
   </div>
 

@@ -37,6 +37,10 @@ class TransactionsController < ApplicationController
 
     respond_to do |format|
       case @transaction.tr_type
+      when ''
+        format.html do
+          redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Please, select one of the transaction types.'
+        end
       when 'Buy'
         if enough_cash?(@transaction)
           if short_position_exist?(@transaction)
@@ -57,7 +61,7 @@ class TransactionsController < ApplicationController
             transaction_save(@transaction, format)
           else
             format.html do
-              redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough long shares to complete the transaction.'
+              redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough shares to complete the transaction.'
             end
           end
         else
