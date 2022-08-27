@@ -1,5 +1,7 @@
 <%= form_with(model: @portfolio, url: "/users/#{current_user.id}/portfolios", class: "contents w-1/4") do |form| %>
-  <% if portfolio.errors.any? %>
+  <%
+=begin%>
+ <% if portfolio.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(portfolio.errors.count, "error") %> prohibited this portfolio from being saved:</h2>
       <ul>
@@ -8,7 +10,9 @@
         <% end %>
       </ul>
     </div>
-  <% end %>
+  <% end %> 
+<%
+=end%>
 
   <div class="my-5">
     <%= form.label :name %>
