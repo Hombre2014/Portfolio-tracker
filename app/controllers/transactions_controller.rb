@@ -37,6 +37,10 @@ class TransactionsController < ApplicationController
 
     respond_to do |format|
       case @transaction.tr_type
+      when ''
+        format.html do
+          redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Please, select one of the transaction types.'
+        end
       when 'Buy'
         if enough_cash?(@transaction)
           if short_position_exist?(@transaction)
