@@ -51,17 +51,22 @@ class PortfoliosController < ApplicationController
     @portfolio = Portfolio.new(portfolio_params)
 
     respond_to do |format|
-      if @portfolio.save
-        format.html do
-          redirect_to "/users/#{current_user.id}/portfolios/#{@portfolio.id}",
-                      notice: 'Portfolio was successfully created.'
+      unless @portfolios.any? { |p| p.name == @portfolio.name }
+        if @portfolio.save
+          format.html do
+            redirect_to "/users/#{current_user.id}/portfolios/#{@portfolio.id}",
+                        notice: 'Portfolio was successfully created.'
+          end
+          create_cash_position
+          format.json { render :show, status: :created, location: @portfolio }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @portfolio.errors, status: :unprocessable_entity }
         end
-        create_cash_position
-        format.json { render :show, status: :created, location: @portfolio }
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @portfolio.errors, status: :unprocessable_entity }
-      end
+        format.html do
+          redirect_to "/users/#{current_user.id}/portfolios/#{@portfolio.id}", notice: 'Portfolio with this name already exists.'
+        end
     end
   end
 
