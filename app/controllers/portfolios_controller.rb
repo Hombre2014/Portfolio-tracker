@@ -10,6 +10,7 @@ class PortfoliosController < ApplicationController
   # GET /portfolios or /portfolios.json
   def index
     @portfolios = Portfolio.where(user_id: current_user.id)
+    
     @stock_symbols = Stock.all.map(&:ticker)
     @transactions = Transaction.all
     @positions = Position.all
@@ -49,24 +50,27 @@ class PortfoliosController < ApplicationController
   # POST /portfolios or /portfolios.json
   def create
     @portfolio = Portfolio.new(portfolio_params)
+    @portfolios = Portfolio.where(user_id: current_user.id)
+    @portfolio_names = Portfolio.all.map(&:name)
 
     respond_to do |format|
-      unless @portfolios.any? { |p| p.name == @portfolio.name }
+      if (@portfolios == nil || @portfolio_names.exclude?(@portfolio.name))
         if @portfolio.save
-          format.html do
-            redirect_to "/users/#{current_user.id}/portfolios/#{@portfolio.id}",
-                        notice: 'Portfolio was successfully created.'
-          end
-          create_cash_position
-          format.json { render :show, status: :created, location: @portfolio }
+            format.html do
+              redirect_to "/users/#{current_user.id}/portfolios/#{@portfolio.id}",
+                          notice: 'Portfolio was successfully created.'
+            end
+            create_cash_position
+            format.json { render :show, status: :created, location: @portfolio }
         else
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @portfolio.errors, status: :unprocessable_entity }
         end
       else
         format.html do
-          redirect_to "/users/#{current_user.id}/portfolios/#{@portfolio.id}", notice: 'Portfolio with this name already exists.'
+          redirect_to new_user_portfolio_path, alert: 'Portfolio with this name already exists.'
         end
+      end
     end
   end
 
