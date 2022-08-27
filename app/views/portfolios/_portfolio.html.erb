@@ -32,7 +32,7 @@
     <% @positions.order(:created_at).reverse.each do |position| %>
       <% position.commission_and_fee == nil ? position.commission_and_fee = 0 : position.commission_and_fee %>
       <% stock_ticker = @stock_symbols.find { |i| i == position.symbol if position.symbol != 'Cash' } %>
-      <% stock_id = Stock.where(ticker: stock_ticker).to_a.map { |e| e.id if e.shares_owned != 0 }.first %>
+      <% stock_id = Stock.where(ticker: stock_ticker, portfolio_id: portfolio.id).to_a.map { |e| e.id if e.shares_owned != 0 }.first %>
       <% position_cost = position.quantity * position.cost_per_share %>
       <% if position.portfolio_id == portfolio.id %>
         <tr class="text-sm">
@@ -47,7 +47,8 @@
             <% price = @finnhub_client.quote(position.symbol) %>
             <% position_value = (position.quantity * price.c).round(2) %>
             <% @position_profit_loss = position_value - position_cost %>
-            <% @total_day_gain += position.quantity * price.d.round(2) %>
+            <% day_gain = position.quantity * price.d.round(2) %>
+            <% @total_day_gain += day_gain %>
             <% @total_position_gain += @position_profit_loss %>
             <% @total_comm_and_fee += position.commission_and_fee %>
             <% @total_portfolio_value += position_value %>
@@ -56,12 +57,12 @@
             <td class="border border-slate-300 px-3 <%= red_or_green %>"><%= number_to_currency(price.d.round(2)) %></td>
             <td class="border border-slate-300 px-3 <%= red_or_green %>"><%= number_to_percentage(price.dp.round(2)).to_f %>%</td>
             <% red_or_green = position.quantity * price.d > 0 ? 'text-green-600' : 'text-red-600' %>
-            <td class="border border-slate-300 px-3 <%= red_or_green %>"><%= number_to_currency(position.quantity * price.d.round(2)) %></td>
+            <td class="border border-slate-300 px-3 <%= red_or_green %>"><%= number_to_currency(day_gain) %></td>
             <% red_or_green = position.quantity * price.d > 0 ? 'text-green-600' : 'text-red-600' %>
             <% if position.quantity < 0 %>
-              <td class="border border-slate-300 px-3 <%= red_or_green %>"><%= number_to_percentage(-1 * (position.quantity * price.d.round(2) / position_cost) * 100).to_f.round(2) %>%</td>
+              <td class="border border-slate-300 px-3 <%= red_or_green %>"><%= number_to_percentage(-1 * (day_gain / position_cost) * 100).to_f.round(2) %>%</td>
             <% else %>
-              <td class="border border-slate-300 px-3 <%= red_or_green %>"><%= number_to_percentage((position.quantity * price.d.round(2) / position_cost) * 100).to_f.round(2) %>%</td>
+              <td class="border border-slate-300 px-3 <%= red_or_green %>"><%= number_to_percentage((day_gain / position_cost) * 100).to_f.round(2) %>%</td>
             <% end %>
             <% red_or_green_all = @position_profit_loss > 0 ? 'text-green-600' : 'text-red-600' %>
             <td class="border border-slate-300 px-3 <%= red_or_green_all %>"><%= number_to_currency(@position_profit_loss) %></td>
