@@ -10,7 +10,6 @@ class PortfoliosController < ApplicationController
   # GET /portfolios or /portfolios.json
   def index
     @portfolios = Portfolio.where(user_id: current_user.id)
-    
     @stock_symbols = Stock.all.map(&:ticker)
     @transactions = Transaction.all
     @positions = Position.all
@@ -51,7 +50,7 @@ class PortfoliosController < ApplicationController
   def create
     @portfolio = Portfolio.new(portfolio_params)
     @portfolios = Portfolio.where(user_id: current_user.id)
-    @portfolio_names = Portfolio.all.map(&:name)
+    @portfolio_names = @portfolios.all.map(&:name)
 
     respond_to do |format|
       if (@portfolios == nil || @portfolio_names.exclude?(@portfolio.name))
