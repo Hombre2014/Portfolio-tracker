@@ -10,6 +10,17 @@
   </div>
 
   <div class="mb-2 mr-4">
+    <span class="inline-block font-medium mb-1">Your reliazed P/L in this portfolio is:</span>
+    <% red_or_green = stock.realized_profit_loss > 0 ? 'text-green-600' : 'text-red-600' %>
+    <span class="font-bold <%= red_or_green %>"><%= number_to_currency(stock.realized_profit_loss) %></span>
+  </div>
+
+  <div class="mb-2 mr-4">
+    <span class="inline-block font-medium mb-1">Transactions cost in this portfolio is:</span>
+    <span class="font-bold text-red-600"><%= number_to_currency(-1 * stock.commission_and_fee) %></span>
+  </div>
+
+  <div class="mb-2 mr-4">
     <span class="inline-block font-medium mb-1">Exchange:</span>
     <span class="font-bold"><%= @stock_data.exchange %></span>
   </div>
