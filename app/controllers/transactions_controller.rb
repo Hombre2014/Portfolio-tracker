@@ -34,74 +34,87 @@ class TransactionsController < ApplicationController
   # POST /transactions or /transactions.json
   def create
     initial_setup
+    @portfolio = Portfolio.find(params[:portfolio_id])
 
     respond_to do |format|
-      case @transaction.tr_type
-      when ''
-        format.html do
-          redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Please, select one of the transaction types.'
-        end
-      when 'Buy'
-        if enough_cash?(@transaction)
-          if short_position_exist?(@transaction)
+      if ticker_exist?(@transaction)
+        if date_valid?(@transaction)
+          case @transaction.tr_type
+          when ''
             format.html do
-              redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a short position of this security.'
+              redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Please, select one of the transaction types.'
             end
-          else
-            transaction_save(@transaction, format)
-          end
-        else
-          format.html do
-            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough cash to complete the transaction.'
-          end
-        end
-      when 'Sell'
-        unless short_position_exist?(@transaction)
-          if enough_shares?(@transaction)
-            transaction_save(@transaction, format)
-          else
-            format.html do
-              redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough shares to complete the transaction.'
-            end
-          end
-        else
-          format.html do
-            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a short position of this security.'
-          end
-        end
-      when 'Sell short'
-        unless long_position_exist?(@transaction)
-          transaction_save(@transaction, format)
-        else
-          format.html do
-            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a long position of this security.'
-          end
-        end
-      when 'Buy to cover'
-        unless long_position_exist?(@transaction)
-          if short_position_exist?(@transaction)
+          when 'Buy'
             if enough_cash?(@transaction)
-              if enough_shares?(@transaction)
-                transaction_save(@transaction, format)
-              else
+              if short_position_exist?(@transaction)
                 format.html do
-                  redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough short shares to complete the transaction.'
+                  redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a short position of this security.'
                 end
+              else
+                transaction_save(@transaction, format)
               end
             else
               format.html do
                 redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough cash to complete the transaction.'
               end
             end
-          else
-            format.html do
-              redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You do not have a short position of this security.'
+          when 'Sell'
+            unless short_position_exist?(@transaction)
+              if enough_shares?(@transaction)
+                transaction_save(@transaction, format)
+              else
+                format.html do
+                  redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough shares to complete the transaction.'
+                end
+              end
+            else
+              format.html do
+                redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a short position of this security.'
+              end
+            end
+          when 'Sell short'
+            unless long_position_exist?(@transaction)
+              transaction_save(@transaction, format)
+            else
+              format.html do
+                redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a long position of this security.'
+              end
+            end
+          when 'Buy to cover'
+            unless long_position_exist?(@transaction)
+              if short_position_exist?(@transaction)
+                if enough_cash?(@transaction)
+                  if enough_shares?(@transaction)
+                    transaction_save(@transaction, format)
+                  else
+                    format.html do
+                      redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough short shares to complete the transaction.'
+                    end
+                  end
+                else
+                  format.html do
+                    redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough cash to complete the transaction.'
+                  end
+                end
+              else
+                format.html do
+                  redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You do not have a short position of this security.'
+                end
+              end
+            else
+              format.html do
+                redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a long position of this security.'
+              end
             end
           end
         else
           format.html do
-            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a long position of this security.'
+            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Transaction date is before the open date of the portfolio.'
           end
+        end
+      else
+        format.html do
+          redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}" , alert: 'Unsupported or wrong stock ticker.'
         end
       end
     end
