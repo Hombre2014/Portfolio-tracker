@@ -74,6 +74,10 @@ module TransactionsHelper
     @position == nil ? false : @position.quantity.negative? ? true : false
   end
 
+  def date_valid?(transaction)
+    transaction.trade_date >= @portfolio.opened_date
+  end
+
   def transaction_save(transaction, format)
     if transaction.save
       format.html do
@@ -88,7 +92,7 @@ module TransactionsHelper
 
   def create_update_stock(transaction)
     @portfolio = Portfolio.find(params[:portfolio_id])
-    if ticker_exist?(transaction)
+    if ticker_exist?(transaction) && date_valid?(transaction)
       case transaction.tr_type
       when 'Buy'
         if @stock_symbols.include?(transaction.symbol)
@@ -159,7 +163,7 @@ module TransactionsHelper
   end
 
   def create_update_position(transaction)
-    if ticker_exist?(transaction)
+    if ticker_exist?(transaction) && date_valid?(transaction)
       @stock = @stocks.find_by(ticker: transaction.symbol)
       @portfolio = Portfolio.find(params[:portfolio_id])
       @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first if symbol_exist?(transaction)
