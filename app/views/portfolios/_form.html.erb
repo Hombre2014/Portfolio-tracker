@@ -28,7 +28,7 @@
 
     <div class="mb-5">
       <%= form.label :opened_date %><span class="text-red-800"> *</span>
-      <%= form.date_field :opened_date, value: Date.today, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true %>
+      <%= form.date_field :opened_date, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true %>
     </div>
 
     <%= form.hidden_field :user_id, value: current_user.id %>
