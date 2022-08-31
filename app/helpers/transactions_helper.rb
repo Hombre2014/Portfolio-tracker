@@ -50,6 +50,10 @@ module TransactionsHelper
     @position != nil
   end
 
+  def ticker_exist?(transaction) # in Finnhub stocks database
+    @ticker = @finnhub_client.quote(transaction.symbol).d != nil
+  end
+
   def enough_shares?(transaction)
     if symbol_exist?(transaction) # in position table
       @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
