@@ -1,0 +1,15 @@
+<div class="mx-auto md:w-2/3 w-full flex">
+  <div class="mx-auto">
+    <% if notice.present? %>
+      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+    <% end %>
+
+    <%= render @position %>
+
+    <%= link_to 'Edit this position', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/positions/#{params[:id]}/edit", class: "mt-2 rounded-lg py-1 px-3 bg-dollar-split_blue inline-block font-medium text-white" %>
+    <div class="inline-block ml-2">
+      <%= button_to 'Destroy this position', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/positions/#{params[:id]}", method: :delete, class: "mt-2 rounded-lg py-1 px-3 bg-dollar-triad_red font-medium text-white" %>
+    </div>
+    <%= link_to 'Back to positions', user_portfolio_positions_path, class: "ml-2 rounded-lg py-1 px-3 bg-dollar inline-block font-medium" %>
+  </div>
+</div>

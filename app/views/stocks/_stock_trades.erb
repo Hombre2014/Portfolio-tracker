@@ -1,0 +1,34 @@
+<% if @insider.data.length == 0 %>
+  <p>No insider trades</p>
+<% else %>
+  <% @insider.data.first(10).each do |item| %>
+    <div class="my-5 mr-5 flex">
+      <div class="flex-row">
+        <div>
+          <span class="inline-block">Name: </span>
+          <span class="font-semibold"><%= item.name %></span>
+        </div>
+        <div>
+          <span class="inline-block">Shares: </span>
+          <span class="font-semibold"><%= item.share.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse %></span>
+        </div>
+        <div>
+          <span class="inline-block">Change: </span>
+          <span class="font-semibold"><%= item.change.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse %></span>
+        </div>
+        <div>
+          <span class="inline-block">Transaction date: </span>
+          <span class="font-semibold"><%= item.transaction_date || '' %></span>
+        </div>
+        <div>
+          <span class="inline-block">Transaction code: </span>
+          <span class="font-semibold"><%= item.transaction_code || '' %></span>
+        </div>
+        <div>
+          <span class="inline-block">Transaction price: </span>
+          <span class="font-semibold"><%= number_to_currency(item.transaction_price, precision: 4, strip_insignificant_zeros: true) || '' %></span>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

@@ -6,14 +6,57 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
-
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <%= favicon_link_tag asset_path('favicon.png') %>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-03RH6D64MR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-03RH6D64MR');
+    </script>
   </head>
 
   <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+    <main class="container mx-auto mt-12 px-5 flex-col">
+      <div class="container flex justify-center align-center">
+        <% if notice %>
+          <span class="bg-green-100 text-green-500 mb-2 p-2 rounded-md"><%= notice %></span>
+        <% end %>
+        <% if alert %>
+          <span class="bg-red-100 text-red-500 mb-2 p-2 rounded-md"><%= alert %></span>
+        <% end %> 
+      </div>
+      <header class="container bg-dollar">
+        <nav class="mb-6">
+          <div class="flex justify-between">
+            <div class="flex justify-between">
+              <%= link_to 'HOME', root_path, class: 'my-4 ml-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
+              <%= link_to 'ABOUT', pages_about_path, class: 'my-4 ml-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
+              <%= link_to 'CONTACT', pages_contact_path, class: 'my-4 ml-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
+            </div>
+            <% if current_user.nil? %>
+              <div class="flex justify-end">
+                <%= link_to 'LOG IN', new_user_session_path, class: 'my-4 mr-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
+                <%= link_to 'SIGN UP', new_user_registration_path, class: 'my-4 mr-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
+              </div>
+            <% else %>
+              <div class="flex justify-end">
+                <%= link_to 'PORTFOLIOS', "/users/#{current_user.id}/portfolios", method: :delete, class: 'my-4 mr-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
+                <%= button_to 'LOG OUT', destroy_user_session_path, method: :delete, class: 'my-4 mr-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
+              </div>
+            <% end %>
+          </div>
+        </nav>
+      </header>
       <%= yield %>
+      <footer class="flex flex-col justify-center items-center container bg-dollar h-14 my-16">
+        <div class="">
+          <p>Copyright<sup>&copy;</sup> 2022 <%= link_to 'Hombre2014', 'https://github.com/Hombre2014',  target: :'_blank', rel: :'noopener noreferrer', class:"text-dollar-split_blue font-bold hover:text-dollar-complement" %>. All  rights reserved.</p>
+        </div>
+      </footer>
     </main>
   </body>
 </html>

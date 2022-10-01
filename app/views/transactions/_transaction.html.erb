@@ -1,0 +1,28 @@
+<div id="<%= dom_id transaction %>" class="flex flex-col">
+  <tr>
+    <% transaction.commission == nil ? transaction.commission = 0 : transaction.commission %>
+    <% transaction.fee == nil ? transaction.fee = 0 : transaction.fee %>
+    <% added_cost = transaction.commission + transaction.fee %>
+    <% transaction_amount = transaction.quantity * transaction.price %>
+    <td class="border border-slate-300 px-4"><%= transaction.tr_type %></td>
+    <td class="border border-slate-300 px-4"><%= transaction.trade_date %></td>
+    <td class="border border-slate-300 px-4"><%= transaction.symbol %></td>
+    <td class="border border-slate-300 px-4"><%= transaction.quantity %></td>
+    <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.price) %></td>
+    <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.commission) %></td>
+    <% @total_commissions += transaction.commission %>
+    <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.fee) %></td>
+    <% @total_fees += transaction.fee %>
+    <% if transaction.tr_type == 'Buy' || transaction.tr_type == 'Buy to cover' %>
+      <td class="border border-slate-300 px-4 text-red-600"><%= number_to_currency(-1 * (transaction_amount + added_cost)) %></td>
+      <% @income_spent -= transaction_amount + added_cost %>
+    <% elsif transaction.tr_type == 'Sell' || transaction.tr_type == 'Sell short' %>
+      <td class="border border-slate-300 px-4 text-green-600"><%= number_to_currency(transaction_amount - added_cost) %></td>
+      <% @income_spent += transaction_amount - added_cost %>
+    <% end %>
+    <% if action_name != "show" %>
+      <td class="border border-slate-300 px-4 py-1"><%= link_to "Show", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}", class: "rounded-lg px-2 bg-dollar-split_blue block font-medium text-white" %></td>
+      <td class="border border-slate-300 px-4 py-1"><%= link_to 'Edit', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}/edit", class: "rounded-lg ml-2 px-2 bg-dollar-triad_blue inline-block font-medium text-white" %></td>
+    <% end %>
+  </tr>
+</div>

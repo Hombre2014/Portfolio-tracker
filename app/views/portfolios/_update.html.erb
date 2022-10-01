@@ -1,0 +1,34 @@
+<%= form_with(model: @portfolio, url: "/users/#{current_user.id}/portfolios/#{portfolio.id}", class: "contents") do |form| %>
+  <% if portfolio.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(portfolio.errors.count, "error") %> prohibited this portfolio from being saved:</h2>
+
+      <ul>
+        <% portfolio.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :acc_number %>
+    <%= form.text_field :acc_number, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :cash %>
+    <%= form.number_field :cash, disabled: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <%= form.hidden_field :user_id, value: current_user.id %>
+
+  <div class="inline">
+    <%= form.submit class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white inline-block font-medium cursor-pointer hover:bg-dollar-complement" %>
+  </div>
+<% end %>

@@ -3,12 +3,29 @@
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
   <% end %>
 
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Portfolios</h1>
-    <%= link_to 'New portfolio', new_portfolio_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
+  <div class="container flex justify-between items-center my-16">
+    <h1 class="font-bold text-4xl text-center mx-auto"><%= current_user.name %>'s Portfolios</h1>
+  </div>
+
+  <div class="flex justify-between w-1/4 mb-8">
+    <% unless @portfolios.length == 0 || @positions.length == 1 %>
+      <%= link_to 'Update prices', user_portfolios_path, class: "rounded-lg py-1 px-3 bg-dollar text-white block font-medium hover:bg-dollar-darker" %>
+    <% end %>
+    <%= link_to 'New portfolio', new_user_portfolio_path, class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white block font-medium hover:bg-dollar-triad_blue" %>
   </div>
 
   <div id="portfolios" class="min-w-full">
     <%= render @portfolios %>
+  </div>
+  <div>
+    <% unless @portfolios.length == 0 %>
+      <span class="block font-medium mb-1 inline-block text-lg">Total Net Worth:</span>
+      <% red_or_green = @net_worth >= @net_worth - @net_worth_profit ? 'text-green-600' : 'text-red-600' %>
+      <span class="font-bold text-lg <%= red_or_green %>"><%= number_to_currency(@net_worth) %></span> *
+      <span class="block font-medium mb-1 inline-block text-lg">Net Worth Profit/Loss:</span>
+      <span class="font-bold text-lg <%= red_or_green %>"><%= number_to_currency(@net_worth_profit) %></span> *
+      <span class="block font-medium mb-1 inline-block text-lg">Net Worth Profit/Loss percent:</span>
+      <span class="font-bold text-lg <%= red_or_green %>"><%= number_to_percentage((@net_worth_profit/(@net_worth - @net_worth_profit)) * 100).to_f.round(2) %>%</span>
+    <% end %>
   </div>
 </div>

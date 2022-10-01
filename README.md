@@ -1,14 +1,20 @@
 # Portfolio tracker
 
->  Login and track your investments
+>  A portfolio tracker you dreamed about!
 
 ## Description
 
-Portfolio tracker gives you the tools to track your portfolio performance, record transactions, calculate profits and losses.
+Record all your transactions and watch your portfolio performance in real time. It gives you detailed individual stock and total portfolio value, daily profit/loss, percentage profit/loss, realized profit/loss and transactions cost.
+You can create multiple portfolios and track the investments per each portfolio, but also have the big picture. See your total Net Worth. What is your gain today as a dollar value and as a percentage.
+Get detailed information about your portfolio stocks (US market only). Read the latest company news and announcements, look for the insider tradings and the company's earnings surprises.
 
 ## Live demo
 
-Not deployed yet.
+[Portfolio tracker](https://portfolio-tracker-production.up.railway.app/)
+
+## Deployment
+
+Deployed using [Railway](https://railway.app/)
 
 ## Built With
 
@@ -45,6 +51,14 @@ run `rspec`
 - Twitter: [@Chamkoriyski](https://twitter.com/Chamkoriyski)
 - LinkedIn: [axebit](https://linkedin.com/in/axebit)
 
+## Attribution
+
+Special thanks to: <br>
+<a href='https://www.freepik.com/vectors/create-account'>Create account vector created by storyset - www.freepik.com</a>, <br>
+<a href='https://www.freepik.com/vectors/login-illustration'>Login illustration vector created by storyset - www.freepik.com</a> and <br>
+<a href='https://www.freepik.com/vectors/fintech'>Fintech vector created by pch.vector - www.freepik.com</a> <br>
+for the images used on the site.
+
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
@@ -57,4 +71,4 @@ Give a ⭐️ if you like this project!
 
 ## 📝 License
 
-This project is [MIT](./license.md) licensed.
+This project is [Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)](./license.md) licensed.

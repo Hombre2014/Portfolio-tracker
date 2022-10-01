@@ -1,8 +1,8 @@
 <div class="mx-auto md:w-2/3 w-full">
   <h1 class="font-bold text-4xl">Editing portfolio</h1>
 
-  <%= render "form", portfolio: @portfolio %>
+  <%= render "update", portfolio: @portfolio, class:"contents" %>
 
-  <%= link_to "Show this portfolio", @portfolio, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-  <%= link_to "Back to portfolios", portfolios_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+  <%= link_to "Show this portfolio", "/users/#{current_user.id}/portfolios/#{@portfolio.id}", class: "ml-2 rounded-lg py-1 px-3 bg-dollar-triad_blue inline-block font-medium text-white hover:bg-dollar-square_blue" %>
+  <%= link_to "Back to portfolios", "/users/#{current_user.id}/portfolios", class: "ml-2 rounded-lg py-1 px-3 bg-dollar inline-block font-medium text-white hover:bg-dollar-darker" %>
 </div>

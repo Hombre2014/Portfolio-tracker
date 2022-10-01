@@ -1,0 +1,8 @@
+<div class="mx-auto md:w-2/3 w-full">
+  <h1 class="font-bold text-4xl">Editing position</h1>
+
+  <%= render "update", position: @position %>
+
+  <%= link_to "Show this position", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/positions/#{params[:id]}", class: "ml-2 rounded-lg py-1 px-3 bg-cyan-300 inline-block font-medium" %>
+  <%= link_to "Back to positions", user_portfolio_positions_path, class: "ml-2 rounded-lg py-1 px-3 bg-cyan-500 inline-block font-medium" %>
+</div>

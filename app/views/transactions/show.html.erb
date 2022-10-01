@@ -1,0 +1,27 @@
+<div class="mx-auto md:w-3/4 w-full flex">
+  <div class="mx-auto">
+    <table class="table-auto mb-6 border-collapse border border-slate-400">
+      <thead>
+        <tr>
+          <th class="border border-slate-300 px-4">Type</th>
+          <th class="border border-slate-300 px-4">Date</th>
+          <th class="border border-slate-300 px-4">Symbol</th>
+          <th class="border border-slate-300 px-4">Quantity</th>
+          <th class="border border-slate-300 px-4">Price</th>
+          <th class="border border-slate-300 px-4">Commission</th>
+          <th class="border border-slate-300 px-4">Fee</th>
+          <th class="border border-slate-300 px-4">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render @transaction %>
+      </tbody>
+    </table>
+
+    <%= link_to 'Edit this transaction', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}/edit", class: "mt-2 rounded-lg py-1 px-3 bg-dollar-split_blue inline-block font-medium text-white" %>
+    <div class="inline-block ml-2">
+      <%= button_to 'Destroy this transaction', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", method: :delete, class: "mt-2 rounded-lg py-1 px-3 bg-dollar-triad_red font-medium text-white" %>
+    </div>
+    <%= link_to 'Back to transactions', user_portfolio_transactions_path, class: "ml-2 rounded-lg py-1 px-3 bg-dollar-triad_blue inline-block font-medium" %>
+  </div>
+</div>

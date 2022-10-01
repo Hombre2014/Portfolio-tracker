@@ -1,0 +1,41 @@
+<div class="w-full">
+
+  <div class="flex justify-between items-center">
+    <h1 class="font-bold text-4xl mb-8">Transactions</h1>
+    <%= link_to 'New transaction', new_user_portfolio_transaction_path, class: "rounded-lg py-1 px-3 bg-blue-600 text-white block font-medium" %>
+  </div>
+
+  <div id="transactions" class="min-w-full">
+    <table class="table-auto mb-6 border-collapse border border-slate-400">
+      <thead>
+        <tr>
+          <th class="border border-slate-300 px-4">Type</th>
+          <th class="border border-slate-300 px-4">Date</th>
+          <th class="border border-slate-300 px-4">Symbol</th>
+          <th class="border border-slate-300 px-4">Quantity</th>
+          <th class="border border-slate-300 px-4">Price</th>
+          <th class="border border-slate-300 px-4">Commission</th>
+          <th class="border border-slate-300 px-4">Fee</th>
+          <th class="border border-slate-300 px-4">Total</th>
+          <th colspan="2" class="border border-slate-300 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render @transactions %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td class="border border-slate-300 px-4 font-bold">Total</td>
+          <% 4.times do %>
+            <td class="border border-slate-300 px-4"></td>
+          <% end %>
+          <td class="border border-slate-300 px-4 text-red-600">-<%= number_to_currency(@total_commissions) %></td>
+          <td class="border border-slate-300 px-4 text-red-600">-<%= number_to_currency(@total_fees) %></td>
+          <% red_or_green = @income_spent > 0 ? 'text-green-600' : 'text-red-600' %>
+          <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(@income_spent) %></td>
+          <td colspan="2"  class="border border-slate-300 px-4"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>

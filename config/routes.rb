@@ -1,7 +1,14 @@
 Rails.application.routes.draw do
-  resources :portfolios
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  get 'pages/about'
+  get 'pages/contact'
+  resources :stocks
+  devise_for :users
+  resources :users, only: [:index, :show] do
+    resources :portfolios do
+      resources :positions
+      resources :transactions
+    end
+  end
 
-  # Defines the root path route ("/")
-  root "portfolios#index"
+  root "pages#home"
 end
