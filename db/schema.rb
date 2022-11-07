@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_07_120217) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "timescaledb"
@@ -39,16 +39,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_07_120217) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["portfolio_id"], name: "index_positions_on_portfolio_id"
-  end
-
-  create_table "questions", force: :cascade do |t|
-    t.text "title"
-    t.text "tag"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "likes_count", default: 0
-    t.integer "dislikes_count", default: 0
-    t.text "answer"
   end
 
   create_table "stocks", force: :cascade do |t|
