@@ -70,7 +70,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "full_name"
     t.string "uid"
     t.string "avatar_url"
     t.string "provider"

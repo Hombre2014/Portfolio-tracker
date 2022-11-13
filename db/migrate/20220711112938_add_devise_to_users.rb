@@ -4,7 +4,6 @@ class AddDeviseToUsers < ActiveRecord::Migration[7.0]
   def self.up
     change_table :users do |t|
       # Adding fields for Google OAuth2
-      t.string :full_name
       t.string :uid
       t.string :avatar_url
       t.string :provider

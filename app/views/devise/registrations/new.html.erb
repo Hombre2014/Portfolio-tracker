@@ -24,8 +24,11 @@
     </div>
 
     <div class="actions">
-      <%= f.submit "Sign up", class:"rounded-lg py-1 px-3 my-5 bg-dollar-split_blue text-white block font-medium mx-auto cursor-pointer hover:bg-dollar-triad_blue" %>
+      <%= f.submit "Sign up", class:"rounded-lg py-1 px-3 mt-5 bg-dollar-split_blue text-white block font-medium mx-auto cursor-pointer hover:bg-dollar-triad_blue" %>
     </div>
   <% end %>
 
+  <div class="flex flex-col w-fit">
+    <%= render "devise/shared/links" %>
+  </div>
 </div>
