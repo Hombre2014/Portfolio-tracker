@@ -48,6 +48,11 @@ gem 'bootsnap', require: false
 # Add devise for authentication
 gem 'devise', '~> 4.7'
 
+# Add gems for Google authentication
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection', "~> 1.0"
+
 # Add finnhub gem for stock data
 gem 'finnhub_ruby', '~> 1.1.16'
 
