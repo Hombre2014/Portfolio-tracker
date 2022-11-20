@@ -10,11 +10,11 @@ Get detailed information about your portfolio stocks (US market only). Read the 
 
 ## Live demo
 
-[Portfolio tracker](https://portfolio-tracker-production.up.railway.app/)
+[Portfolio tracker](https://yuriy-portfolio-tracker.herokuapp.com/)
 
 ## Deployment
 
-Deployed using [Railway](https://railway.app/)
+Deployed using [Heroku](https://www.heroku.com/)
 
 ## Built With
 
