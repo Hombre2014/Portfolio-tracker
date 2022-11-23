@@ -30,7 +30,7 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 # Workers do not work on JRuby or Windows (both of which do not support
 # processes).
 #
-workers ENV.fetch("WEB_CONCURRENCY") { 4 } # it was 2, but for deploying on render changed to 4
+# workers ENV.fetch("WEB_CONCURRENCY") { 4 } # it was 2, but for deploying on render changed to 4
 
 # Use the `preload_app!` method when specifying a `workers` number.
 # This directive tells Puma to first boot the application and load code
@@ -40,4 +40,4 @@ workers ENV.fetch("WEB_CONCURRENCY") { 4 } # it was 2, but for deploying on rend
 preload_app! # it was commented out, but for deploying on render uncommented
 
 # Allow puma to be restarted by `bin/rails restart` command.
-plugin :tmp_restart
+# plugin :tmp_restart
