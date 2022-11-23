@@ -14,7 +14,7 @@ Get detailed information about your portfolio stocks (US market only). Read the 
 
 ## Deployment
 
-Deployed using [Heroku](https://www.heroku.com/)
+Deployed using [Heroku](https://heroku.com/)
 
 ## Built With
 
