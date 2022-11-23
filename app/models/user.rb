@@ -10,7 +10,7 @@ class User < ApplicationRecord
   # has_many :positions, dependent: :destroy
   validates :name, presence: true, length: { minimum: 5, maximum: 20 }
 
-  # def self.from_omniauth(access_token)
+  # def self.from_omniauth(access_token) # From Deanin video
   #   where(provider: access_token.provider, uid: access_token.uid).first_or_create do |user|
   #     user.email = access_token.info.email
   #     user.password = Devise.friendly_token[0,20]
@@ -35,6 +35,7 @@ class User < ApplicationRecord
     end
     user.name = data['name']
     user.avatar_url = data['image']
+    user.provider = access_token.provider # Google
     user.save
     user
   end
