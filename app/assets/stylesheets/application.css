@@ -17,3 +17,8 @@
 body {
   background-color: #ebf4e5;
 }
+
+input[type="submit"]
+{
+  background:url(/app/assets/images/btn_google_signin_light_normal_web.png);
+}
