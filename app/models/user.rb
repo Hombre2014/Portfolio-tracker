@@ -38,7 +38,7 @@ class User < ApplicationRecord
     end
     user.name = data['name']
     user.avatar_url = data['image']
-    # user.provider = access_token.provider # Google
+    user.provider = access_token.provider
     user.save
     user
   end

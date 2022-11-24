@@ -23,7 +23,7 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   def after_sign_in_path_for(_resource_or_scope)
-    stored_location_for(resource) || portfolios_path # or root_path
+    stored_location_for(resource) || root_path # or root_path
   end
 
   # protected
