@@ -32,14 +32,14 @@
     </div>
   </div>
   <p class="text-3xl font-bold text-center mt-24">Hurry up and register, it's free!</p>
-  <div class="mt-24 flex container">
+  <div class="mt-24 flex container flex-col space-between">
     <div class="flex justify-around">
-      <div class="flex flex-col w-1/5 items-center">
-        <div><%= image_tag('https://raw.githubusercontent.com/Hombre2014/Portfolio-tracker/dev/app/assets/images/signup.jpg', class:"rounded-lg mb-12") %></div>
+      <div class="flex flex-col w-1/2 items-center">
+        <div><%= image_tag('https://raw.githubusercontent.com/Hombre2014/Portfolio-tracker/dev/app/assets/images/signup.jpg', class:"rounded-lg mb-12 w-full") %></div>
         <div><%= link_to 'So, sign up now', new_user_registration_path, class:"text-center text-3xl font-bold text-dollar hover:text-dollar-darker" %></div>
       </div>
-      <div class="flex flex-col w-1/5 items-center">
-        <div><%= image_tag('https://raw.githubusercontent.com/Hombre2014/Portfolio-tracker/dev/app/assets/images/signin.jpg', class:"rounded-lg mb-12") %></div>
+      <div class="flex flex-col w-1/2 items-center">
+        <div><%= image_tag('https://raw.githubusercontent.com/Hombre2014/Portfolio-tracker/dev/app/assets/images/signin.jpg', class:"rounded-lg mb-12 w-full") %></div>
         <div><%= link_to 'Or simply login', new_user_session_path, class:"text-center text-3xl font-bold text-dollar hover:text-dollar-darker" %></div>
       </div>
     </div>
