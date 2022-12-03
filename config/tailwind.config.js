@@ -1,4 +1,4 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   content: [
@@ -20,8 +20,8 @@ module.exports = {
           saturated: '#82c65a',
           inverted: '#7a449a',
           grayscale: '#909090',
-          complement: '#923ae6',
-          split_blue: '#216dff',
+          complement: '#2D0057', // used to be #923ae6
+          split_blue: '#001E57', // used to be #216dff
           triad_red: '#ff214b',
           triad_blue: '#21c2ff',
           square_red: '#f95427',
