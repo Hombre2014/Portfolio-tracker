@@ -6,11 +6,11 @@
     <p class="text-2xl font-bold text-center mb-6">Finally, a portfolio tracker you dreamed about! Track your investments in real time.</p>
     <p class="text-2xl font-bold text-center mb-6">Keep a track of your realized profit/loss from each stock.</p>
     <p class="text-2xl font-bold text-center">See you Net Worth moving, stay informed.</p>
-    <p class="text-3xl font-bold text-center mb-8 my-16">Portfolios page</p>
+    <h2 class="text-3xl font-bold text-center mb-8 my-16">Portfolios page<h2/>
     <%= image_tag 'portfolios_page.png', alt: "Portfolio page", class:"mx-auto mb-12 mt-8 w-1080px" %>
-    <p class="text-3xl font-bold text-center mb-8 my-16">Company info page</p>
+    <h2 class="text-3xl font-bold text-center mb-8 my-16">Company info page</h2>
     <%= image_tag 'company_info_page.png', alt: "Company info page", class:"mx-auto mb-12 mt-8 w-1080px" %>
-    <p class="text-3xl font-bold text-center mb-8 my-16">Transactions page</p>
+    <h2 class="text-3xl font-bold text-center mb-8 my-16">Transactions page</h2>
     <%= image_tag 'transactions_page.png', alt: "Transactions page", class:"mx-auto mb-12 mt-8 w-1080px" %>
   </div>
   <p class="text-3xl font-bold text-center">Join the club and get control over your investments.</p>
@@ -31,21 +31,21 @@
       <p class="text-center">Get detailed information about your portfolio stocks (US market only). Read the latest company news and announcements, look for the insider tradings and the company's earnings surprises. </p>
     </div>
   </div>
-  <p class="text-3xl font-bold text-center mt-24">Hurry up and register, it's free!</p>
+  <h2 class="text-3xl font-bold text-center mt-24">Hurry up and register, it's free!</h2>
   <div class="mt-24 flex container flex-col space-between">
     <div class="flex justify-around">
       <div class="flex flex-col w-1/2 items-center">
         <div><%= image_tag('https://raw.githubusercontent.com/Hombre2014/Portfolio-tracker/dev/app/assets/images/signup.jpg', alt: "Signup", class:"rounded-lg mb-12 w-full") %></div>
-        <div><%= link_to 'So, sign up now', new_user_registration_path, class:"text-center text-3xl font-bold text-dollar hover:text-dollar-darker" %></div>
+        <div><%= link_to 'So, sign up now', new_user_registration_path, class:"text-center text-3xl font-bold text-dollar-split_blue hover:text-dollar-darker" %></div>
       </div>
       <div class="flex flex-col w-1/2 items-center">
         <div><%= image_tag('https://raw.githubusercontent.com/Hombre2014/Portfolio-tracker/dev/app/assets/images/signin.jpg', alt: "Login", class:"rounded-lg mb-12 w-full") %></div>
-        <div><%= link_to 'Or simply login', new_user_session_path, class:"text-center text-3xl font-bold text-dollar hover:text-dollar-darker" %></div>
+        <div><%= link_to 'Or simply login', new_user_session_path, class:"text-center text-3xl font-bold text-dollar-split_blue hover:text-dollar-darker" %></div>
       </div>
     </div>
   </div>
   <div class="my-16 flex-col container content-center">
-    <p class="text-center text-3xl font-bold text-dollar">Because did I say ...</p>
+    <p class="text-center text-3xl font-bold text-dollar-split_blue">Because did I say ...</p>
     <div><%= image_tag('https://raw.githubusercontent.com/Hombre2014/Portfolio-tracker/dev/app/assets/images/free.png', alt: "It is free sign", class:" w-1/4 mx-auto mt-12") %></div>
   </div>
 </div>
