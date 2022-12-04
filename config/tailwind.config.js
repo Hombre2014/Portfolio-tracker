@@ -23,7 +23,7 @@ module.exports = {
           complement: '#2D0057', // used to be #923ae6
           split_blue: '#001E57', // used to be #216dff
           triad_red: '#ff214b',
-          triad_blue: '#21c2ff',
+          triad_blue: '#4C0094', // used to be #21c2ff, then #0F1D38, #1D3159
           square_red: '#f95427',
           darker: '#68a047',
           square_blue: '#21daff',
