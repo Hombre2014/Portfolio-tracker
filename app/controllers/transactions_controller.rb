@@ -61,7 +61,13 @@ class TransactionsController < ApplicationController
           when 'Sell'
             unless short_position_exist?(@transaction)
               if enough_shares?(@transaction)
-                transaction_save(@transaction, format)
+                if closing_date_earlier_than_opening_date?(@transaction)
+                  format.html do
+                    redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Trying to record a sell transaction before the buy transaction. Check your transaction date!'
+                  end
+                else
+                  transaction_save(@transaction, format)
+                end
               else
                 format.html do
                   redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough shares to complete the transaction.'
@@ -85,7 +91,13 @@ class TransactionsController < ApplicationController
               if short_position_exist?(@transaction)
                 if enough_cash?(@transaction)
                   if enough_shares?(@transaction)
-                    transaction_save(@transaction, format)
+                    if closing_date_earlier_than_opening_date?(@transaction)
+                      format.html do
+                        redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Trying to record a buy to cover transaction before the sell short transaction. Check your transaction date!'
+                      end
+                    else
+                      transaction_save(@transaction, format)
+                    end
                   else
                     format.html do
                       redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough short shares to complete the transaction.'
@@ -109,7 +121,7 @@ class TransactionsController < ApplicationController
           end
         else
           format.html do
-            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Transaction date is before the open date of the portfolio.'
+            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Transaction date is before the portfolio open date.'
           end
         end
       else
