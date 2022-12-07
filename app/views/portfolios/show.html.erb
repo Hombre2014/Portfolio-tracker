@@ -5,10 +5,5 @@
     <div class="inline-block ml-2">
       <%= button_to 'Destroy this portfolio', "/users/#{current_user.id}/portfolios/#{@portfolio.id}", method: :delete, class: "mt-2 rounded-lg py-1 px-3 bg-dollar-triad_red font-medium text-white hover:bg-dollar-square_red" %>
     </div>
-    <%
-=begin%>
- <%= link_to 'Back to portfolios', user_portfolios_path, class: "ml-2 rounded-lg py-1 px-3 bg-dollar inline-block font-medium text-white hover:bg-dollar-darker" %> 
-<%
-=end%>
   </div>
 </div>

@@ -21,8 +21,7 @@
       <% @income_spent += transaction_amount - added_cost %>
     <% end %>
     <% if action_name != "show" %>
-      <td class="border border-slate-300 px-4 py-1"><%= link_to "Show", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}", class: "rounded-lg px-2 bg-dollar-split_blue block font-medium text-white" %></td>
-      <td class="border border-slate-300 px-4 py-1"><%= link_to 'Edit', "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}/edit", class: "rounded-lg ml-2 px-2 bg-dollar-triad_blue inline-block font-medium text-white" %></td>
+      <td class="border border-slate-300 px-4 py-1"><%= link_to "Show", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}", class: "rounded-lg px-2 bg-dollar-split_blue block font-medium text-white hover:bg-dollar-triad_blue" %></td>
     <% end %>
   </tr>
 </div>
