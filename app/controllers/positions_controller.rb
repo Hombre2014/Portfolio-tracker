@@ -23,9 +23,9 @@ class PositionsController < ApplicationController
   end
 
   # GET /positions/1/edit
-  def edit
-    @portfolio = Portfolio.find(params[:portfolio_id])
-  end
+  # def edit
+  #   @portfolio = Portfolio.find(params[:portfolio_id])
+  # end
 
   # POST /positions or /positions.json
   def create
@@ -43,9 +43,6 @@ class PositionsController < ApplicationController
         format.json { render json: @position.errors, status: :unprocessable_entity }
       end
     end
-    # add_create_update_position(@position)
-    # @stock_data = @finnhub_client.company_profile2({ symbol: @position.symbol })
-    # # TODO Needs to be handled in a different way. Check it out. Have to consider all the existing positions.
   end
 
   # PATCH/PUT /positions/1 or /positions/1.json

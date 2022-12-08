@@ -8,16 +8,12 @@ class TransactionsController < ApplicationController
   # GET /transactions or /transactions.json
   def index
     reset_instance_variable
-    @portfolio = Portfolio.find(params[:portfolio_id])
-    @positions = Position.where(portfolio_id: params[:portfolio_id])
     @transactions = Transaction.where(portfolio_id: params[:portfolio_id])
   end
 
   # GET /transactions/1 or /transactions/1.json
   def show
     reset_instance_variable
-    @portfolio = Portfolio.find(params[:portfolio_id])
-    @positions = Position.where(portfolio_id: params[:portfolio_id])
   end
 
   # GET /transactions/new
@@ -153,7 +149,6 @@ class TransactionsController < ApplicationController
         end
       end
     end
-    # update_new_position
   end
 
   # DELETE /transactions/1 or /transactions/1.json

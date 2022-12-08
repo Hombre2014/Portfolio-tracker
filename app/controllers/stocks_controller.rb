@@ -16,10 +16,8 @@ class StocksController < ApplicationController
     @transaction = Transaction.find_by(symbol: @stock.ticker)
     @position = Position.find_by(symbol: @stock.ticker)
     @stock_data = @finnhub_client.company_profile2({ symbol: @position.symbol })
-    # Changed above from @transaction to @position after Add position modification for nonexisting symbol!
     @stock_symbols = Stock.all.map(&:ticker)
     @company_news = @finnhub_client.company_news(@position.symbol, Date.today - 14, Date.today)
-    # @financials = @finnhub_client.company_basic_financials(@position.symbol, 'all')
     @insider = @finnhub_client.insider_transactions(@position.symbol)
     @earnings = @finnhub_client.company_earnings(@position.symbol, { limit: 5})
   end

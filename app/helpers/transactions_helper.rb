@@ -3,6 +3,8 @@ module TransactionsHelper
     @total_fees = 0
     @income_spent = 0
     @total_commissions = 0
+    @portfolio = Portfolio.find(params[:portfolio_id])
+    @positions = Position.where(portfolio_id: params[:portfolio_id])
   end
 
   def initial_setup
