@@ -19,4 +19,15 @@ module PortfoliosHelper
     @position_profit_loss = 0
     @total_portfolio_value = 0
   end
+
+  def initial_setup
+    @portfolios = Portfolio.where(user_id: current_user.id).order(:created_at)
+    @stock_symbols = Stock.all.map(&:ticker)
+    @transactions = Transaction.all
+    @positions = Position.all
+    @stocks = Stock.all
+    @finnhub_client = FinnhubRuby::DefaultApi.new
+    @net_worth = 0
+    @net_worth_profit = 0
+  end
 end

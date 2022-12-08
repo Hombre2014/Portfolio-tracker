@@ -2,35 +2,20 @@ require 'finnhub_ruby'
 require_relative '../helpers/portfolios_helper'
 
 class PortfoliosController < ApplicationController
-  before_action :authenticate_user!
   include PortfoliosHelper
-
+  before_action :authenticate_user!
   before_action :set_portfolio, only: %i[show edit update destroy]
 
   # GET /portfolios or /portfolios.json
   def index
-    @portfolios = Portfolio.where(user_id: current_user.id)
-    @stock_symbols = Stock.all.map(&:ticker)
-    @transactions = Transaction.all
-    @positions = Position.all
-    @stocks = Stock.all
-    @finnhub_client = FinnhubRuby::DefaultApi.new
-    @net_worth = 0
-    @net_worth_profit = 0
+    initial_setup
     clear_instant_variable
   end
 
   # GET /portfolios/1 or /portfolios/1.json
   def show
-    @portfolios = Portfolio.where(user_id: current_user.id)
-    @stock_symbols = Stock.all.map(&:ticker)
     @portfolio = Portfolio.find(params[:id])
-    @transactions = Transaction.all
-    @positions = Position.all
-    @stocks = Stock.all
-    @finnhub_client = FinnhubRuby::DefaultApi.new
-    @net_worth = 0
-    @net_worth_profit = 0
+    initial_setup
     clear_instant_variable
   end
 
