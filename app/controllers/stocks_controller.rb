@@ -32,9 +32,6 @@ class StocksController < ApplicationController
     @stock = Stock.new
   end
 
-  # GET /stocks/1/edit
-  def edit; end
-
   # POST /stocks or /stocks.json
   def create
     @stock = Stock.new(stock_params)
