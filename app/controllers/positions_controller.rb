@@ -22,11 +22,6 @@ class PositionsController < ApplicationController
     @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
-  # GET /positions/1/edit
-  # def edit
-  #   @portfolio = Portfolio.find(params[:portfolio_id])
-  # end
-
   # POST /positions or /positions.json
   def create
     @position = Position.new(position_params)

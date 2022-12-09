@@ -13,18 +13,6 @@ class User < ApplicationRecord
   validates :email, presence: true, length: { maximum: 255 },
     format: { with: VALID_EMAIL_REGEX }, uniqueness: true
 
-  # def self.from_omniauth(access_token) # From Deanin video
-  #   where(provider: access_token.provider, uid: access_token.uid).first_or_create do |user|
-  #     user.email = access_token.info.email
-  #     user.password = Devise.friendly_token[0,20]
-  #     user.full_name = access_token.info.name   # assuming the user model has a name
-  #     user.avatar_url = access_token.info.image # assuming the user model has an image
-  #     # If you are using confirmable and the provider(s) you use validate emails,
-  #     # uncomment the line below to skip the confirmation emails.
-  #     # user.skip_confirmation!
-  #   end
-  # end
-
   def self.from_omniauth(access_token)
     data = access_token.info
     user = User.where(email: data['email']).first
