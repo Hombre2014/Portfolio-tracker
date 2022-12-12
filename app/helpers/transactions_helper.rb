@@ -101,78 +101,94 @@ module TransactionsHelper
     end
   end
 
+  def buy_stock(transaction)
+    if @stock_symbols.include?(transaction.symbol)
+      if enough_cash?(transaction)
+        unless short_position_exist?(transaction)
+          @stock.shares_owned += transaction.quantity
+          @stock.commission_and_fee += add_cost(transaction)
+          @stock.save
+          @portfolio.transactions_cost += add_cost(transaction)
+          @portfolio.save
+        end
+      end
+    else
+      new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0,
+        commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity, portfolio_id: @portfolio.id)
+      new_stock.save
+      @portfolio.transactions_cost += add_cost(transaction)
+      @portfolio.save
+    end
+  end
+
+  def sell_stock(transaction)
+    unless short_position_exist?(transaction)
+      if enough_shares?(transaction)
+        unless closing_date_earlier_than_opening_date?(transaction)
+          position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
+          @stock.realized_profit_loss += transaction_amount(transaction) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
+          @stock.shares_owned -= transaction.quantity
+          @stock.commission_and_fee += add_cost(transaction)
+          @stock.save
+          @portfolio.realized_profit_loss += transaction_amount(transaction) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
+          @portfolio.transactions_cost += add_cost(transaction)
+          @portfolio.save
+        end
+      end
+    end
+  end
+
+  def sell_short_stock(transaction)
+    if @stock_symbols.include?(transaction.symbol)
+      unless long_position_exist?(transaction)
+        @stock.shares_owned -= transaction.quantity
+        @stock.commission_and_fee += add_cost(transaction)
+        @stock.save
+        @portfolio.transactions_cost += add_cost(transaction)
+        @portfolio.save
+      end
+    else
+        new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0,
+          commission_and_fee: add_cost(transaction), shares_owned: -1 * transaction.quantity, portfolio_id: @portfolio.id)
+        new_stock.save
+        @portfolio.transactions_cost += add_cost(transaction)
+        @portfolio.save
+    end
+  end
+
+  def buy_to_cover_stock(transaction)
+    unless long_position_exist?(transaction)
+      if short_position_exist?(transaction)
+        if enough_cash?(transaction)
+          if enough_shares?(transaction)
+            if closing_date_earlier_than_opening_date?(transaction)
+              position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
+              @stock.shares_owned += transaction.quantity
+              @stock.commission_and_fee += add_cost(transaction)
+              @stock.realized_profit_loss -= transaction_amount(transaction) + add_cost(transaction) - (transaction.quantity * position.cost_per_share)
+              @stock.save
+              @portfolio.realized_profit_loss -= transaction_amount(transaction) + add_cost(transaction) - (transaction.quantity * position.cost_per_share)
+              @portfolio.transactions_cost += add_cost(transaction)
+              @portfolio.save
+            end
+          end
+        end
+      end
+    end
+  end
+
   def create_update_stock(transaction)
     @portfolio = Portfolio.find(params[:portfolio_id])
     if ticker_exist?(transaction) && date_valid?(transaction)
       case transaction.tr_type
       when 'Buy'
-        if @stock_symbols.include?(transaction.symbol)
-          if enough_cash?(transaction)
-            unless short_position_exist?(transaction)
-              @stock.shares_owned += transaction.quantity
-              @stock.commission_and_fee += add_cost(transaction)
-              @stock.save
-              @portfolio.transactions_cost += add_cost(transaction)
-              @portfolio.save
-            end
-          end
-        else
-          new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0,
-            commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity, portfolio_id: @portfolio.id)
-          new_stock.save
-          @portfolio.transactions_cost += add_cost(transaction)
-          @portfolio.save
-        end
+        buy_stock(transaction)
       when 'Sell'
-        unless short_position_exist?(transaction)
-          if enough_shares?(transaction)
-            unless closing_date_earlier_than_opening_date?(transaction)
-              position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
-              @stock.realized_profit_loss += transaction_amount(transaction) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
-              @stock.shares_owned -= transaction.quantity
-              @stock.commission_and_fee += add_cost(transaction)
-              @stock.save
-              @portfolio.realized_profit_loss += transaction_amount(transaction) - add_cost(transaction) - (transaction.quantity * position.cost_per_share)
-              @portfolio.transactions_cost += add_cost(transaction)
-              @portfolio.save
-            end
-          end
-        end
+        sell_stock(transaction)
       when 'Sell short'
-        if @stock_symbols.include?(transaction.symbol)
-          unless long_position_exist?(transaction)
-            @stock.shares_owned -= transaction.quantity
-            @stock.commission_and_fee += add_cost(transaction)
-            @stock.save
-            @portfolio.transactions_cost += add_cost(transaction)
-            @portfolio.save
-          end
-        else
-            new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0,
-              commission_and_fee: add_cost(transaction), shares_owned: -1 * transaction.quantity, portfolio_id: @portfolio.id)
-            new_stock.save
-            @portfolio.transactions_cost += add_cost(transaction)
-            @portfolio.save
-        end
+        sell_short_stock(transaction)
       when 'Buy to cover'
-        unless long_position_exist?(transaction)
-          if short_position_exist?(transaction)
-            if enough_cash?(transaction)
-              if enough_shares?(transaction)
-                if closing_date_earlier_than_opening_date?(transaction)
-                  position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
-                  @stock.shares_owned += transaction.quantity
-                  @stock.commission_and_fee += add_cost(transaction)
-                  @stock.realized_profit_loss -= transaction_amount(transaction) + add_cost(transaction) - (transaction.quantity * position.cost_per_share)
-                  @stock.save
-                  @portfolio.realized_profit_loss -= transaction_amount(transaction) + add_cost(transaction) - (transaction.quantity * position.cost_per_share)
-                  @portfolio.transactions_cost += add_cost(transaction)
-                  @portfolio.save
-                end
-              end
-            end
-          end
-        end
+        buy_to_cover_stock(transaction)
       end
     end
   end
