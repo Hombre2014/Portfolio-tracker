@@ -68,9 +68,9 @@ module TransactionsHelper
 
   def closing_date_earlier_than_opening_date?(transaction)
     if transaction.tr_type == 'Sell'
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order(:trade_date).first.trade_date
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date
     elsif transaction.tr_type == 'Buy to cover'
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order(:trade_date).first.trade_date
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date
     end
     transaction.trade_date < existing_stock_opened_date
   end
@@ -161,7 +161,7 @@ module TransactionsHelper
       if short_position_exist?(transaction)
         if enough_cash?(transaction)
           if enough_shares?(transaction)
-            if closing_date_earlier_than_opening_date?(transaction)
+            unless closing_date_earlier_than_opening_date?(transaction)
               position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first
               @stock.shares_owned += transaction.quantity
               @stock.commission_and_fee += add_cost(transaction)
@@ -253,7 +253,7 @@ module TransactionsHelper
           if short_position_exist?(transaction)
             if enough_cash?(transaction)
               if enough_shares?(transaction)
-                if closing_date_earlier_than_opening_date?(transaction)
+                unless closing_date_earlier_than_opening_date?(transaction)
                   @position.update(quantity: @position.quantity + transaction.quantity)
                   @position.commission_and_fee += add_cost(transaction)
                   @position.update(realized_profit_loss: @stock.realized_profit_loss)
