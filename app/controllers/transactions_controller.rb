@@ -22,6 +22,11 @@ class TransactionsController < ApplicationController
     @portfolio = Portfolio.find(params[:portfolio_id])
   end
 
+  def example
+    render partial: 'form'
+    # render json: { message: "Success" }
+  end
+
   # GET /transactions/1/edit
   def edit
     @portfolio = Portfolio.find(params[:portfolio_id])

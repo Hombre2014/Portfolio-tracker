@@ -23,7 +23,9 @@ module TransactionsHelper
       ['Buy', 'Buy'],
       ['Sell', 'Sell'],
       ['Sell short', 'Sell short'],
-      ['Buy to cover', 'Buy to cover']
+      ['Buy to cover', 'Buy to cover'],
+      ['Cash in', 'Cash in'],
+      ['Cash out', 'Cash out']
     ]
   end
 

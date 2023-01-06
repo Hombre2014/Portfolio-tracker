@@ -11,14 +11,19 @@
   <% end %>
 
   <div class="my-5">
-      <%= form.select :tr_type, transaction_type, value: '', required: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+      <%= form.select :tr_type, transaction_type, value: '', name: "transaction[tr_type]",
+        data: {
+                id: 'transaction_tr_type',
+                action: "transactions#example",
+              },
+        required: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
     <%= form.date_field :trade_date, value: Date.today, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Trade date" %>
   </div>
 
-  <div class="my-5">
+  <div class="my-5" id="trade_symbol">
     <%= form.text_field :symbol, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Symbol" %>
   </div>
 
