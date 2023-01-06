@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-export default class FormsController extends Controller {
+export default class extends Controller {
   connect() {
     console.log("Hello, Stimulus!", this.element)
   }
@@ -11,8 +11,8 @@ export default class FormsController extends Controller {
 
     function tr_type_change() {
       console.log(tr_type.value);
-      if (tr_type.value == 'Cash in' || tr_type.value == 'Cash out') {
-        let trade_symbol = document.querySelector('#trade_symbol');
+      if (tr_type.value === 'Cash in' || tr_type.value === 'Cash out') {
+        let trade_symbol = document.getElementById('trade_symbol');
         trade_symbol.classList.add('hidden');
       }
     }
