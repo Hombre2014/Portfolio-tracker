@@ -39,3 +39,4 @@ app_env_var.rb
 node_modules/
 
 .env
+.vscode
