@@ -17,20 +17,21 @@ export default class extends Controller {
   }
 
   handleChange() {
-    const tr_type = document.getElementById('transaction_product_type')
-
-    if (this.toggleableSymbolTarget.classList.contains('hidden')) {
-      this.toggleableSymbolTarget.classList.toggle('hidden')
-      this.toggleableQuantityTarget.classList.toggle('hidden')
-      this.toggleableCommissionTarget.classList.toggle('hidden')
-      this.toggleableFeeTarget.classList.toggle('hidden')
+    if (this.toggleableSymbolTarget.classList.contains('hidden') || transactionTypeCondition()) {
+      hideOrShowFields
     }
+  }
 
-    if (tr_type.value === 'Cash in' || tr_type.value === 'Cash out') {
-      this.toggleableSymbolTarget.classList.toggle('hidden')
-      this.toggleableQuantityTarget.classList.toggle('hidden')
-      this.toggleableCommissionTarget.classList.toggle('hidden')
-      this.toggleableFeeTarget.classList.toggle('hidden')
-    }
+  transactionTypeCondition() {
+    const transaction_type = document.getElementById('transaction_product_type')
+
+    transaction_type.value === 'Cash in' || transaction_type.value === 'Cash out'
+  }
+
+  hideOrShowFields() {
+    this.toggleableSymbolTarget.classList.toggle('hidden')
+    this.toggleableQuantityTarget.classList.toggle('hidden')
+    this.toggleableCommissionTarget.classList.toggle('hidden')
+    this.toggleableFeeTarget.classList.toggle('hidden')
   }
 }
