@@ -1,20 +1,36 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  connect() {
-    console.log("Hello, Stimulus!", this.element)
+  static targets = [
+    "toggleableSymbol",
+    "toggleableQuantity",
+    "toggleableCommission",
+    "toggleableFee"
+  ]
+
+  initialize() {
+    console.log("Initializing Stimulus!")
   }
 
-  example() {
-    const tr_type = document.getElementById('transaction_tr_type');
-    tr_type.addEventListener('change', tr_type_change);
+  connect() {
+    console.log("connected to forms controller")
+  }
 
-    function tr_type_change() {
-      console.log(tr_type.value);
-      if (tr_type.value === 'Cash in' || tr_type.value === 'Cash out') {
-        let trade_symbol = document.getElementById('trade_symbol');
-        trade_symbol.classList.add('hidden');
-      }
+  handleChange() {
+    const tr_type = document.getElementById('transaction_product_type')
+
+    if (this.toggleableSymbolTarget.classList.contains('hidden')) {
+      this.toggleableSymbolTarget.classList.toggle('hidden')
+      this.toggleableQuantityTarget.classList.toggle('hidden')
+      this.toggleableCommissionTarget.classList.toggle('hidden')
+      this.toggleableFeeTarget.classList.toggle('hidden')
+    }
+
+    if (tr_type.value === 'Cash in' || tr_type.value === 'Cash out') {
+      this.toggleableSymbolTarget.classList.toggle('hidden')
+      this.toggleableQuantityTarget.classList.toggle('hidden')
+      this.toggleableCommissionTarget.classList.toggle('hidden')
+      this.toggleableFeeTarget.classList.toggle('hidden')
     }
   }
 }

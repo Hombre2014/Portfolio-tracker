@@ -17,18 +17,6 @@ module TransactionsHelper
     @stock = @stocks.find_by(ticker: @transaction.symbol)
   end
 
-  def transaction_type
-    [
-      ['Transaction type', ''],
-      ['Buy', 'Buy'],
-      ['Sell', 'Sell'],
-      ['Sell short', 'Sell short'],
-      ['Buy to cover', 'Buy to cover'],
-      ['Cash in', 'Cash in'],
-      ['Cash out', 'Cash out']
-    ]
-  end
-
   def transaction_amount(transaction)
     transaction.quantity * transaction.price
   end
