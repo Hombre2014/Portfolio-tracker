@@ -16,16 +16,19 @@ export default class extends Controller {
     console.log("connected to forms controller")
   }
 
-  handleChange() {
-    if (this.toggleableSymbolTarget.classList.contains('hidden') || transactionTypeCondition()) {
-      hideOrShowFields
-    }
+  transactionTypeCondition(event) {
+    const transaction_type = document.getElementById('transaction_product_type');
+    transaction_type.addEventListener('change', this.handleChange);
+
+
+    console.log('Transaction type: ', transaction_type.event.target.value);
+    transaction_type.event.target.value === 'Cash in' || transaction_type.event.target.value === 'Cash out'
   }
 
-  transactionTypeCondition() {
-    const transaction_type = document.getElementById('transaction_product_type')
-
-    transaction_type.value === 'Cash in' || transaction_type.value === 'Cash out'
+  handleChange() {
+    if (this.toggleableSymbolTarget.classList.contains('hidden') || transactionTypeCondition(event)) {
+      hideOrShowFields;
+    }
   }
 
   hideOrShowFields() {

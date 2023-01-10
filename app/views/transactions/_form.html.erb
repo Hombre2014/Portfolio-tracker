@@ -12,7 +12,7 @@
     <% end %>
 
     <div class="my-5">
-      <%= form.collection_select :product_type, ['', 'Buy', 'Sell', 'Sell short', 'Buy to cover', 'Cash in', 'Cash out'],
+      <%= form.collection_select :product_type, ['Transaction type', 'Buy', 'Sell', 'Sell short', 'Buy to cover', 'Cash in', 'Cash out'],
                                 :to_s,
                                 :titlecase,
                                 {},
