@@ -9,36 +9,36 @@ export default class extends Controller {
     this.element.setAttribute("data-action", "change->forms#handleChange")
   }
 
-  cashTransactions() {
+  getFields() {
     const symbol = document.getElementById('transaction_symbol');
     const price = document.getElementById('transaction_price');
     const commission = document.getElementById('transaction_commission');
     const fee = document.getElementById('transaction_fee');
+    return [symbol, price, commission, fee];
+  }
+
+  toggleAmount() {
     const amount = document.getElementById('transaction_quantity');
-    symbol.classList.add('hidden');
-    price.classList.add('hidden');
-    commission.classList.add('hidden');
-    fee.classList.add('hidden');
-    amount.setAttribute('placeholder', 'Amount');
+    amount.getAttribute('placeholder') === 'Quantity' ? amount.setAttribute('placeholder', 'Amount') : amount.setAttribute('placeholder', 'Quantity');
+  }
+
+  hideFields() {
+    this.getFields().forEach((field) => {
+      field.classList.add('hidden');
+    });
+    this.toggleAmount();
+  }
+
+  showFields() {
+    this.getFields().forEach((field) => {
+      field.classList.remove('hidden');
+    });
+    this.toggleAmount();
   }
 
   handleChange(event) {
     event.preventDefault();
     const selectedTransactionType = document.getElementById('transaction_tr_type');
-    
-    if (selectedTransactionType.value === 'Cash In' || selectedTransactionType.value === 'Cash Out') {
-      this.cashTransactions();
-    } else {
-      const symbol = document.getElementById('transaction_symbol');
-      const price = document.getElementById('transaction_price');
-      const commission = document.getElementById('transaction_commission');
-      const fee = document.getElementById('transaction_fee');
-      const amount = document.getElementById('transaction_quantity');
-      symbol.classList.remove('hidden');
-      price.classList.remove('hidden');
-      commission.classList.remove('hidden');
-      fee.classList.remove('hidden');
-      amount.setAttribute('placeholder', 'Quantity');
-    }
+    selectedTransactionType.value === 'Cash In' || selectedTransactionType.value === 'Cash Out' ? this.hideFields() : this.showFields();
   }
 }
