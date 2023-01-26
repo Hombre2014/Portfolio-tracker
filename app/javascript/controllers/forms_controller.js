@@ -1,45 +1,44 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = [
-    "toggleableSymbol",
-    "toggleableQuantity",
-    "toggleableCommission",
-    "toggleableFee"
-  ]
+  connect() {
+    console.log("Connected to forms controller");
+  }
 
   initialize() {
-    console.log("Initializing Stimulus!")
+    this.element.setAttribute("data-action", "change->forms#handleChange")
   }
 
-  connect() {
-    console.log("connected to forms controller")
-  }
-
-  transactionTypeCondition(event) {
-    // const transaction_type = document.getElementById('transaction_product_type');
-    // transaction_type.addEventListener('change', this.handleChange);
-
-    // console.log('Transaction type: ', transaction_type);
-    // console.log('Transaction type: ', transaction_type.event.target.value);
-    event.target.value === 'Cash in' || event.target.value === 'Cash out'
+  cashTransactions() {
+    const symbol = document.getElementById('transaction_symbol');
+    const price = document.getElementById('transaction_price');
+    const commission = document.getElementById('transaction_commission');
+    const fee = document.getElementById('transaction_fee');
+    const amount = document.getElementById('transaction_quantity');
+    symbol.classList.add('hidden');
+    price.classList.add('hidden');
+    commission.classList.add('hidden');
+    fee.classList.add('hidden');
+    amount.setAttribute('placeholder', 'Amount');
   }
 
   handleChange(event) {
-    console.log('Event target value: ', event.target.value);
-    if (this.toggleableSymbolTarget.classList.contains('hidden') || this.transactionTypeCondition(event)) {
-    console.log('We are here');
-    this.toggleableSymbolTarget.classList.toggle('hidden')
-    this.toggleableQuantityTarget.classList.toggle('hidden')
-    this.toggleableCommissionTarget.classList.toggle('hidden')
-    this.toggleableFeeTarget.classList.toggle('hidden')
+    event.preventDefault();
+    const selectedTransactionType = document.getElementById('transaction_tr_type');
+    
+    if (selectedTransactionType.value === 'Cash In' || selectedTransactionType.value === 'Cash Out') {
+      this.cashTransactions();
+    } else {
+      const symbol = document.getElementById('transaction_symbol');
+      const price = document.getElementById('transaction_price');
+      const commission = document.getElementById('transaction_commission');
+      const fee = document.getElementById('transaction_fee');
+      const amount = document.getElementById('transaction_quantity');
+      symbol.classList.remove('hidden');
+      price.classList.remove('hidden');
+      commission.classList.remove('hidden');
+      fee.classList.remove('hidden');
+      amount.setAttribute('placeholder', 'Quantity');
     }
   }
-
-  // hideOrShowFields() {
-  //   this.toggleableSymbolTarget.classList.toggle('hidden')
-  //   this.toggleableQuantityTarget.classList.toggle('hidden')
-  //   this.toggleableCommissionTarget.classList.toggle('hidden')
-  //   this.toggleableFeeTarget.classList.toggle('hidden')
-  // }
 }
