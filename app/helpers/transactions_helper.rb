@@ -254,12 +254,12 @@ module TransactionsHelper
   end
 
   def position_with_cash_in(transaction)
-    @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
+    # @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
     @cash_position.update(quantity: @cash_position.quantity + transaction_amount(transaction))
   end
 
   def position_with_cash_out(transaction)
-    @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
+    # @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
     @cash_position.update(quantity: @cash_position.quantity - transaction_amount(transaction)) if enough_cash?(transaction)
   end
 

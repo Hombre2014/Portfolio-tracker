@@ -1,12 +1,12 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
   connect() {
-    console.log("Connected to forms controller");
+    console.log('Connected to forms controller');
   }
 
   initialize() {
-    this.element.setAttribute("data-action", "change->forms#handleChange")
+    this.element.setAttribute('data-action', 'change->forms#handleChange');
   }
 
   getFields() {
@@ -19,7 +19,9 @@ export default class extends Controller {
 
   toggleAmount() {
     const amount = document.getElementById('transaction_quantity');
-    amount.getAttribute('placeholder') === 'Quantity' ? amount.setAttribute('placeholder', 'Amount') : amount.setAttribute('placeholder', 'Quantity');
+    amount.getAttribute('placeholder') === 'Quantity'
+      ? amount.setAttribute('placeholder', 'Amount')
+      : amount.setAttribute('placeholder', 'Quantity');
   }
 
   hideFields() {
@@ -65,7 +67,12 @@ export default class extends Controller {
 
   handleChange(event) {
     event.preventDefault();
-    const selectedTransactionType = document.getElementById('transaction_tr_type');
-    selectedTransactionType.value === 'Cash In' || selectedTransactionType.value === 'Cash Out' ? this.hideFields() : this.showFields();
+    const selectedTransactionType = document.getElementById(
+      'transaction_tr_type'
+    );
+    selectedTransactionType.value === 'Cash In' ||
+    selectedTransactionType.value === 'Cash Out'
+      ? this.hideFields()
+      : this.showFields();
   }
 }
