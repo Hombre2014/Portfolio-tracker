@@ -1,4 +1,6 @@
-<%= form_with(model: transaction, url: "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/", class: "contents") do |form| %>
+<%= form_with(model: transaction,
+  url: "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/",
+  class: "contents", data: { controller: 'forms'}) do |form| %>
   <% if transaction.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(transaction.errors.count, "error") %> prohibited this transaction from being saved:</h2>
@@ -11,7 +13,14 @@
   <% end %>
 
   <div class="my-5">
-      <%= form.select :tr_type, transaction_type, value: '', required: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.select :tr_type, [["Transaction type", ''],
+      ['Buy', 'Buy'],
+      ['Sell', 'Sell'],
+      ['Sell short', 'Sell short'],
+      ['Buy to cover', 'Buy to cover'],
+      ['Cash In', 'Cash In'],
+      ['Cash Out', 'Cash Out']],
+      class:"block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full text-red-800", required: true %>
   </div>
 
   <div class="my-5">
@@ -23,24 +32,24 @@
   </div>
 
   <div class="my-5">
-    <%= form.number_field :quantity, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Quantity" %>
+    <%= form.number_field :quantity, min: 0.01, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Quantity" %>
   </div>
 
   <div class="my-5">
-    <%= form.number_field :price, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Price" %>
+    <%= form.number_field :price, min: 0.01, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Price" %>
   </div>
 
   <div class="my-5">
-    <%= form.number_field :commission, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Commission" %>
+    <%= form.number_field :commission, min: 0, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Commission" %>
   </div>
 
   <div class="my-5">
-    <%= form.number_field :fee, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Fee" %>
+    <%= form.number_field :fee, min: 0, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Fee" %>
   </div>
 
   <%= form.hidden_field :portfolio_id, value: @portfolio.id %>
 
   <div class="inline">
-    <%= form.submit class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white inline-block font-medium cursor-pointer hover:bg-dollar-triad_blue" %>
+    <%= form.submit class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white inline-block font-medium cursor-pointer" %>
   </div>
 <% end %>

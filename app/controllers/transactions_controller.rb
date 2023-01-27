@@ -31,6 +31,7 @@ class TransactionsController < ApplicationController
   def create
     initial_setup
     @portfolio = Portfolio.find(params[:portfolio_id])
+    current_transaction = "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}"
 
     respond_to do |format|
       if ticker_exist?(@transaction)
@@ -38,20 +39,20 @@ class TransactionsController < ApplicationController
           case @transaction.tr_type
           when ''
             format.html do
-              redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Please, select one of the transaction types.'
+              redirect_to current_transaction, alert: 'Please, select one of the transaction types.'
             end
           when 'Buy'
             if enough_cash?(@transaction)
               if short_position_exist?(@transaction)
                 format.html do
-                  redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a short position of this security.'
+                  redirect_to current_transaction, alert: 'You have a short position of this security.'
                 end
               else
                 transaction_save(@transaction, format)
               end
             else
               format.html do
-                redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough cash to complete the transaction.'
+                redirect_to current_transaction, alert: 'Not enough cash to complete the transaction.'
               end
             end
           when 'Sell'
@@ -59,19 +60,19 @@ class TransactionsController < ApplicationController
               if enough_shares?(@transaction)
                 if closing_date_earlier_than_opening_date?(@transaction)
                   format.html do
-                    redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Trying to record a sell transaction before the buy transaction. Check your transaction date!'
+                    redirect_to current_transaction, alert: 'Trying to record a sell transaction before the buy transaction. Check your transaction date!'
                   end
                 else
                   transaction_save(@transaction, format)
                 end
               else
                 format.html do
-                  redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough shares to complete the transaction.'
+                  redirect_to current_transaction, alert: 'Not enough shares to complete the transaction.'
                 end
               end
             else
               format.html do
-                redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a short position of this security.'
+                redirect_to current_transaction, alert: 'You have a short position of this security.'
               end
             end
           when 'Sell short'
@@ -79,7 +80,7 @@ class TransactionsController < ApplicationController
               transaction_save(@transaction, format)
             else
               format.html do
-                redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a long position of this security.'
+                redirect_to current_transaction, alert: 'You have a long position of this security.'
               end
             end
           when 'Buy to cover'
@@ -89,44 +90,54 @@ class TransactionsController < ApplicationController
                   if enough_shares?(@transaction)
                     if closing_date_earlier_than_opening_date?(@transaction)
                       format.html do
-                        redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Trying to record a buy to cover transaction before the sell short transaction. Check your transaction date!'
+                        redirect_to current_transaction, alert: 'Trying to record a buy to cover transaction before the sell short transaction. Check your transaction date!'
                       end
                     else
                       transaction_save(@transaction, format)
                     end
                   else
                     format.html do
-                      redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough short shares to complete the transaction.'
+                      redirect_to current_transaction, alert: 'Not enough short shares to complete the transaction.'
                     end
                   end
                 else
                   format.html do
-                    redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough cash to complete the transaction.'
+                    redirect_to current_transaction, alert: 'Not enough cash to complete the transaction.'
                   end
                 end
               else
                 format.html do
-                  redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You do not have a short position of this security.'
+                  redirect_to current_transaction, alert: 'You do not have a short position of this security.'
                 end
               end
             else
               format.html do
-                redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'You have a long position of this security.'
+                redirect_to current_transaction, alert: 'You have a long position of this security.'
+              end
+            end
+          when 'Cash In'
+            transaction_save(@transaction, format)
+          when 'Cash Out'
+            if enough_cash?(@transaction)
+              transaction_save(@transaction, format)
+            else
+              format.html do
+                redirect_to current_transaction, alert: 'Not enough cash to complete the transaction.'
               end
             end
           end
         else
           format.html do
-            redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Transaction date is before the portfolio open date.'
+            redirect_to current_transaction, alert: 'Transaction date is before the portfolio open date.'
           end
         end
       else
         format.html do
-          redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}" , alert: 'Unsupported or wrong stock ticker.'
+          redirect_to current_transaction , alert: 'Unsupported or wrong stock ticker.'
         end
       end
     end
-    create_update_stock(@transaction)
+    create_update_stock(@transaction) unless @transaction.tr_type == 'Cash In' || @transaction.tr_type == 'Cash Out'
     create_update_position(@transaction)
   end
 
@@ -145,7 +156,7 @@ class TransactionsController < ApplicationController
         end
       else
         format.html do
-          redirect_to "/users/#{current_user.id}/portfolios/#{params[:id]}/transactions/#{params[:id]}", alert: 'Not enough cash to complete transaction.'
+          redirect_to current_transaction, alert: 'Not enough cash to complete transaction.'
         end
       end
     end

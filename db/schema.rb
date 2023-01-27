@@ -56,7 +56,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
     t.string "tr_type"
     t.date "trade_date"
     t.string "symbol"
-    t.integer "quantity"
+    t.decimal "quantity"
     t.decimal "price"
     t.decimal "commission"
     t.decimal "fee"

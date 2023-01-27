@@ -14,17 +14,7 @@ module TransactionsHelper
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @stocks = Stock.where(portfolio_id: params[:portfolio_id])
     @stock_symbols = @stocks.all.map(&:ticker)
-    @stock = @stocks.find_by(ticker: @transaction.symbol)
-  end
-
-  def transaction_type
-    [
-      ['Transaction type', ''],
-      ['Buy', 'Buy'],
-      ['Sell', 'Sell'],
-      ['Sell short', 'Sell short'],
-      ['Buy to cover', 'Buy to cover']
-    ]
+    @stock = @stocks.find_by(ticker: @transaction.symbol) unless @transaction.symbol == 'Cash'
   end
 
   def transaction_amount(transaction)
@@ -39,9 +29,9 @@ module TransactionsHelper
 
   def enough_cash?(transaction)
     @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
-    if transaction.tr_type == 'Buy' || transaction.tr_type == 'Buy to cover'
+    if transaction.tr_type == 'Buy' || transaction.tr_type == 'Buy to cover' || transaction.tr_type == 'Cash Out'
       @transaction_buy_cost = transaction_amount(transaction) + add_cost(transaction)
-    elsif transaction.tr_type == 'Sell' || transaction.tr_type == 'Sell short'
+    elsif transaction.tr_type == 'Sell' || transaction.tr_type == 'Sell short' || transaction.tr_type == 'Cash In'
       @transaction_buy_cost = transaction_amount(transaction) - add_cost(transaction)
     end
     @cash_position.quantity >= @transaction_buy_cost
@@ -263,6 +253,16 @@ module TransactionsHelper
     end
   end
 
+  def position_with_cash_in(transaction)
+    # @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
+    @cash_position.update(quantity: @cash_position.quantity + transaction_amount(transaction))
+  end
+
+  def position_with_cash_out(transaction)
+    # @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
+    @cash_position.update(quantity: @cash_position.quantity - transaction_amount(transaction)) if enough_cash?(transaction)
+  end
+
   def create_update_position(transaction)
     if ticker_exist?(transaction) && date_valid?(transaction)
       @stock = @stocks.find_by(ticker: transaction.symbol)
@@ -281,6 +281,10 @@ module TransactionsHelper
         position_with_sell_short(transaction)
       when 'Buy to cover'
         position_with_buy_to_cover(transaction)
+      when 'Cash In'
+        position_with_cash_in(transaction)
+      when 'Cash Out'
+        position_with_cash_out(transaction)
       end
     end
   end

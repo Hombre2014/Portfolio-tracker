@@ -4,7 +4,7 @@ class CreateTransactions < ActiveRecord::Migration[7.0]
       t.string :tr_type
       t.date :trade_date
       t.string :symbol
-      t.integer :quantity
+      t.decimal :quantity
       t.decimal :price
       t.decimal :commission
       t.decimal :fee
