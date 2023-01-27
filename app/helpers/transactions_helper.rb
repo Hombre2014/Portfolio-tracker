@@ -14,7 +14,7 @@ module TransactionsHelper
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @stocks = Stock.where(portfolio_id: params[:portfolio_id])
     @stock_symbols = @stocks.all.map(&:ticker)
-    @stock = @stocks.find_by(ticker: @transaction.symbol)
+    @stock = @stocks.find_by(ticker: @transaction.symbol) unless @transaction.symbol == 'Cash'
   end
 
   def transaction_amount(transaction)
@@ -260,7 +260,7 @@ module TransactionsHelper
 
   def position_with_cash_out(transaction)
     @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
-    @cash_position.update(quantity: @cash_position.quantity - transaction_amount(transaction))
+    @cash_position.update(quantity: @cash_position.quantity - transaction_amount(transaction)) if enough_cash?(transaction)
   end
 
   def create_update_position(transaction)
