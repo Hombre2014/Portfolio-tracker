@@ -24,7 +24,20 @@ export default class extends Controller {
 
   hideFields() {
     this.getFields().forEach((field) => {
+      field.removeAttribute('required');
       field.classList.add('hidden');
+      if (field === document.getElementById('transaction_symbol')) {
+        field.setAttribute('value', 'Cash');
+      }
+      if (field === document.getElementById('transaction_price')) {
+        field.setAttribute('value', '1');
+      }
+      if (field === document.getElementById('transaction_commission')) {
+        field.setAttribute('value', '0');
+      }
+      if (field === document.getElementById('transaction_fee')) {
+        field.setAttribute('value', '0');
+      }
     });
     this.toggleAmount();
   }
@@ -32,6 +45,20 @@ export default class extends Controller {
   showFields() {
     this.getFields().forEach((field) => {
       field.classList.remove('hidden');
+      if (field === document.getElementById('transaction_symbol')) {
+        field.setAttribute('value', '');
+        field.setAttribute('required', 'true');
+      }
+      if (field === document.getElementById('transaction_price')) {
+        field.setAttribute('value', '');
+        field.setAttribute('required', 'true');
+      }
+      if (field === document.getElementById('transaction_commission')) {
+        field.setAttribute('value', '');
+      }
+      if (field === document.getElementById('transaction_fee')) {
+        field.setAttribute('value', '');
+      }
     });
     this.toggleAmount();
   }
