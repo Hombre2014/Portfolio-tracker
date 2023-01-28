@@ -16,6 +16,10 @@ Get detailed information about your portfolio stocks (US market only). Read the 
 
 Deployed using [Heroku](https://heroku.com/)
 
+## Version
+
+latest version: [1.1.0](https://github.com/Hombre2014/Portfolio-tracker/releases/tag/v1.1.0)
+
 ## Built With
 
 - Languages: Ruby
