@@ -17,52 +17,28 @@ export default class extends Controller {
     return [symbol, price, commission, fee];
   }
 
-  toggleAmount() {
-    const amount = document.getElementById('transaction_quantity');
-    amount.getAttribute('placeholder') === 'Quantity'
-      ? amount.setAttribute('placeholder', 'Amount')
-      : amount.setAttribute('placeholder', 'Quantity');
-  }
-
   hideFields() {
     this.getFields().forEach((field) => {
       field.removeAttribute('required');
       field.classList.add('hidden');
-      if (field === document.getElementById('transaction_symbol')) {
-        field.setAttribute('value', 'Cash');
-      }
-      if (field === document.getElementById('transaction_price')) {
-        field.setAttribute('value', '1');
-      }
-      if (field === document.getElementById('transaction_commission')) {
-        field.setAttribute('value', '0');
-      }
-      if (field === document.getElementById('transaction_fee')) {
-        field.setAttribute('value', '0');
-      }
+      if (field === document.getElementById('transaction_symbol')) field.setAttribute('value', 'Cash');
+      if (field === document.getElementById('transaction_price')) field.setAttribute('value', '1');
+      if (field === document.getElementById('transaction_commission')) field.setAttribute('value', '0');
+      if (field === document.getElementById('transaction_fee')) field.setAttribute('value', '0');
     });
-    this.toggleAmount();
+    const amount = document.getElementById('transaction_quantity');
+    amount.setAttribute('placeholder', 'Amount');
   }
 
   showFields() {
     this.getFields().forEach((field) => {
       field.classList.remove('hidden');
-      if (field === document.getElementById('transaction_symbol')) {
-        field.setAttribute('value', '');
-        field.setAttribute('required', 'true');
-      }
-      if (field === document.getElementById('transaction_price')) {
-        field.setAttribute('value', '');
-        field.setAttribute('required', 'true');
-      }
-      if (field === document.getElementById('transaction_commission')) {
-        field.setAttribute('value', '');
-      }
-      if (field === document.getElementById('transaction_fee')) {
-        field.setAttribute('value', '');
-      }
+      field.setAttribute('value', '');
+      if (field === document.getElementById('transaction_symbol')) field.setAttribute('required', 'true');
+      if (field === document.getElementById('transaction_price')) field.setAttribute('required', 'true');
     });
-    this.toggleAmount();
+    const quantity = document.getElementById('transaction_quantity');
+    quantity.setAttribute('placeholder', 'Quantity');
   }
 
   handleChange(event) {
@@ -71,7 +47,9 @@ export default class extends Controller {
       'transaction_tr_type'
     );
     selectedTransactionType.value === 'Cash In' ||
-    selectedTransactionType.value === 'Cash Out'
+    selectedTransactionType.value === 'Cash Out' ||
+    selectedTransactionType.value === 'Interest Inc.' ||
+    selectedTransactionType.value === 'Misc. Exp.'
       ? this.hideFields()
       : this.showFields();
   }

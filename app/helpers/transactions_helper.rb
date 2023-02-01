@@ -29,9 +29,9 @@ module TransactionsHelper
 
   def enough_cash?(transaction)
     @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
-    if transaction.tr_type == 'Buy' || transaction.tr_type == 'Buy to cover' || transaction.tr_type == 'Cash Out'
+    if transaction.tr_type == 'Buy' || transaction.tr_type == 'Buy to cover' || transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.'
       @transaction_buy_cost = transaction_amount(transaction) + add_cost(transaction)
-    elsif transaction.tr_type == 'Sell' || transaction.tr_type == 'Sell short' || transaction.tr_type == 'Cash In'
+    elsif transaction.tr_type == 'Sell' || transaction.tr_type == 'Sell short' || transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.'
       @transaction_buy_cost = transaction_amount(transaction) - add_cost(transaction)
     end
     @cash_position.quantity >= @transaction_buy_cost
@@ -281,9 +281,9 @@ module TransactionsHelper
         position_with_sell_short(transaction)
       when 'Buy to cover'
         position_with_buy_to_cover(transaction)
-      when 'Cash In'
+      when 'Cash In', 'Interest Inc.'
         position_with_cash_in(transaction)
-      when 'Cash Out'
+      when 'Cash Out', 'Misc. Exp.'
         position_with_cash_out(transaction)
       end
     end

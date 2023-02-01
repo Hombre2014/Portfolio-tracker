@@ -115,9 +115,9 @@ class TransactionsController < ApplicationController
                 redirect_to current_transaction, alert: 'You have a long position of this security.'
               end
             end
-          when 'Cash In'
+          when 'Cash In', 'Interest Inc.'
             transaction_save(@transaction, format)
-          when 'Cash Out'
+          when 'Cash Out', 'Misc. Exp.'
             if enough_cash?(@transaction)
               transaction_save(@transaction, format)
             else
@@ -137,7 +137,7 @@ class TransactionsController < ApplicationController
         end
       end
     end
-    create_update_stock(@transaction) unless @transaction.tr_type == 'Cash In' || @transaction.tr_type == 'Cash Out'
+    create_update_stock(@transaction) unless @transaction.tr_type == 'Cash In' || @transaction.tr_type == 'Cash Out' || @transaction.tr_type == 'Interest Inc.' || @transaction.tr_type == 'Misc. Exp.'
     create_update_position(@transaction)
   end
 
