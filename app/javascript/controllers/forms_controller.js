@@ -60,6 +60,7 @@ export default class extends Controller {
       commission.classList.add('hidden');
       fee.classList.add('hidden');
       quantity.classList.add('hidden');
+      quantity.setAttribute('value', '1');
       commission.setAttribute('value', '0');
       fee.setAttribute('value', '0');
       price.setAttribute('placeholder', 'Dividend Amount');

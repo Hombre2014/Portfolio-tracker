@@ -125,6 +125,14 @@ class TransactionsController < ApplicationController
                 redirect_to current_transaction, alert: 'Not enough cash to complete the transaction.'
               end
             end
+          when 'Dividend'
+            if long_position_exist?(@transaction)
+              transaction_save(@transaction, format)
+            else
+              format.html do
+                redirect_to current_transaction, alert: 'You do not have a long position of this security.'
+              end
+            end
           end
         else
           format.html do

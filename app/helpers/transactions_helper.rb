@@ -80,6 +80,7 @@ module TransactionsHelper
   end
 
   def transaction_save(transaction, format)
+    transaction.quantity *= @stock.shares_owned if transaction.tr_type == 'Dividend'
     if transaction.save
       format.html do
         redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", notice: 'Transaction was successfully created.'
