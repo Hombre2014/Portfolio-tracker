@@ -127,7 +127,13 @@ class TransactionsController < ApplicationController
             end
           when 'Dividend'
             if long_position_exist?(@transaction)
-              transaction_save(@transaction, format)
+              if closing_date_earlier_than_opening_date?(@transaction)
+                format.html do
+                  redirect_to current_transaction, alert: 'Trying to record a dividend transaction before the buy transaction. Check your transaction date!'
+                end
+              else
+                transaction_save(@transaction, format)
+              end
             else
               format.html do
                 redirect_to current_transaction, alert: 'You do not have a long position of this security.'

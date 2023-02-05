@@ -31,7 +31,7 @@ module TransactionsHelper
     @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
     if transaction.tr_type == 'Buy' || transaction.tr_type == 'Buy to cover' || transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.'
       @transaction_buy_cost = transaction_amount(transaction) + add_cost(transaction)
-    elsif transaction.tr_type == 'Sell' || transaction.tr_type == 'Sell short' || transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.'
+    elsif transaction.tr_type == 'Sell' || transaction.tr_type == 'Sell short' || transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.' || transaction.tr_type == 'Dividend'
       @transaction_buy_cost = transaction_amount(transaction) - add_cost(transaction)
     end
     @cash_position.quantity >= @transaction_buy_cost
@@ -57,7 +57,7 @@ module TransactionsHelper
   end
 
   def closing_date_earlier_than_opening_date?(transaction)
-    if transaction.tr_type == 'Sell'
+    if transaction.tr_type == 'Sell' || transaction.tr_type == 'Dividend'
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date
     elsif transaction.tr_type == 'Buy to cover'
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date
@@ -104,7 +104,7 @@ module TransactionsHelper
         end
       end
     else
-      new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0,
+      new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, income: 0,
         commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity, portfolio_id: @portfolio.id)
       new_stock.save
       @portfolio.transactions_cost += add_cost(transaction)
@@ -139,7 +139,7 @@ module TransactionsHelper
         @portfolio.save
       end
     else
-        new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0,
+        new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, income: 0,
           commission_and_fee: add_cost(transaction), shares_owned: -1 * transaction.quantity, portfolio_id: @portfolio.id)
         new_stock.save
         @portfolio.transactions_cost += add_cost(transaction)
@@ -168,6 +168,18 @@ module TransactionsHelper
     end
   end
 
+  def dividend_stock(transaction)
+    if @stock_symbols.include?(transaction.symbol)
+      if long_position_exist?(transaction)
+        unless closing_date_earlier_than_opening_date?(transaction)
+          @stock.commission_and_fee += add_cost(transaction)
+          @stock.income += transaction_amount(transaction)
+          @stock.save
+        end
+      end
+    end
+  end
+
   def create_update_stock(transaction)
     @portfolio = Portfolio.find(params[:portfolio_id])
     if ticker_exist?(transaction) && date_valid?(transaction)
@@ -180,6 +192,8 @@ module TransactionsHelper
         sell_short_stock(transaction)
       when 'Buy to cover'
         buy_to_cover_stock(transaction)
+      when 'Dividend'
+        dividend_stock(transaction)
       end
     end
   end
@@ -195,7 +209,7 @@ module TransactionsHelper
         end
       else
         new_position = Position.create(open_date: transaction.trade_date, symbol: transaction.symbol,
-        quantity: transaction.quantity, cost_per_share: (@transaction_buy_cost / transaction.quantity).round(6), commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, portfolio_id: @portfolio.id)
+        quantity: transaction.quantity, cost_per_share: (@transaction_buy_cost / transaction.quantity).round(6), commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, income: @stock.income, portfolio_id: @portfolio.id)
         new_position.commission_and_fee += add_cost(transaction)
       end
       @cash_position.update(quantity: @cash_position.quantity - @transaction_buy_cost)
@@ -229,7 +243,7 @@ module TransactionsHelper
           @position.save
           @cash_position.update(quantity: @cash_position.quantity + transaction_sell_income)
       else
-        new_position = Position.create(open_date: transaction.trade_date, symbol: transaction.symbol, quantity: (-1 * transaction.quantity), cost_per_share: (transaction_sell_income / transaction.quantity).round(6), commission_and_fee: add_cost(transaction), realized_profit_loss: 0, portfolio_id: @portfolio.id)
+        new_position = Position.create(open_date: transaction.trade_date, symbol: transaction.symbol, quantity: (-1 * transaction.quantity), cost_per_share: (transaction_sell_income / transaction.quantity).round(6), commission_and_fee: add_cost(transaction), realized_profit_loss: 0, income: 0, portfolio_id: @portfolio.id)
         @cash_position.update(quantity: @cash_position.quantity + transaction_sell_income)
       end
     end
@@ -264,6 +278,15 @@ module TransactionsHelper
     @cash_position.update(quantity: @cash_position.quantity - transaction_amount(transaction)) if enough_cash?(transaction)
   end
 
+  def position_with_dividend(transaction)
+    if symbol_exist?(transaction)
+      @cash_position.update(quantity: @cash_position.quantity + transaction_amount(transaction))
+      @position.update(income: @position.income + @stock.income)
+      # @position.update(realized_profit_loss: @stock.realized_profit_loss) maybe separate profit loss for dividends (income)
+      @position.save
+    end
+  end
+
   def create_update_position(transaction)
     if ticker_exist?(transaction) && date_valid?(transaction)
       @stock = @stocks.find_by(ticker: transaction.symbol)
@@ -286,6 +309,8 @@ module TransactionsHelper
         position_with_cash_in(transaction)
       when 'Cash Out', 'Misc. Exp.'
         position_with_cash_out(transaction)
+      when 'Dividend'
+        position_with_dividend(transaction)
       end
     end
   end

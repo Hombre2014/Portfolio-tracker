@@ -21,6 +21,11 @@
   </div>
 
   <div class="mb-2 mr-4">
+    <span class="inline-block font-medium mb-1">Your income is:</span>
+    <span class="font-bold text-green-600"><%= number_to_currency(stock.income.round(2)) %></span>
+  </div>
+
+  <div class="mb-2 mr-4">
     <span class="inline-block font-medium mb-1">You have:</span>
     <span class="font-bold"><%= stock.shares_owned.round(3) %> shares</span>
   </div>
