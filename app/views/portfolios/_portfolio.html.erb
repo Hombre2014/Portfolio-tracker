@@ -36,8 +36,8 @@
       <% stock_ticker = @stock_symbols.find { |i| i == position.symbol if position.symbol != 'Cash' } %>
       <% stock_id = Stock.where(ticker: stock_ticker, portfolio_id: portfolio.id).to_a.map { |e| e.id if e.shares_owned != 0 }.first %>
       <% position_cost = position.quantity * position.cost_per_share %>
-      <% @total_income += position.income %>
       <% if position.portfolio_id == portfolio.id %>
+        <% @total_income += position.income %>
         <tr class="text-sm">
           <% if position.symbol != 'Cash' %>
             <td class="border border-slate-300 px-2 py-1"><%= link_to position.symbol, "/stocks/#{stock_id}", class:"px-2 py-0.5 rounded bg-dollar hover:bg-dollar-dark active:bg-dollar-light focus:outline-none focus:ring focus:ring-dollar-saturated text-white" %></td>
@@ -99,7 +99,9 @@
       <% end %>
     <% end %>
     </tbody>
+
     <% @position_profit_loss = 0 %>
+
     <tfoot>
       <% closed_positions(portfolio) %>
       <% if @closed_stocks.length > 0 %>
@@ -141,6 +143,7 @@
       </tr>
     </tfoot>
   </table>
+
   <span class="my-5 block">
     <span class="block font-medium mb-1 inline-block">Portfolio Balance:</span>
     <% portfolio.cash == nil ? portfolio.cash = 0 : portfolio.cash %>
@@ -163,8 +166,8 @@
     <span class="block font-medium mb-1 inline-block">Income (%):</span>
     <% red_or_green = combined_income/(@total_portfolio_value - combined_income) >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_percentage((combined_income/(@total_portfolio_value - combined_income)) * 100).to_f.round(2) %>%</span>
-
   </span>
+
   <% clear_instant_variable %>
   <% if action_name != "show" %>
     <%= link_to "Show", "/users/#{current_user.id}/portfolios/#{portfolio.id}", class: "rounded-lg py-1 px-2 bg-dollar-split_blue inline-block font-medium text-white hover:bg-dollar-triad_blue" %>

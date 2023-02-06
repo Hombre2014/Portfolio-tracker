@@ -19,7 +19,6 @@ module PortfoliosHelper
     @total_income = 0
     @position_profit_loss = 0
     @total_portfolio_value = 0
-
     @closed_stock_rpl = 0
     @closed_stock_income = 0
     @closed_stock_comm_and_fee = 0
@@ -46,24 +45,15 @@ module PortfoliosHelper
     @closed_stocks = Stock.where(portfolio_id: portfolio.id).where(shares_owned: 0)
     @closed_stocks.each do |stock|
       @closed_stock_rpl = stock.realized_profit_loss
-      # @closed_stock_rpl = @closed_stock_rpl.nil? ? 0 : @closed_stock_rpl
-      # @portfolio_closed_rpl = @portfolio_closed_rpl.nil? ? 0 : @portfolio_closed_rpl
       @portfolio_closed_rpl += @closed_stock_rpl
 
       @closed_stock_income = stock.income
-      # @closed_stock_income = @closed_stock_income.nil? ? 0 : @closed_stock_income
-      # @portfolio_closed_income = @portfolio_closed_income.nil? ? 0 : @portfolio_closed_income
       @portfolio_closed_income += @closed_stock_income
 
       @closed_stock_comm_and_fee = stock.commission_and_fee
-      # @closed_stock_comm_and_fee = @closed_stock_comm_and_fee.nil? ? 0 : @closed_stock_comm_and_fee
-      # @portfolio_closed_comm_and_fee = @portfolio_closed_comm_and_fee.nil? ? 0 : @portfolio_closed_comm_and_fee
       @portfolio_closed_comm_and_fee += @closed_stock_comm_and_fee
 
       @closed_stock_gain = @closed_stock_rpl + @closed_stock_income - @closed_stock_comm_and_fee
-      # @closed_stock_gain = @closed_stock_gain.nil? ? 0 : @closed_stock_gain
-
-      # @total_closed_stock_gain = @total_closed_stock_gain.nil? ? 0 : @total_closed_stock_gain
       @total_closed_stock_gain += @closed_stock_gain
     end
   end

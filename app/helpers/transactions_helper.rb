@@ -283,8 +283,6 @@ module TransactionsHelper
     @position.save
     @portfolio.income += transaction_amount(transaction)
     @portfolio.save
-    # @portfolio.update(income: @portfolio.income + transaction.quantity)
-    # @portfolio.save
   end
 
   def position_with_expense(transaction)
@@ -294,8 +292,6 @@ module TransactionsHelper
       @position.save
       @portfolio.income += transaction_amount(transaction)
       @portfolio.save
-      # @portfolio.update(income: @portfolio.income - transaction.quantity)
-      # @portfolio.save
     end
   end
 
@@ -303,7 +299,6 @@ module TransactionsHelper
     if symbol_exist?(transaction)
       @cash_position.update(quantity: @cash_position.quantity + transaction_amount(transaction))
       @position.update(income: @position.income + @stock.income)
-      # @position.update(realized_profit_loss: @stock.realized_profit_loss) maybe separate profit loss for dividends (income)
       @position.save
     end
   end
