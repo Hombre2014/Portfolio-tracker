@@ -39,6 +39,7 @@ module PortfoliosHelper
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @net_worth = 0
     @net_worth_profit = 0
+    @net_worth_income = 0
   end
 
   def closed_positions(portfolio)
