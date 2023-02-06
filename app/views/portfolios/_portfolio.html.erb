@@ -36,8 +36,8 @@
       <% stock_ticker = @stock_symbols.find { |i| i == position.symbol if position.symbol != 'Cash' } %>
       <% stock_id = Stock.where(ticker: stock_ticker, portfolio_id: portfolio.id).to_a.map { |e| e.id if e.shares_owned != 0 }.first %>
       <% position_cost = position.quantity * position.cost_per_share %>
-      <% @total_income += portfolio.income %>
       <% if position.portfolio_id == portfolio.id %>
+        <% @total_income += position.income %>
         <tr class="text-sm">
           <% if position.symbol != 'Cash' %>
             <td class="border border-slate-300 px-2 py-1"><%= link_to position.symbol, "/stocks/#{stock_id}", class:"px-2 py-0.5 rounded bg-dollar hover:bg-dollar-dark active:bg-dollar-light focus:outline-none focus:ring focus:ring-dollar-saturated text-white" %></td>
@@ -77,7 +77,8 @@
             <% end %>
             <td class="border border-slate-300 px-2"><%= number_to_currency(position.commission_and_fee) %></td>
             <td class="border border-slate-300 px-2"><%= number_to_currency(position_cost) %></td>
-            <td class="border border-slate-300 px-2 text-red-600"><%= number_to_currency(-1 * position.commission_and_fee) %></td>
+            <% stock_in_position = Stock.find_by(ticker: position.symbol) %>
+            <td class="border border-slate-300 px-2 text-red-600"><%= number_to_currency(-1 * stock_in_position.commission_and_fee) %></td>
             <% red_or_green = position.realized_profit_loss >= 0 ? 'text-green-600' : 'text-red-600' %>
             <td class="border border-slate-300 px-2 <%= red_or_green %>"><%= number_to_currency(position.realized_profit_loss) %></td>
             <td class="border border-slate-300 px-2 text-green-600"><%= number_to_currency(position.income) %></td>
@@ -98,8 +99,26 @@
       <% end %>
     <% end %>
     </tbody>
+
     <% @position_profit_loss = 0 %>
+
     <tfoot>
+      <% closed_positions(portfolio) %>
+      <% if @closed_stocks.length > 0 %>
+        <tr class="text-sm">
+          <td class="border border-slate-300 px-2">Closed</td>
+          <% 11.times do %>
+            <td class="border border-slate-300 px-2"> - </td>
+          <% end %>
+          <td class="border border-slate-300 px-2 text-red-600"><%= number_to_currency(-1 * @portfolio_closed_comm_and_fee) %></td>
+          <% red_or_green = @portfolio_closed_rpl >= 0 ? 'text-green-600' : 'text-red-600' %>
+          <td class="border border-slate-300 px-2 <%= red_or_green %>"><%= number_to_currency(@portfolio_closed_rpl) %></td>
+          <% red_or_green = @portfolio_closed_income >= 0 ? 'text-green-600' : 'text-red-600' %>
+          <td class="border border-slate-300 px-2 <%= red_or_green %>"><%= number_to_currency(@portfolio_closed_income) %></td>
+          <td class="border border-slate-300 px-2"></td>
+          <td class="border border-slate-300 px-2"></td>
+        </tr>
+      <% end %>
       <tr class="text-sm">
         <td class="border border-slate-300 px-2 font-bold">Total</td>
         <% 5.times do %>
@@ -118,26 +137,37 @@
         <% red_or_green = portfolio.realized_profit_loss >= 0 ? 'text-green-600' : 'text-red-600' %>
         <td class="border border-slate-300 px-2 <%= red_or_green %>"><%= number_to_currency(portfolio.realized_profit_loss) %></td>
         <% red_or_green = @total_income >= 0 ? 'text-green-600' : 'text-red-600' %>
-        <td class="border border-slate-300 px-2 <%= red_or_green %>"><%= number_to_currency(@total_income) %></td>
+        <td class="border border-slate-300 px-2 <%= red_or_green %>"><%= number_to_currency(@total_income + @portfolio_closed_income) %></td>
         <td class="border border-slate-300 px-2"><%= number_to_currency(@total_portfolio_value) %></td>
         <td class="border border-slate-300 px-2"></td>
       </tr>
     </tfoot>
   </table>
+
   <span class="my-5 block">
     <span class="block font-medium mb-1 inline-block">Portfolio Balance:</span>
     <% portfolio.cash == nil ? portfolio.cash = 0 : portfolio.cash %>
-    <span class="font-bold"><%= number_to_currency(@total_portfolio_value) %></span> *
+    <% red_or_green = @total_portfolio_value >= 0 ? 'text-green-600' : 'text-red-600' %>
+    <span class="font-bold <%= red_or_green %>"><%= number_to_currency(@total_portfolio_value) %></span> *
     <% @net_worth += @total_portfolio_value %>
     <span class="block font-medium mb-1 inline-block">Profit/Loss:</span>
-    <% total_profit = @total_position_gain + portfolio.realized_profit_loss + @total_income %>
+    <% total_profit = @total_position_gain + portfolio.realized_profit_loss %>
     <% red_or_green = total_profit >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_currency(total_profit) %></span> *
     <% @net_worth_profit += total_profit %>
-    <span class="block font-medium mb-1 inline-block">Profit/Loss percent:</span>
+    <span class="block font-medium mb-1 inline-block">Profit/Loss (%):</span>
     <% red_or_green = total_profit/(@total_portfolio_value - total_profit) >= 0 ? 'text-green-600' : 'text-red-600' %>
-    <span class="font-bold <%= red_or_green %>"><%= number_to_percentage((total_profit/(@total_portfolio_value - total_profit)) * 100).to_f.round(2) %>%</span>
+    <span class="font-bold <%= red_or_green %>"><%= number_to_percentage((total_profit/(@total_portfolio_value - total_profit)) * 100).to_f.round(2) %>%</span> * 
+    <span class="block font-medium mb-1 inline-block">Income:</span>
+    <% combined_income = @total_income + @portfolio_closed_income %>
+    <% red_or_green = combined_income >= 0 ? 'text-green-600' : 'text-red-600' %>
+    <span class="font-bold <%= red_or_green %>"><%= number_to_currency(combined_income) %></span> *
+    <% @net_worth_income += combined_income %>
+    <span class="block font-medium mb-1 inline-block">Income (%):</span>
+    <% red_or_green = combined_income/(@total_portfolio_value - combined_income) >= 0 ? 'text-green-600' : 'text-red-600' %>
+    <span class="font-bold <%= red_or_green %>"><%= number_to_percentage((combined_income/(@total_portfolio_value - combined_income)) * 100).to_f.round(2) %>%</span>
   </span>
+
   <% clear_instant_variable %>
   <% if action_name != "show" %>
     <%= link_to "Show", "/users/#{current_user.id}/portfolios/#{portfolio.id}", class: "rounded-lg py-1 px-2 bg-dollar-split_blue inline-block font-medium text-white hover:bg-dollar-triad_blue" %>

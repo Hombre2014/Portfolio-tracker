@@ -19,6 +19,14 @@ module PortfoliosHelper
     @total_income = 0
     @position_profit_loss = 0
     @total_portfolio_value = 0
+    @closed_stock_rpl = 0
+    @closed_stock_income = 0
+    @closed_stock_comm_and_fee = 0
+    @portfolio_closed_rpl = 0
+    @portfolio_closed_income = 0
+    @portfolio_closed_comm_and_fee = 0
+    @closed_stock_gain = 0
+    @total_closed_stock_gain = 0
   end
 
   def initial_setup
@@ -30,5 +38,23 @@ module PortfoliosHelper
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @net_worth = 0
     @net_worth_profit = 0
+    @net_worth_income = 0
+  end
+
+  def closed_positions(portfolio)
+    @closed_stocks = Stock.where(portfolio_id: portfolio.id).where(shares_owned: 0)
+    @closed_stocks.each do |stock|
+      @closed_stock_rpl = stock.realized_profit_loss
+      @portfolio_closed_rpl += @closed_stock_rpl
+
+      @closed_stock_income = stock.income
+      @portfolio_closed_income += @closed_stock_income
+
+      @closed_stock_comm_and_fee = stock.commission_and_fee
+      @portfolio_closed_comm_and_fee += @closed_stock_comm_and_fee
+
+      @closed_stock_gain = @closed_stock_rpl + @closed_stock_income - @closed_stock_comm_and_fee
+      @total_closed_stock_gain += @closed_stock_gain
+    end
   end
 end
