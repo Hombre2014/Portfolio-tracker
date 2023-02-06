@@ -172,9 +172,10 @@ module TransactionsHelper
     if @stock_symbols.include?(transaction.symbol)
       if long_position_exist?(transaction)
         unless closing_date_earlier_than_opening_date?(transaction)
-          @stock.commission_and_fee += add_cost(transaction)
           @stock.income += transaction_amount(transaction)
           @stock.save
+          @portfolio.income += transaction_amount(transaction)
+          @portfolio.save
         end
       end
     end
@@ -243,7 +244,7 @@ module TransactionsHelper
           @position.save
           @cash_position.update(quantity: @cash_position.quantity + transaction_sell_income)
       else
-        new_position = Position.create(open_date: transaction.trade_date, symbol: transaction.symbol, quantity: (-1 * transaction.quantity), cost_per_share: (transaction_sell_income / transaction.quantity).round(6), commission_and_fee: add_cost(transaction), realized_profit_loss: 0, income: 0, portfolio_id: @portfolio.id)
+        new_position = Position.create(open_date: transaction.trade_date, symbol: transaction.symbol, quantity: (-1 * transaction.quantity), cost_per_share: (transaction_sell_income / transaction.quantity).round(6), commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, income: @stock.income, portfolio_id: @portfolio.id)
         @cash_position.update(quantity: @cash_position.quantity + transaction_sell_income)
       end
     end
@@ -269,13 +270,29 @@ module TransactionsHelper
   end
 
   def position_with_cash_in(transaction)
-    # @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
     @cash_position.update(quantity: @cash_position.quantity + transaction_amount(transaction))
   end
 
   def position_with_cash_out(transaction)
-    # @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
     @cash_position.update(quantity: @cash_position.quantity - transaction_amount(transaction)) if enough_cash?(transaction)
+  end
+
+  def position_with_interest(transaction)
+    @cash_position.update(quantity: @cash_position.quantity + transaction.quantity)
+    @position.update(income: @position.income + transaction.quantity)
+    @position.save
+    @portfolio.update(income: @portfolio.income + transaction.quantity)
+    @portfolio.save
+  end
+
+  def position_with_expense(transaction)
+    if enough_cash?(transaction)
+      @cash_position.update(quantity: @cash_position.quantity - transaction.quantity)
+      @position.update(income: @position.income - transaction.quantity)
+      @position.save
+      @portfolio.update(income: @portfolio.income - transaction.quantity)
+      @portfolio.save
+    end
   end
 
   def position_with_dividend(transaction)
@@ -288,7 +305,7 @@ module TransactionsHelper
   end
 
   def create_update_position(transaction)
-    if ticker_exist?(transaction) && date_valid?(transaction)
+    if ticker_exist?(transaction) && date_valid?(transaction) || transaction.symbol == 'Cash'
       @stock = @stocks.find_by(ticker: transaction.symbol)
       @portfolio = Portfolio.find(params[:portfolio_id])
       @position = @positions.where(portfolio_id: params[:portfolio_id], symbol: transaction.symbol).first if symbol_exist?(transaction)
@@ -305,10 +322,14 @@ module TransactionsHelper
         position_with_sell_short(transaction)
       when 'Buy to cover'
         position_with_buy_to_cover(transaction)
-      when 'Cash In', 'Interest Inc.'
+      when 'Cash In'
         position_with_cash_in(transaction)
-      when 'Cash Out', 'Misc. Exp.'
+      when 'Cash Out'
         position_with_cash_out(transaction)
+      when 'Interest Inc.'
+        position_with_interest(transaction)
+      when 'Misc. Exp.'
+        position_with_expense(transaction)
       when 'Dividend'
         position_with_dividend(transaction)
       end

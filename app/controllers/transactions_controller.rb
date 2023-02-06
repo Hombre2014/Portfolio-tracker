@@ -151,7 +151,7 @@ class TransactionsController < ApplicationController
         end
       end
     end
-    create_update_stock(@transaction) unless @transaction.tr_type == 'Cash In' || @transaction.tr_type == 'Cash Out' || @transaction.tr_type == 'Interest Inc.' || @transaction.tr_type == 'Misc. Exp.'
+    create_update_stock(@transaction) unless @transaction.tr_type == 'Cash In' || @transaction.tr_type == 'Cash Out'  || @transaction.tr_type == 'Interest Inc.' || @transaction.tr_type == 'Misc. Exp.'
     create_update_position(@transaction)
   end
 
