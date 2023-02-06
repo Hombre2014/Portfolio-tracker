@@ -36,7 +36,7 @@
       <% stock_ticker = @stock_symbols.find { |i| i == position.symbol if position.symbol != 'Cash' } %>
       <% stock_id = Stock.where(ticker: stock_ticker, portfolio_id: portfolio.id).to_a.map { |e| e.id if e.shares_owned != 0 }.first %>
       <% position_cost = position.quantity * position.cost_per_share %>
-      <% @total_income += position.income %>
+      <% @total_income += portfolio.income %>
       <% if position.portfolio_id == portfolio.id %>
         <tr class="text-sm">
           <% if position.symbol != 'Cash' %>

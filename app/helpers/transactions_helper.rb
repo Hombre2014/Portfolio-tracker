@@ -281,8 +281,10 @@ module TransactionsHelper
     @cash_position.update(quantity: @cash_position.quantity + transaction.quantity)
     @position.update(income: @position.income + transaction.quantity)
     @position.save
-    @portfolio.update(income: @portfolio.income + transaction.quantity)
+    @portfolio.income += transaction_amount(transaction)
     @portfolio.save
+    # @portfolio.update(income: @portfolio.income + transaction.quantity)
+    # @portfolio.save
   end
 
   def position_with_expense(transaction)
@@ -290,8 +292,10 @@ module TransactionsHelper
       @cash_position.update(quantity: @cash_position.quantity - transaction.quantity)
       @position.update(income: @position.income - transaction.quantity)
       @position.save
-      @portfolio.update(income: @portfolio.income - transaction.quantity)
+      @portfolio.income += transaction_amount(transaction)
       @portfolio.save
+      # @portfolio.update(income: @portfolio.income - transaction.quantity)
+      # @portfolio.save
     end
   end
 
