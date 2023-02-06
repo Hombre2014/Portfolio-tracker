@@ -7,7 +7,7 @@ module PortfoliosHelper
 
   def create_cash_position
     @portfolio.cash.nil? ? @portfolio.cash = 0 : @portfolio.cash
-    @position = Position.create(portfolio_id: @portfolio.id, symbol: 'Cash', quantity: @portfolio.cash, cost_per_share: 1, open_date: @portfolio.opened_date)
+    @position = Position.create(portfolio_id: @portfolio.id, symbol: 'Cash', quantity: @portfolio.cash, cost_per_share: 1, open_date: @portfolio.opened_date, income: 0, commission_and_fee: 0, realized_profit_loss: 0, income: 0)
     @initial_portfolio_value = @portfolio.cash
     @initial_portfolio_value = @initial_portfolio_value.nil? ? 0 : @portfolio.cash
   end
@@ -16,6 +16,7 @@ module PortfoliosHelper
     @total_day_gain = 0
     @total_comm_and_fee = 0
     @total_position_gain = 0
+    @total_income = 0
     @position_profit_loss = 0
     @total_portfolio_value = 0
   end

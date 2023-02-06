@@ -52,5 +52,18 @@ export default class extends Controller {
     selectedTransactionType.value === 'Misc. Exp.'
       ? this.hideFields()
       : this.showFields();
+    if (selectedTransactionType.value === 'Dividend') {
+      const commission = document.getElementById('transaction_commission');
+      const fee = document.getElementById('transaction_fee');
+      const price = document.getElementById('transaction_price');
+      const quantity = document.getElementById('transaction_quantity');
+      commission.classList.add('hidden');
+      fee.classList.add('hidden');
+      quantity.classList.add('hidden');
+      quantity.setAttribute('value', '1');
+      commission.setAttribute('value', '0');
+      fee.setAttribute('value', '0');
+      price.setAttribute('placeholder', 'Dividend Amount');
+    }
   }
 }

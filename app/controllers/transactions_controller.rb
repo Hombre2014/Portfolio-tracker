@@ -125,6 +125,20 @@ class TransactionsController < ApplicationController
                 redirect_to current_transaction, alert: 'Not enough cash to complete the transaction.'
               end
             end
+          when 'Dividend'
+            if long_position_exist?(@transaction)
+              if closing_date_earlier_than_opening_date?(@transaction)
+                format.html do
+                  redirect_to current_transaction, alert: 'Trying to record a dividend transaction before the buy transaction. Check your transaction date!'
+                end
+              else
+                transaction_save(@transaction, format)
+              end
+            else
+              format.html do
+                redirect_to current_transaction, alert: 'You do not have a long position of this security.'
+              end
+            end
           end
         else
           format.html do
@@ -137,7 +151,7 @@ class TransactionsController < ApplicationController
         end
       end
     end
-    create_update_stock(@transaction) unless @transaction.tr_type == 'Cash In' || @transaction.tr_type == 'Cash Out' || @transaction.tr_type == 'Interest Inc.' || @transaction.tr_type == 'Misc. Exp.'
+    create_update_stock(@transaction) unless @transaction.tr_type == 'Cash In' || @transaction.tr_type == 'Cash Out'  || @transaction.tr_type == 'Interest Inc.' || @transaction.tr_type == 'Misc. Exp.'
     create_update_position(@transaction)
   end
 

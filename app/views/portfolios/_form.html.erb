@@ -20,6 +20,7 @@
     <%= form.hidden_field :user_id, value: current_user.id %>
     <%= form.hidden_field :realized_profit_loss, value: 0 %>
     <%= form.hidden_field :transactions_cost, value: 0 %>
+    <%= form.hidden_field :income, value: 0 %>
 
     <div class="mb-8">
       <span class="text-red-800">* The date portfolio was created. All transactions in the portfolio should be on or after this date!</span>
