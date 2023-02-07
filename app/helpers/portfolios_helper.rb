@@ -5,13 +5,6 @@ module PortfoliosHelper
     config.api_key['api_key'] = ENV.fetch('API_KEY', nil)
   end
 
-  def create_cash_position
-    @portfolio.cash.nil? ? @portfolio.cash = 0 : @portfolio.cash
-    @position = Position.create(portfolio_id: @portfolio.id, symbol: 'Cash', quantity: @portfolio.cash, cost_per_share: 1, open_date: @portfolio.opened_date, income: 0, commission_and_fee: 0, realized_profit_loss: 0, income: 0)
-    @initial_portfolio_value = @portfolio.cash
-    @initial_portfolio_value = @initial_portfolio_value.nil? ? 0 : @portfolio.cash
-  end
-
   def clear_instant_variable
     @total_day_gain = 0
     @total_comm_and_fee = 0
@@ -39,6 +32,15 @@ module PortfoliosHelper
     @net_worth = 0
     @net_worth_profit = 0
     @net_worth_income = 0
+    @net_worth_return = 0
+    @net_worth_return_percent = 0
+  end
+
+  def create_cash_position
+    @portfolio.cash.nil? ? @portfolio.cash = 0 : @portfolio.cash
+    @position = Position.create(portfolio_id: @portfolio.id, symbol: 'Cash', quantity: @portfolio.cash, cost_per_share: 1, open_date: @portfolio.opened_date, commission_and_fee: 0, realized_profit_loss: 0, income: 0)
+    @initial_portfolio_value = @portfolio.cash
+    @initial_portfolio_value = @initial_portfolio_value.nil? ? 0 : @portfolio.cash
   end
 
   def closed_positions(portfolio)
@@ -53,8 +55,8 @@ module PortfoliosHelper
       @closed_stock_comm_and_fee = stock.commission_and_fee
       @portfolio_closed_comm_and_fee += @closed_stock_comm_and_fee
 
-      @closed_stock_gain = @closed_stock_rpl + @closed_stock_income - @closed_stock_comm_and_fee
-      @total_closed_stock_gain += @closed_stock_gain
+      # @closed_stock_gain = @closed_stock_rpl + @closed_stock_income - @closed_stock_comm_and_fee
+      # @total_closed_stock_gain += @closed_stock_gain
     end
   end
 end

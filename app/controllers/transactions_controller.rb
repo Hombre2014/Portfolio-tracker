@@ -116,10 +116,22 @@ class TransactionsController < ApplicationController
               end
             end
           when 'Cash In', 'Interest Inc.'
-            transaction_save(@transaction, format)
+            if closing_date_earlier_than_opening_date?(@transaction)
+              format.html do
+                redirect_to current_transaction, alert: 'Trying to record a cash in transaction before the portfolio open date. Check your transaction date!'
+              end
+            else
+              transaction_save(@transaction, format)
+            end
           when 'Cash Out', 'Misc. Exp.'
             if enough_cash?(@transaction)
-              transaction_save(@transaction, format)
+              if closing_date_earlier_than_opening_date?(@transaction)
+                format.html do
+                  redirect_to current_transaction, alert: 'Trying to record a cash out or expense transaction before Cash In transaction or at this time there was not enough money to withdraw. Check your transaction date!'
+                end
+              else
+                transaction_save(@transaction, format)
+              end
             else
               format.html do
                 redirect_to current_transaction, alert: 'Not enough cash to complete the transaction.'

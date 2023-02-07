@@ -30,11 +30,11 @@ module TransactionsHelper
   def enough_cash?(transaction)
     @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
     if transaction.tr_type == 'Buy' || transaction.tr_type == 'Buy to cover' || transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.'
-      @transaction_buy_cost = transaction_amount(transaction) + add_cost(transaction)
+      @transaction_net_cost = transaction_amount(transaction) + add_cost(transaction)
     elsif transaction.tr_type == 'Sell' || transaction.tr_type == 'Sell short' || transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.' || transaction.tr_type == 'Dividend'
-      @transaction_buy_cost = transaction_amount(transaction) - add_cost(transaction)
+      @transaction_net_cost = transaction_amount(transaction) - add_cost(transaction)
     end
-    @cash_position.quantity >= @transaction_buy_cost
+    @cash_position.quantity >= @transaction_net_cost
   end
 
   def symbol_exist?(transaction) # in position table
@@ -61,6 +61,10 @@ module TransactionsHelper
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date
     elsif transaction.tr_type == 'Buy to cover'
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date
+    elsif transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.'
+      existing_stock_opened_date = @portfolio.opened_date
+    elsif transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.'
+      existing_stock_opened_date = (Transaction.where(symbol: transaction.symbol, tr_type: 'Cash In').order('trade_date ASC').first.trade_date if !nil) || @portfolio.opened_date
     end
     transaction.trade_date < existing_stock_opened_date
   end
@@ -205,15 +209,15 @@ module TransactionsHelper
         unless short_position_exist?(transaction)
           current_position_total = @position.quantity * @position.cost_per_share
           @position.update(quantity: @position.quantity + transaction.quantity)
-          @position.update(cost_per_share: (current_position_total + @transaction_buy_cost) / @position.quantity)
+          @position.update(cost_per_share: (current_position_total + @transaction_net_cost) / @position.quantity)
           @position.update(commission_and_fee: @position.commission_and_fee + add_cost(transaction))
         end
       else
         new_position = Position.create(open_date: transaction.trade_date, symbol: transaction.symbol,
-        quantity: transaction.quantity, cost_per_share: (@transaction_buy_cost / transaction.quantity).round(6), commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, income: @stock.income, portfolio_id: @portfolio.id)
+        quantity: transaction.quantity, cost_per_share: (@transaction_net_cost / transaction.quantity).round(6), commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, income: @stock.income, portfolio_id: @portfolio.id)
         new_position.commission_and_fee += add_cost(transaction)
       end
-      @cash_position.update(quantity: @cash_position.quantity - @transaction_buy_cost)
+      @cash_position.update(quantity: @cash_position.quantity - @transaction_net_cost)
     end
   end
 
@@ -260,7 +264,7 @@ module TransactionsHelper
               @position.commission_and_fee += add_cost(transaction)
               @position.update(realized_profit_loss: @stock.realized_profit_loss)
               @position.save
-              @cash_position.update(quantity: @cash_position.quantity - @transaction_buy_cost)
+              @cash_position.update(quantity: @cash_position.quantity - @transaction_net_cost)
               @position.destroy if @position.quantity == 0
             end
           end
@@ -270,36 +274,48 @@ module TransactionsHelper
   end
 
   def position_with_cash_in(transaction)
-    @cash_position.update(quantity: @cash_position.quantity + transaction_amount(transaction))
+    @cash_position.update(quantity: @cash_position.quantity + transaction_amount(transaction)) unless closing_date_earlier_than_opening_date?(transaction)
   end
 
   def position_with_cash_out(transaction)
-    @cash_position.update(quantity: @cash_position.quantity - transaction_amount(transaction)) if enough_cash?(transaction)
+    unless closing_date_earlier_than_opening_date?(transaction)
+      @cash_position.update(quantity: @cash_position.quantity - transaction_amount(transaction)) if enough_cash?(transaction)
+    end
   end
 
   def position_with_interest(transaction)
-    @cash_position.update(quantity: @cash_position.quantity + transaction.quantity)
-    @position.update(income: @position.income + transaction.quantity)
-    @position.save
-    @portfolio.income += transaction_amount(transaction)
-    @portfolio.save
-  end
-
-  def position_with_expense(transaction)
-    if enough_cash?(transaction)
-      @cash_position.update(quantity: @cash_position.quantity - transaction.quantity)
-      @position.update(income: @position.income - transaction.quantity)
+    unless closing_date_earlier_than_opening_date?(transaction)
+      @cash_position.update(quantity: @cash_position.quantity + transaction_amount(transaction))
+      @position.update(income: @position.income + transaction.quantity)
       @position.save
       @portfolio.income += transaction_amount(transaction)
       @portfolio.save
     end
   end
 
+  def position_with_expense(transaction)
+    unless closing_date_earlier_than_opening_date?(transaction)
+      if enough_cash?(transaction)
+        @cash_position.update(quantity: @cash_position.quantity - transaction.quantity)
+        @position.update(income: @position.income - transaction.quantity)
+        @position.save
+        @portfolio.income -= transaction_amount(transaction)
+        @portfolio.save
+      end
+    end
+  end
+
   def position_with_dividend(transaction)
     if symbol_exist?(transaction)
-      @cash_position.update(quantity: @cash_position.quantity + transaction_amount(transaction))
-      @position.update(income: @position.income + @stock.income)
-      @position.save
+      if long_position_exist?(transaction)
+        unless closing_date_earlier_than_opening_date?(transaction)
+          @cash_position.update(quantity: @cash_position.quantity + transaction_amount(transaction))
+          @position.update(income: @position.income + @stock.income)
+          @position.save
+          @portfolio.income += transaction_amount(transaction)
+          @portfolio.save
+        end
+      end
     end
   end
 

@@ -20,18 +20,26 @@
 
   <div>
     <% unless @portfolios.length == 0 %>
-      <span class="block font-medium mb-1 inline-block text-lg">Total Net Worth:</span>
+      <span class="block font-medium mb-1 inline-block text-base">Total Net Worth:</span>
       <% red_or_green = @net_worth >= @net_worth - @net_worth_profit ? 'text-green-600' : 'text-red-600' %>
-      <span class="font-bold text-lg <%= red_or_green %>"><%= number_to_currency(@net_worth) %></span> *
-      <span class="block font-medium mb-1 inline-block text-lg">Net Worth P/L:</span>
-      <span class="font-bold text-lg <%= red_or_green %>"><%= number_to_currency(@net_worth_profit) %></span> *
-      <span class="block font-medium mb-1 inline-block text-lg">Net Worth P/L (%):</span>
-      <span class="font-bold text-lg <%= red_or_green %>"><%= number_to_percentage((@net_worth_profit/(@net_worth - @net_worth_profit)) * 100).to_f.round(2) %>%</span> * 
+      <span class="font-bold text-base <%= red_or_green %>"><%= number_to_currency(@net_worth) %></span> *
+      <%# @net_worth_return = @net_worth_profit + @net_worth_income %>
+      <span class="block font-medium mb-1 inline-block text-base">Return:</span>
+      <% red_or_green = @net_worth_return >= 0 ? 'text-green-600' : 'text-red-600' %>
+      <span class="font-bold text-base <%= red_or_green %>"><%= number_to_currency(@net_worth_return) %></span> *
+      <span class="block font-medium mb-1 inline-block text-base">Return (%):</span>
+      <% red_or_green = @net_worth_return_percent >= 0 ? 'text-green-600' : 'text-red-600' %>
+      <span class="font-bold text-base <%= red_or_green %>"><%= number_to_percentage((@net_worth_return/(@net_worth - @net_worth_return)) * 100).to_f.round(2) %>%</span> *
+      <span class="block font-medium mb-1 inline-block text-base">P/L:</span>
+      <% red_or_green = @net_worth_profit >= 0 ? 'text-green-600' : 'text-red-600' %>
+      <span class="font-bold text-base <%= red_or_green %>"><%= number_to_currency(@net_worth_profit) %></span> *
+      <span class="block font-medium mb-1 inline-block text-base">P/L (%):</span>
+      <span class="font-bold text-base <%= red_or_green %>"><%= number_to_percentage((@net_worth_profit/(@net_worth - @net_worth_profit)) * 100).to_f.round(2) %>%</span> * 
       <% red_or_green = @net_worth >= @net_worth - @net_worth_income ? 'text-green-600' : 'text-red-600' %>
-      <span class="block font-medium mb-1 inline-block text-lg">Income:</span>
-      <span class="font-bold text-lg <%= red_or_green %>"><%= number_to_currency(@net_worth_income) %></span> * 
-      <span class="block font-medium mb-1 inline-block text-lg">Income (%):</span>
-      <span class="font-bold text-lg <%= red_or_green %>"><%= number_to_percentage((@net_worth_income/(@net_worth - @net_worth_income)) * 100).to_f.round(2) %>%</span>
+      <span class="block font-medium mb-1 inline-block text-base">Income:</span>
+      <span class="font-bold text-base <%= red_or_green %>"><%= number_to_currency(@net_worth_income) %></span> * 
+      <span class="block font-medium mb-1 inline-block text-base">Income (%):</span>
+      <span class="font-bold text-base <%= red_or_green %>"><%= number_to_percentage((@net_worth_income/(@net_worth - @net_worth_income)) * 100).to_f.round(2) %>%</span>
     <% end %>
   </div>
 </div>
