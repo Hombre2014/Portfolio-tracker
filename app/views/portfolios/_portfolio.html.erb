@@ -146,18 +146,18 @@
 
   <span class="my-5 block">
     <span class="block font-medium mb-1 inline-block">Portfolio Balance:</span>
-    <% portfolio.cash == nil ? portfolio.cash = 0 : portfolio.cash %>
-    <% red_or_green = @total_portfolio_value >= 0 ? 'text-green-600' : 'text-red-600' %>
-    <span class="font-bold <%= red_or_green %>"><%= number_to_currency(@total_portfolio_value) %></span> *
-    <% @net_worth += @total_portfolio_value %>
-    <span class="block font-medium mb-1 inline-block">Total Return:</span>
     <% total_profit = @total_position_gain + portfolio.realized_profit_loss %>
     <% combined_income = @total_income + @portfolio_closed_income %>
     <% total_return = total_profit + combined_income %>
+    <% portfolio.cash == nil ? portfolio.cash = 0 : portfolio.cash %>
+    <% red_or_green = @total_portfolio_value >= @total_portfolio_value - total_profit ? 'text-green-600' : 'text-red-600' %>
+    <span class="font-bold <%= red_or_green %>"><%= number_to_currency(@total_portfolio_value) %></span> *
+    <% @net_worth += @total_portfolio_value %>
+    <span class="block font-medium mb-1 inline-block">Return:</span>
     <% red_or_green = total_return >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_currency(total_return) %></span> *
     <% @net_worth_return += total_return %>
-    <span class="block font-medium mb-1 inline-block">Total Return (%):</span>
+    <span class="block font-medium mb-1 inline-block">Return (%):</span>
     <% red_or_green = total_return/(@total_portfolio_value - total_return) >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_percentage((total_return/(@total_portfolio_value - total_return)) * 100).to_f.round(2) %>%</span> *
     <% @net_worth_return_percent += (total_return/(@total_portfolio_value - total_return)) * 100 %>
