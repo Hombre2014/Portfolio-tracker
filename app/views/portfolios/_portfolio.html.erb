@@ -150,8 +150,18 @@
     <% red_or_green = @total_portfolio_value >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_currency(@total_portfolio_value) %></span> *
     <% @net_worth += @total_portfolio_value %>
-    <span class="block font-medium mb-1 inline-block">Profit/Loss:</span>
+    <span class="block font-medium mb-1 inline-block">Total Return:</span>
     <% total_profit = @total_position_gain + portfolio.realized_profit_loss %>
+    <% combined_income = @total_income + @portfolio_closed_income %>
+    <% total_return = total_profit + combined_income %>
+    <% red_or_green = total_return >= 0 ? 'text-green-600' : 'text-red-600' %>
+    <span class="font-bold <%= red_or_green %>"><%= number_to_currency(total_return) %></span> *
+    <% @net_worth_return += total_return %>
+    <span class="block font-medium mb-1 inline-block">Total Return (%):</span>
+    <% red_or_green = total_return/(@total_portfolio_value - total_return) >= 0 ? 'text-green-600' : 'text-red-600' %>
+    <span class="font-bold <%= red_or_green %>"><%= number_to_percentage((total_return/(@total_portfolio_value - total_return)) * 100).to_f.round(2) %>%</span> *
+    <% @net_worth_return_percent += (total_return/(@total_portfolio_value - total_return)) * 100 %>
+    <span class="block font-medium mb-1 inline-block">Profit/Loss:</span>
     <% red_or_green = total_profit >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_currency(total_profit) %></span> *
     <% @net_worth_profit += total_profit %>
@@ -159,7 +169,6 @@
     <% red_or_green = total_profit/(@total_portfolio_value - total_profit) >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_percentage((total_profit/(@total_portfolio_value - total_profit)) * 100).to_f.round(2) %>%</span> * 
     <span class="block font-medium mb-1 inline-block">Income:</span>
-    <% combined_income = @total_income + @portfolio_closed_income %>
     <% red_or_green = combined_income >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_currency(combined_income) %></span> *
     <% @net_worth_income += combined_income %>
