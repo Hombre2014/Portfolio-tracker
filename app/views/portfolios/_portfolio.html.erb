@@ -41,11 +41,13 @@
         <tr class="text-sm">
           <% if position.symbol != 'Cash' %>
             <td class="border border-slate-300 px-2 py-1"><%= link_to position.symbol, "/stocks/#{stock_id}", class:"px-2 py-0.5 rounded bg-dollar hover:bg-dollar-dark active:bg-dollar-light focus:outline-none focus:ring focus:ring-dollar-saturated text-white" %></td>
+            <td class="border border-slate-300 px-2"><%= number_to_rounded(position.quantity, precision: 3, strip_insignificant_zeros: true) %></td>
+            <td class="border border-slate-300 px-2"><%= number_to_currency(position.cost_per_share, precision: 6, strip_insignificant_zeros: true) %></td>
           <% else %>
             <td class="border border-slate-300 px-2"><%= position.symbol %></td>
+            <td class="border border-slate-300 px-2"><%= number_to_currency(position.quantity, precision: 2, strip_insignificant_zeros: true) %></td>
+            <td class="border border-slate-300 px-2">-</td>
           <% end %>
-          <td class="border border-slate-300 px-2"><%= sprintf('%.2f', position.quantity.to_f) %></td>
-          <td class="border border-slate-300 px-2"><%= number_to_currency(position.cost_per_share, precision: 6, strip_insignificant_zeros: true) %></td>
           <% if position.symbol != 'Cash' %>
             <% price = @finnhub_client.quote(position.symbol) %>
             <% position_value = (position.quantity * price.c).round(2) %>
@@ -85,8 +87,7 @@
             <td class="border border-slate-300 px-2"><%= number_to_currency(position_value) %></td>
             <td class="border border-slate-300 px-2"><%= position.open_date %></td>
           <% else %>
-            <td class="border border-slate-300 px-2"><%= number_to_currency(1) %></td>
-            <% 10.times do %>
+            <% 11.times do %>
               <td class="border border-slate-300 px-2"> - </td>
             <% end %>
             <% red_or_green = position.income >= 0 ? 'text-green-600' : 'text-red-600' %>
