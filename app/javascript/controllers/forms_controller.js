@@ -9,61 +9,90 @@ export default class extends Controller {
     this.element.setAttribute('data-action', 'change->forms#handleChange');
   }
 
-  getFields() {
+  getFields(transactionType) {
     const symbol = document.getElementById('transaction_symbol');
+    const quantity = document.getElementById('transaction_quantity');
     const price = document.getElementById('transaction_price');
     const commission = document.getElementById('transaction_commission');
     const fee = document.getElementById('transaction_fee');
-    return [symbol, price, commission, fee];
+    if (transactionType === 'Common') return [commission, fee];
+    if (transactionType === 'Cash') return [symbol, price];
+    if (transactionType === 'Dividend') return [quantity];
+    if (transactionType === 'All') return [symbol, quantity, price, commission, fee];
   }
 
-  hideFields() {
-    this.getFields().forEach((field) => {
+  hideCommonFields() {
+    this.getFields('Common').forEach((field) => {
+      field.classList.add('hidden');
+      field.setAttribute('value', 0);
+    });
+  }
+
+  hideFieldsForCashTransactions() {
+    this.getFields('Cash').forEach((field) => {
       field.removeAttribute('required');
       field.classList.add('hidden');
       if (field === document.getElementById('transaction_symbol')) field.setAttribute('value', 'Cash');
       if (field === document.getElementById('transaction_price')) field.setAttribute('value', '1');
-      if (field === document.getElementById('transaction_commission')) field.setAttribute('value', '0');
-      if (field === document.getElementById('transaction_fee')) field.setAttribute('value', '0');
     });
     const amount = document.getElementById('transaction_quantity');
+    amount.classList.remove('hidden');
     amount.setAttribute('placeholder', 'Amount');
+    amount.setAttribute('required', 'true');
+    amount.setAttribute('value', '');
   }
 
-  showFields() {
-    this.getFields().forEach((field) => {
+  hideFieldsForDivTransactions() {
+    this.getFields('Dividend').forEach((field) => {
+      field.removeAttribute('required');
+      field.classList.add('hidden');
+      if (field === document.getElementById('transaction_quantity')) field.setAttribute('value', '1');
+    });
+    const symbol = document.getElementById('transaction_symbol');
+    symbol.classList.remove('hidden');
+    symbol.setAttribute('required', 'true');
+    symbol.setAttribute('value', '');
+    const price = document.getElementById('transaction_price');  
+    price.classList.remove('hidden');
+    price.setAttribute('required', 'true');
+    price.setAttribute('value', '');
+    price.setAttribute('placeholder', 'Dividend per share');
+  }
+
+  showAllFields() {
+    this.getFields('All').forEach((field) => {
       field.classList.remove('hidden');
       field.setAttribute('value', '');
       if (field === document.getElementById('transaction_symbol')) field.setAttribute('required', 'true');
-      if (field === document.getElementById('transaction_price')) field.setAttribute('required', 'true');
+      if (field === document.getElementById('transaction_price')) {
+        field.setAttribute('required', 'true');
+        field.setAttribute('placeholder', 'Price per share');
+      }
+      if (field === document.getElementById('transaction_quantity')) {
+        field.setAttribute('required', 'true');
+        field.setAttribute('placeholder', 'Quantity');
+      }
     });
-    const quantity = document.getElementById('transaction_quantity');
-    quantity.setAttribute('placeholder', 'Quantity');
   }
 
   handleChange(event) {
     event.preventDefault();
-    const selectedTransactionType = document.getElementById(
-      'transaction_tr_type'
-    );
-    selectedTransactionType.value === 'Cash In' ||
-    selectedTransactionType.value === 'Cash Out' ||
-    selectedTransactionType.value === 'Interest Inc.' ||
-    selectedTransactionType.value === 'Misc. Exp.'
-      ? this.hideFields()
-      : this.showFields();
-    if (selectedTransactionType.value === 'Dividend') {
-      const commission = document.getElementById('transaction_commission');
-      const fee = document.getElementById('transaction_fee');
-      const price = document.getElementById('transaction_price');
-      const quantity = document.getElementById('transaction_quantity');
-      commission.classList.add('hidden');
-      fee.classList.add('hidden');
-      quantity.classList.add('hidden');
-      quantity.setAttribute('value', '1');
-      commission.setAttribute('value', '0');
-      fee.setAttribute('value', '0');
-      price.setAttribute('placeholder', 'Dividend Amount');
+    const selectedTransactionType = document.getElementById('transaction_tr_type');
+    switch(selectedTransactionType.value) {
+      case 'Cash In':
+      case 'Cash Out':
+      case 'Interest Inc.':
+      case 'Misc. Exp.':
+        this.hideCommonFields();
+        this.hideFieldsForCashTransactions();
+        break;
+      case 'Dividend':
+      case 'Reinvest Div.':
+        this.hideCommonFields();
+        this.hideFieldsForDivTransactions();
+        break;
+      default:
+        this.showAllFields();
     }
   }
 }
