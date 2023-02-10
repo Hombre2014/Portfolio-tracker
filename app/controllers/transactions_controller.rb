@@ -45,7 +45,7 @@ class TransactionsController < ApplicationController
             if enough_cash?(@transaction)
               if short_position_exist?(@transaction)
                 format.html do
-                  redirect_to current_transaction, alert: 'You have a short position of this security.'
+                  redirect_to current_transaction, alert: 'You have a short position in this security.'
                 end
               else
                 transaction_save(@transaction, format)
@@ -72,7 +72,7 @@ class TransactionsController < ApplicationController
               end
             else
               format.html do
-                redirect_to current_transaction, alert: 'You have a short position of this security.'
+                redirect_to current_transaction, alert: 'You have a short position in this security.'
               end
             end
           when 'Sell short'
@@ -80,7 +80,7 @@ class TransactionsController < ApplicationController
               transaction_save(@transaction, format)
             else
               format.html do
-                redirect_to current_transaction, alert: 'You have a long position of this security.'
+                redirect_to current_transaction, alert: 'You have a long position in this security.'
               end
             end
           when 'Buy to cover'
@@ -107,12 +107,12 @@ class TransactionsController < ApplicationController
                 end
               else
                 format.html do
-                  redirect_to current_transaction, alert: 'You do not have a short position of this security.'
+                  redirect_to current_transaction, alert: 'You do not have a short position in this security.'
                 end
               end
             else
               format.html do
-                redirect_to current_transaction, alert: 'You have a long position of this security.'
+                redirect_to current_transaction, alert: 'You have a long position in this security.'
               end
             end
           when 'Cash In', 'Interest Inc.'
@@ -148,7 +148,21 @@ class TransactionsController < ApplicationController
               end
             else
               format.html do
-                redirect_to current_transaction, alert: 'You do not have a long position of this security.'
+                redirect_to current_transaction, alert: 'You do not have a long position in this security.'
+              end
+            end
+          when 'Reinvest Div.'
+            if long_position_exist?(@transaction)
+              if closing_date_earlier_than_opening_date?(@transaction)
+                format.html do
+                  redirect_to current_transaction, alert: 'Trying to record a reinvest dividend transaction before the buy transaction. Check your transaction date!'
+                end
+              else
+                transaction_save(@transaction, format)
+              end
+            else
+              format.html do
+                redirect_to current_transaction, alert: 'You do not have a long position in this security.'
               end
             end
           end

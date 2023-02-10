@@ -66,7 +66,7 @@ export default class extends Controller {
       if (field === document.getElementById('transaction_symbol')) field.setAttribute('required', 'true');
       if (field === document.getElementById('transaction_price')) {
         field.setAttribute('required', 'true');
-        field.setAttribute('placeholder', 'Price per share');
+        field.setAttribute('placeholder', 'Price');
       }
       if (field === document.getElementById('transaction_quantity')) {
         field.setAttribute('required', 'true');
