@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_08_103949) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_10_151456) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,6 +66,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_103949) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "portfolio_id", null: false
+    t.decimal "div_per_share", precision: 10, scale: 5
+    t.decimal "closing_price", precision: 10, scale: 2
+    t.integer "new_shares"
+    t.integer "old_shares"
+    t.string "new_symbol"
     t.index ["portfolio_id"], name: "index_transactions_on_portfolio_id"
   end
 
