@@ -18,7 +18,7 @@ module TransactionsHelper
   end
 
   def transaction_amount(transaction)
-    transaction.quantity * transaction.price
+    transaction.tr_type != 'Dividend' ? transaction.quantity * transaction.price : transaction.quantity * transaction.div_per_share
   end
 
   def add_cost(transaction)
@@ -57,7 +57,7 @@ module TransactionsHelper
   end
 
   def closing_date_earlier_than_opening_date?(transaction)
-    if transaction.tr_type == 'Sell' || transaction.tr_type == 'Dividend'
+    if transaction.tr_type == 'Sell' || transaction.tr_type == 'Dividend' || transaction.tr_type == 'Reinvest Div.'
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date
     elsif transaction.tr_type == 'Buy to cover'
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date
@@ -85,6 +85,12 @@ module TransactionsHelper
 
   def transaction_save(transaction, format)
     transaction.quantity *= @stock.shares_owned if transaction.tr_type == 'Dividend'
+    transaction.price = transaction.div_per_share if transaction.tr_type == 'Dividend'
+    if transaction.tr_type == 'Reinvest Div.'
+      new_shares = (transaction.price * @stock.shares_owned / @finnhub_client.quote(transaction.symbol).pc).round(3)
+      transaction.quantity = new_shares
+      transaction.price = @finnhub_client.quote(transaction.symbol).pc
+    end
     if transaction.save
       format.html do
         redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", notice: 'Transaction was successfully created.'

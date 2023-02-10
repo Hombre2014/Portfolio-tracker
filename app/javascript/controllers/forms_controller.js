@@ -15,16 +15,29 @@ export default class extends Controller {
     const price = document.getElementById('transaction_price');
     const commission = document.getElementById('transaction_commission');
     const fee = document.getElementById('transaction_fee');
+    // These are hidden fields for dividend reinvestment transactions and stock splits by default
+    const dividendPerShare = document.getElementById('transaction_div_per_share');
+    const closingPrice = document.getElementById('transaction_closing_price');
+    const newShares = document.getElementById('transaction_new_shares');
+    const oldShares = document.getElementById('transaction_old_shares');
+    const newSymbol = document.getElementById('transaction_new_symbol');
     if (transactionType === 'Common') return [commission, fee];
-    if (transactionType === 'Cash') return [symbol, price];
-    if (transactionType === 'Dividend') return [quantity];
+    if (transactionType === 'Cash') return [symbol, price, dividendPerShare];
+    if (transactionType === 'Dividend') return [quantity, price];
     if (transactionType === 'All') return [symbol, quantity, price, commission, fee];
+    if (transactionType === 'Uncommon') return [closingPrice, newShares, oldShares, newSymbol, dividendPerShare];
   }
 
   hideCommonFields() {
     this.getFields('Common').forEach((field) => {
       field.classList.add('hidden');
       field.setAttribute('value', 0);
+    });
+  }
+
+  hideUncommonFields() {
+    this.getFields('Uncommon').forEach((field) => {
+      field.classList.add('hidden');
     });
   }
 
@@ -47,16 +60,24 @@ export default class extends Controller {
       field.removeAttribute('required');
       field.classList.add('hidden');
       if (field === document.getElementById('transaction_quantity')) field.setAttribute('value', '1');
+      if (field === document.getElementById('transaction_price')) field.setAttribute('value', '1');
     });
+    // const price = document.getElementById('transaction_price');  
+    // price.classList.remove('hidden');
+    // price.setAttribute('required', 'true');
+    // price.setAttribute('value', '');
+    // price.setAttribute('placeholder', 'Dividend per share');
+  }
+
+  showFieldsForDivTransactions() {
+    const dividendPerShare = document.getElementById('transaction_div_per_share');
+    dividendPerShare.classList.remove('hidden');
+    dividendPerShare.setAttribute('required', 'true');
+    dividendPerShare.setAttribute('value', '');
     const symbol = document.getElementById('transaction_symbol');
     symbol.classList.remove('hidden');
     symbol.setAttribute('required', 'true');
     symbol.setAttribute('value', '');
-    const price = document.getElementById('transaction_price');  
-    price.classList.remove('hidden');
-    price.setAttribute('required', 'true');
-    price.setAttribute('value', '');
-    price.setAttribute('placeholder', 'Dividend per share');
   }
 
   showAllFields() {
@@ -66,7 +87,7 @@ export default class extends Controller {
       if (field === document.getElementById('transaction_symbol')) field.setAttribute('required', 'true');
       if (field === document.getElementById('transaction_price')) {
         field.setAttribute('required', 'true');
-        field.setAttribute('placeholder', 'Price per share');
+        field.setAttribute('placeholder', 'Price');
       }
       if (field === document.getElementById('transaction_quantity')) {
         field.setAttribute('required', 'true');
@@ -90,9 +111,11 @@ export default class extends Controller {
       case 'Reinvest Div.':
         this.hideCommonFields();
         this.hideFieldsForDivTransactions();
+        this.showFieldsForDivTransactions();
         break;
       default:
         this.showAllFields();
+        this.hideUncommonFields();
     }
   }
 }

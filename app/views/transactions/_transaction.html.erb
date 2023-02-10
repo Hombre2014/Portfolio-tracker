@@ -8,7 +8,7 @@
     <td class="border border-slate-300 px-4"><%= transaction.trade_date %></td>
     <td class="border border-slate-300 px-4"><%= transaction.symbol %></td>
     <td class="border border-slate-300 px-4"><%= transaction.quantity %></td>
-    <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.price) %></td>
+    <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.price, precision: 5, strip_insignificant_zeros: true) %></td>
     <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.commission) %></td>
     <% @total_commissions += transaction.commission %>
     <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.fee) %></td>
@@ -16,7 +16,7 @@
     <% if transaction.tr_type == 'Buy' || transaction.tr_type == 'Buy to cover' || transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.' %>
       <td class="border border-slate-300 px-4 text-red-600"><%= number_to_currency(-1 * (transaction_amount + added_cost)) %></td>
       <% @income_spent -= transaction_amount + added_cost %>
-    <% elsif transaction.tr_type == 'Sell' || transaction.tr_type == 'Sell short' || transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.' || transaction.tr_type == 'Dividend' %>
+    <% elsif transaction.tr_type == 'Sell' || transaction.tr_type == 'Sell short' || transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.' || transaction.tr_type == 'Dividend' || transaction.tr_type == 'Reinvest Div.' %>
       <td class="border border-slate-300 px-4 text-green-600"><%= number_to_currency(transaction_amount - added_cost) %></td>
       <% @income_spent += transaction_amount - added_cost %>
     <% end %>
