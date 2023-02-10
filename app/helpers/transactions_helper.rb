@@ -18,7 +18,7 @@ module TransactionsHelper
   end
 
   def transaction_amount(transaction)
-    transaction.quantity * transaction.price
+    transaction.tr_type != 'Dividend' ? transaction.quantity * transaction.price : transaction.quantity * transaction.div_per_share
   end
 
   def add_cost(transaction)
@@ -85,6 +85,7 @@ module TransactionsHelper
 
   def transaction_save(transaction, format)
     transaction.quantity *= @stock.shares_owned if transaction.tr_type == 'Dividend'
+    transaction.price = transaction.div_per_share if transaction.tr_type == 'Dividend'
     if transaction.tr_type == 'Reinvest Div.'
       new_shares = (transaction.price * @stock.shares_owned / @finnhub_client.quote(transaction.symbol).pc).round(3)
       transaction.quantity = new_shares

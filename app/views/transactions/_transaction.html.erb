@@ -8,7 +8,7 @@
     <td class="border border-slate-300 px-4"><%= transaction.trade_date %></td>
     <td class="border border-slate-300 px-4"><%= transaction.symbol %></td>
     <td class="border border-slate-300 px-4"><%= transaction.quantity %></td>
-    <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.price) %></td>
+    <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.price, precision: 5, strip_insignificant_zeros: true) %></td>
     <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.commission) %></td>
     <% @total_commissions += transaction.commission %>
     <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.fee) %></td>
