@@ -20,6 +20,8 @@ module PortfoliosHelper
     @portfolio_closed_comm_and_fee = 0
     @closed_stock_gain = 0
     @total_closed_stock_gain = 0
+    @total_reinvested_income = 0
+    @portfolio_closed_reinvested_income = 0
   end
 
   def initial_setup
@@ -34,6 +36,7 @@ module PortfoliosHelper
     @net_worth_income = 0
     @net_worth_return = 0
     @net_worth_return_percent = 0
+    @net_worth_reinvested_income = 0
   end
 
   def create_cash_position

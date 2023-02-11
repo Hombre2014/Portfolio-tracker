@@ -80,6 +80,13 @@ export default class extends Controller {
     symbol.setAttribute('value', '');
   }
 
+  showFieldsForReinvestDivTransactions() {
+    const closingPrice = document.getElementById('transaction_closing_price');
+    closingPrice.classList.remove('hidden');
+    closingPrice.setAttribute('required', 'true');
+    closingPrice.setAttribute('value', '');
+  }
+
   showAllFields() {
     this.getFields('All').forEach((field) => {
       field.classList.remove('hidden');
@@ -108,10 +115,15 @@ export default class extends Controller {
         this.hideFieldsForCashTransactions();
         break;
       case 'Dividend':
+        this.hideCommonFields();
+        this.hideFieldsForDivTransactions();
+        this.showFieldsForDivTransactions();
+        break;
       case 'Reinvest Div.':
         this.hideCommonFields();
         this.hideFieldsForDivTransactions();
         this.showFieldsForDivTransactions();
+        this.showFieldsForReinvestDivTransactions();
         break;
       default:
         this.showAllFields();
