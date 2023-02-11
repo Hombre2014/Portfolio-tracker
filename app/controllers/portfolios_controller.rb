@@ -94,6 +94,6 @@ class PortfoliosController < ApplicationController
   # Only allow a list of trusted parameters through.
   def portfolio_params
     params.require(:portfolio).permit(:name, :acc_number, :cash, :opened_date, :realized_profit_loss, :income,
-                                      :transactions_cost, :user_id)
+                                      :transactions_cost, :user_id, :reinvested_income)
   end
 end

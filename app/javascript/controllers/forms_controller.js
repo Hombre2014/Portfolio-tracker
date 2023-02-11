@@ -15,12 +15,11 @@ export default class extends Controller {
     const price = document.getElementById('transaction_price');
     const commission = document.getElementById('transaction_commission');
     const fee = document.getElementById('transaction_fee');
-    // These are hidden fields for dividend reinvestment transactions and stock splits by default
     const dividendPerShare = document.getElementById('transaction_div_per_share');
     const closingPrice = document.getElementById('transaction_closing_price');
-    const newShares = document.getElementById('transaction_new_shares');
-    const oldShares = document.getElementById('transaction_old_shares');
-    const newSymbol = document.getElementById('transaction_new_symbol');
+    // const newShares = document.getElementById('transaction_new_shares');
+    // const oldShares = document.getElementById('transaction_old_shares');
+    // const newSymbol = document.getElementById('transaction_new_symbol');
     if (transactionType === 'Common') return [commission, fee];
     if (transactionType === 'Cash') return [symbol, price, dividendPerShare];
     if (transactionType === 'Dividend') return [quantity, price];
@@ -62,11 +61,6 @@ export default class extends Controller {
       if (field === document.getElementById('transaction_quantity')) field.setAttribute('value', '1');
       if (field === document.getElementById('transaction_price')) field.setAttribute('value', '1');
     });
-    // const price = document.getElementById('transaction_price');  
-    // price.classList.remove('hidden');
-    // price.setAttribute('required', 'true');
-    // price.setAttribute('value', '');
-    // price.setAttribute('placeholder', 'Dividend per share');
   }
 
   showFieldsForDivTransactions() {
@@ -78,6 +72,13 @@ export default class extends Controller {
     symbol.classList.remove('hidden');
     symbol.setAttribute('required', 'true');
     symbol.setAttribute('value', '');
+  }
+
+  showFieldsForReinvestDivTransactions() {
+    const closingPrice = document.getElementById('transaction_closing_price');
+    closingPrice.classList.remove('hidden');
+    closingPrice.setAttribute('required', 'true');
+    closingPrice.setAttribute('value', '');
   }
 
   showAllFields() {
@@ -108,10 +109,15 @@ export default class extends Controller {
         this.hideFieldsForCashTransactions();
         break;
       case 'Dividend':
+        this.hideCommonFields();
+        this.hideFieldsForDivTransactions();
+        this.showFieldsForDivTransactions();
+        break;
       case 'Reinvest Div.':
         this.hideCommonFields();
         this.hideFieldsForDivTransactions();
         this.showFieldsForDivTransactions();
+        this.showFieldsForReinvestDivTransactions();
         break;
       default:
         this.showAllFields();

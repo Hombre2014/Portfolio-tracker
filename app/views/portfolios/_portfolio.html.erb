@@ -25,6 +25,7 @@
         <th class="border border-slate-300 px-2">Real. C/F</th>
         <th class="border border-slate-300 px-2">Real. P/L</th>
         <th class="border border-slate-300 px-2">Income</th>
+        <th class="border border-slate-300 px-2">Reinv. Inc.</th>
         <th class="border border-slate-300 px-2">Value</th>
         <th class="border border-slate-300 px-2">Date</th>
       </tr>
@@ -33,16 +34,18 @@
     <% @positions.order(:created_at).reverse.each do |position| %>
       <% position.commission_and_fee == nil ? position.commission_and_fee = 0 : position.commission_and_fee %>
       <% position.income == nil ? position.income = 0 : position.income %>
+      <% position.reinvested_income == nil ? position.reinvested_income = 0 : position.reinvested_income %>
       <% stock_ticker = @stock_symbols.find { |i| i == position.symbol if position.symbol != 'Cash' } %>
       <% stock_id = Stock.where(ticker: stock_ticker, portfolio_id: portfolio.id).to_a.map { |e| e.id if e.shares_owned != 0 }.first %>
-      <% position_cost = position.quantity * position.cost_per_share %>
+      <% position_cost = position.quantity * position.cost_per_share - position.reinvested_income %>
       <% if position.portfolio_id == portfolio.id %>
         <% @total_income += position.income %>
+        <% @total_reinvested_income += position.reinvested_income %>
         <tr class="text-sm">
           <% if position.symbol != 'Cash' %>
             <td class="border border-slate-300 px-2 py-1"><%= link_to position.symbol, "/stocks/#{stock_id}", class:"px-2 py-0.5 rounded bg-dollar hover:bg-dollar-dark active:bg-dollar-light focus:outline-none focus:ring focus:ring-dollar-saturated text-white" %></td>
             <td class="border border-slate-300 px-2"><%= number_to_rounded(position.quantity, precision: 3, strip_insignificant_zeros: true) %></td>
-            <td class="border border-slate-300 px-2"><%= number_to_currency(position.cost_per_share, precision: 6, strip_insignificant_zeros: true) %></td>
+            <td class="border border-slate-300 px-2"><%= number_to_currency(position.cost_per_share, precision: 5, strip_insignificant_zeros: true) %></td>
           <% else %>
             <td class="border border-slate-300 px-2"><%= position.symbol %></td>
             <td class="border border-slate-300 px-2"><%= number_to_currency(position.quantity, precision: 2, strip_insignificant_zeros: true) %></td>
@@ -84,6 +87,7 @@
             <% red_or_green = position.realized_profit_loss >= 0 ? 'text-green-600' : 'text-red-600' %>
             <td class="border border-slate-300 px-2 <%= red_or_green %>"><%= number_to_currency(position.realized_profit_loss) %></td>
             <td class="border border-slate-300 px-2 text-green-600"><%= number_to_currency(position.income) %></td>
+            <td class="border border-slate-300 px-2"><%= number_to_currency(position.reinvested_income) %></td>
             <td class="border border-slate-300 px-2"><%= number_to_currency(position_value) %></td>
             <td class="border border-slate-300 px-2"><%= position.open_date %></td>
           <% else %>
@@ -92,6 +96,7 @@
             <% end %>
             <% red_or_green = position.income >= 0 ? 'text-green-600' : 'text-red-600' %>
             <td class="border border-slate-300 px-2 <%= red_or_green %>"><%= number_to_currency(position.income) %></td>
+            <td class="border border-slate-300 px-2"> - </td>
             <td class="border border-slate-300 px-2"><%= number_to_currency(position_cost) %></td>
             <% @total_portfolio_value += position.quantity %>
             <td class="border border-slate-300 px-2"><%= position.open_date %></td>
@@ -116,6 +121,7 @@
           <td class="border border-slate-300 px-2 <%= red_or_green %>"><%= number_to_currency(@portfolio_closed_rpl) %></td>
           <% red_or_green = @portfolio_closed_income >= 0 ? 'text-green-600' : 'text-red-600' %>
           <td class="border border-slate-300 px-2 <%= red_or_green %>"><%= number_to_currency(@portfolio_closed_income) %></td>
+          <td class="border border-slate-300 px-2"><%= number_to_currency(-1 * @portfolio_closed_reinvested_income) %></td>
           <td class="border border-slate-300 px-2"></td>
           <td class="border border-slate-300 px-2"></td>
         </tr>
@@ -139,6 +145,7 @@
         <td class="border border-slate-300 px-2 <%= red_or_green %>"><%= number_to_currency(portfolio.realized_profit_loss) %></td>
         <% red_or_green = @total_income >= 0 ? 'text-green-600' : 'text-red-600' %>
         <td class="border border-slate-300 px-2 <%= red_or_green %>"><%= number_to_currency(@total_income + @portfolio_closed_income) %></td>
+        <td class="border border-slate-300 px-2"><%= number_to_currency(@total_reinvested_income + @portfolio_closed_reinvested_income) %></td>
         <td class="border border-slate-300 px-2"><%= number_to_currency(@total_portfolio_value) %></td>
         <td class="border border-slate-300 px-2"></td>
       </tr>
@@ -146,10 +153,11 @@
   </table>
 
   <span class="my-5 block">
-    <span class="block font-medium mb-1 inline-block">Portfolio Balance:</span>
+    <span class="block font-medium mb-1 inline-block">Total:</span>
     <% total_profit = @total_position_gain + portfolio.realized_profit_loss %>
     <% combined_income = @total_income + @portfolio_closed_income %>
-    <% total_return = total_profit + combined_income %>
+    <% combined_reinvested_income = @total_reinvested_income + @portfolio_closed_reinvested_income %>
+    <% total_return = total_profit + combined_income - combined_reinvested_income %>
     <% portfolio.cash == nil ? portfolio.cash = 0 : portfolio.cash %>
     <%# @total_portfolio_value = portfolio.cash + total_profit + combined_income %>
     <% red_or_green = total_return >= 0 ? 'text-green-600' : 'text-red-600' %>
@@ -170,13 +178,19 @@
     <span class="block font-medium mb-1 inline-block">P/L (%):</span>
     <% red_or_green = total_profit/(@total_portfolio_value - total_profit) >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_percentage((total_profit/(@total_portfolio_value - total_profit)) * 100).to_f.round(2) %>%</span> * 
-    <span class="block font-medium mb-1 inline-block">Income:</span>
+    <span class="block font-medium mb-1 inline-block">Inc.:</span>
     <% red_or_green = combined_income >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_currency(combined_income) %></span> *
     <% @net_worth_income += combined_income %>
-    <span class="block font-medium mb-1 inline-block">Income (%):</span>
+    <span class="block font-medium mb-1 inline-block">Inc. (%):</span>
     <% red_or_green = combined_income/(@total_portfolio_value - combined_income) >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_percentage((combined_income/(@total_portfolio_value - combined_income)) * 100).to_f.round(2) %>%</span>
+
+    <span class="block font-medium mb-1 inline-block">Reinv. Inc.:</span>
+    <span class="font-bold"><%= number_to_currency(combined_reinvested_income) %></span> *
+    <% @net_worth_reinvested_income += combined_reinvested_income %>
+    <span class="block font-medium mb-1 inline-block">Reinv. Inc. (%):</span>
+    <span class="font-bold"><%= number_to_percentage((combined_reinvested_income/(@total_portfolio_value - combined_reinvested_income)) * 100).to_f.round(2) %>%</span>
   </span>
 
   <% clear_instant_variable %>

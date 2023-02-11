@@ -18,7 +18,8 @@ module TransactionsHelper
   end
 
   def transaction_amount(transaction)
-    transaction.tr_type != 'Dividend' ? transaction.quantity * transaction.price : transaction.quantity * transaction.div_per_share
+    transaction.quantity * transaction.div_per_share if transaction.tr_type == ('Dividend' || 'Reinvest Div.')
+    transaction.quantity * transaction.price
   end
 
   def add_cost(transaction)
@@ -87,13 +88,13 @@ module TransactionsHelper
     transaction.quantity *= @stock.shares_owned if transaction.tr_type == 'Dividend'
     transaction.price = transaction.div_per_share if transaction.tr_type == 'Dividend'
     if transaction.tr_type == 'Reinvest Div.'
-      new_shares = (transaction.price * @stock.shares_owned / @finnhub_client.quote(transaction.symbol).pc).round(3)
-      transaction.quantity = new_shares
-      transaction.price = @finnhub_client.quote(transaction.symbol).pc
+      transaction.price = transaction.closing_price
+      transaction.quantity = (transaction.div_per_share * @stock.shares_owned / transaction.closing_price).round(3)
     end
     if transaction.save
       format.html do
-        redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", notice: 'Transaction was successfully created.'
+        redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", 
+                    notice: 'Transaction was successfully created.'
       end
       format.json { render :show, status: :created, location: transaction }
     else
@@ -115,7 +116,8 @@ module TransactionsHelper
       end
     else
       new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, income: 0,
-        commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity, portfolio_id: @portfolio.id)
+                              reinvested_income: 0, commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity,
+                              portfolio_id: @portfolio.id)
       new_stock.save
       @portfolio.transactions_cost += add_cost(transaction)
       @portfolio.save
@@ -149,8 +151,8 @@ module TransactionsHelper
         @portfolio.save
       end
     else
-        new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, income: 0,
-          commission_and_fee: add_cost(transaction), shares_owned: -1 * transaction.quantity, portfolio_id: @portfolio.id)
+        new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, income: 0, 
+          reinvested_income: 0, commission_and_fee: add_cost(transaction), shares_owned: -1 * transaction.quantity, portfolio_id: @portfolio.id)
         new_stock.save
         @portfolio.transactions_cost += add_cost(transaction)
         @portfolio.save
@@ -189,6 +191,19 @@ module TransactionsHelper
     end
   end
 
+  def reinvest_dividend_stock(transaction)
+    if @stock_symbols.include?(transaction.symbol)
+      if long_position_exist?(transaction)
+        unless closing_date_earlier_than_opening_date?(transaction)
+          @stock.income += transaction_amount(transaction)
+          @stock.reinvested_income += transaction_amount(transaction)
+          @stock.shares_owned += transaction.quantity
+          @stock.save
+        end
+      end
+    end
+  end
+
   def create_update_stock(transaction)
     @portfolio = Portfolio.find(params[:portfolio_id])
     if ticker_exist?(transaction) && date_valid?(transaction)
@@ -203,6 +218,8 @@ module TransactionsHelper
         buy_to_cover_stock(transaction)
       when 'Dividend'
         dividend_stock(transaction)
+      when 'Reinvest Div.'
+        reinvest_dividend_stock(transaction)
       end
     end
   end
@@ -218,8 +235,10 @@ module TransactionsHelper
         end
       else
         new_position = Position.create(open_date: transaction.trade_date, symbol: transaction.symbol,
-        quantity: transaction.quantity, cost_per_share: (@transaction_net_cost / transaction.quantity).round(6), commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, income: @stock.income, portfolio_id: @portfolio.id)
-        new_position.commission_and_fee += add_cost(transaction)
+          quantity: transaction.quantity, cost_per_share: (@transaction_net_cost / transaction.quantity).round(5), 
+          commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, income: @stock.income, 
+          reinvested_income: @stock.reinvested_income, portfolio_id: @portfolio.id)
+          new_position.commission_and_fee += add_cost(transaction)
       end
       @cash_position.update(quantity: @cash_position.quantity - @transaction_net_cost)
     end
@@ -247,12 +266,15 @@ module TransactionsHelper
       if symbol_exist?(transaction)
           @position.update(quantity: @position.quantity - transaction.quantity)
           current_position_total = (@position.quantity * @position.cost_per_share).abs
-          @position.update(cost_per_share: (current_position_total + transaction_sell_income.abs) / (transaction.quantity.abs + @position.quantity.abs).round(6))
+          @position.update(cost_per_share: (current_position_total + transaction_sell_income.abs) / (transaction.quantity.abs + @position.quantity.abs).round(5))
           @position.update(commission_and_fee: @position.commission_and_fee + add_cost(transaction))
           @position.save
           @cash_position.update(quantity: @cash_position.quantity + transaction_sell_income)
       else
-        new_position = Position.create(open_date: transaction.trade_date, symbol: transaction.symbol, quantity: (-1 * transaction.quantity), cost_per_share: (transaction_sell_income / transaction.quantity).round(6), commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, income: @stock.income, portfolio_id: @portfolio.id)
+        new_position = Position.create(open_date: transaction.trade_date, symbol: transaction.symbol, 
+          quantity: (-1 * transaction.quantity), cost_per_share: (transaction_sell_income / transaction.quantity).round(6), 
+          commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, income: @stock.income, 
+          reinvested_income: @stock.reinvested_income, portfolio_id: @portfolio.id)
         @cash_position.update(quantity: @cash_position.quantity + transaction_sell_income)
       end
     end
@@ -323,6 +345,26 @@ module TransactionsHelper
     end
   end
 
+  def position_with_reinvest_dividend(transaction)
+    if symbol_exist?(transaction)
+      if long_position_exist?(transaction)
+        unless closing_date_earlier_than_opening_date?(transaction)
+          current_position_total = @position.quantity * @position.cost_per_share
+          new_reinvest_div_amount = transaction.quantity * transaction.price
+          @position.update(quantity: @position.quantity + transaction.quantity)
+          @position.update(cost_per_share: (current_position_total + new_reinvest_div_amount) / @position.quantity)
+          @position.update(income: @stock.income)
+          @position.update(reinvested_income: @stock.reinvested_income)
+          @position.save
+          @portfolio.income += transaction_amount(transaction)
+          @portfolio.reinvested_income.nil? ? @portfolio.reinvested_income = 0 : @portfolio.reinvested_income
+          @portfolio.reinvested_income += transaction_amount(transaction)
+          @portfolio.save
+        end
+      end
+    end
+  end
+
   def create_update_position(transaction)
     if ticker_exist?(transaction) && date_valid?(transaction) || transaction.symbol == 'Cash'
       @stock = @stocks.find_by(ticker: transaction.symbol)
@@ -351,6 +393,8 @@ module TransactionsHelper
         position_with_expense(transaction)
       when 'Dividend'
         position_with_dividend(transaction)
+      when 'Reinvest Div.'
+        position_with_reinvest_dividend(transaction)
       end
     end
   end
