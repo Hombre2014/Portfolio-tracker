@@ -184,8 +184,6 @@ module TransactionsHelper
         unless closing_date_earlier_than_opening_date?(transaction)
           @stock.income += transaction_amount(transaction)
           @stock.save
-          @portfolio.income += transaction_amount(transaction)
-          @portfolio.save
         end
       end
     end
@@ -316,7 +314,7 @@ module TransactionsHelper
       if long_position_exist?(transaction)
         unless closing_date_earlier_than_opening_date?(transaction)
           @cash_position.update(quantity: @cash_position.quantity + transaction_amount(transaction))
-          @position.update(income: @position.income + @stock.income)
+          @position.update(income: @stock.income)
           @position.save
           @portfolio.income += transaction_amount(transaction)
           @portfolio.save
