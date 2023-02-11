@@ -28,8 +28,9 @@
       <% red_or_green = @net_worth_return >= 0 ? 'text-green-600' : 'text-red-600' %>
       <span class="font-bold text-base <%= red_or_green %>"><%= number_to_currency(@net_worth_return) %></span> *
       <span class="block font-medium mb-1 inline-block text-base">Return (%):</span>
+      <% @net_worth_return_percent = @net_worth_return/(@net_worth - @net_worth_return) %>
       <% red_or_green = @net_worth_return_percent >= 0 ? 'text-green-600' : 'text-red-600' %>
-      <span class="font-bold text-base <%= red_or_green %>"><%= number_to_percentage((@net_worth_return/(@net_worth - @net_worth_return)) * 100).to_f.round(2) %>%</span> *
+      <span class="font-bold text-base <%= red_or_green %>"><%= number_to_percentage(@net_worth_return_percent * 100).to_f.round(2) %>%</span> *
       <span class="block font-medium mb-1 inline-block text-base">P/L:</span>
       <% red_or_green = @net_worth_profit >= 0 ? 'text-green-600' : 'text-red-600' %>
       <span class="font-bold text-base <%= red_or_green %>"><%= number_to_currency(@net_worth_profit) %></span> *

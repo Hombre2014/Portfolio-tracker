@@ -93,7 +93,8 @@ module TransactionsHelper
     end
     if transaction.save
       format.html do
-        redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", notice: 'Transaction was successfully created.'
+        redirect_to "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{params[:id]}", 
+                    notice: 'Transaction was successfully created.'
       end
       format.json { render :show, status: :created, location: transaction }
     else
@@ -115,7 +116,8 @@ module TransactionsHelper
       end
     else
       new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, income: 0,
-        commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity, portfolio_id: @portfolio.id)
+                              reinvested_income: 0, commission_and_fee: add_cost(transaction), shares_owned: transaction.quantity,
+                              portfolio_id: @portfolio.id)
       new_stock.save
       @portfolio.transactions_cost += add_cost(transaction)
       @portfolio.save
@@ -149,8 +151,8 @@ module TransactionsHelper
         @portfolio.save
       end
     else
-        new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, income: 0,
-          commission_and_fee: add_cost(transaction), shares_owned: -1 * transaction.quantity, portfolio_id: @portfolio.id)
+        new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, income: 0, 
+          reinvested_income: 0, commission_and_fee: add_cost(transaction), shares_owned: -1 * transaction.quantity, portfolio_id: @portfolio.id)
         new_stock.save
         @portfolio.transactions_cost += add_cost(transaction)
         @portfolio.save
@@ -194,7 +196,6 @@ module TransactionsHelper
       if long_position_exist?(transaction)
         unless closing_date_earlier_than_opening_date?(transaction)
           @stock.income += transaction_amount(transaction)
-          @stock.reinvested_income.nil? ? @stock.reinvested_income = 0 : @stock.reinvested_income
           @stock.reinvested_income += transaction_amount(transaction)
           @stock.shares_owned += transaction.quantity
           @stock.save
@@ -234,8 +235,10 @@ module TransactionsHelper
         end
       else
         new_position = Position.create(open_date: transaction.trade_date, symbol: transaction.symbol,
-        quantity: transaction.quantity, cost_per_share: (@transaction_net_cost / transaction.quantity).round(6), commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, income: @stock.income, portfolio_id: @portfolio.id)
-        new_position.commission_and_fee += add_cost(transaction)
+          quantity: transaction.quantity, cost_per_share: (@transaction_net_cost / transaction.quantity).round(5), 
+          commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, income: @stock.income, 
+          reinvested_income: @stock.reinvested_income, portfolio_id: @portfolio.id)
+          new_position.commission_and_fee += add_cost(transaction)
       end
       @cash_position.update(quantity: @cash_position.quantity - @transaction_net_cost)
     end
@@ -263,12 +266,15 @@ module TransactionsHelper
       if symbol_exist?(transaction)
           @position.update(quantity: @position.quantity - transaction.quantity)
           current_position_total = (@position.quantity * @position.cost_per_share).abs
-          @position.update(cost_per_share: (current_position_total + transaction_sell_income.abs) / (transaction.quantity.abs + @position.quantity.abs).round(6))
+          @position.update(cost_per_share: (current_position_total + transaction_sell_income.abs) / (transaction.quantity.abs + @position.quantity.abs).round(5))
           @position.update(commission_and_fee: @position.commission_and_fee + add_cost(transaction))
           @position.save
           @cash_position.update(quantity: @cash_position.quantity + transaction_sell_income)
       else
-        new_position = Position.create(open_date: transaction.trade_date, symbol: transaction.symbol, quantity: (-1 * transaction.quantity), cost_per_share: (transaction_sell_income / transaction.quantity).round(6), commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, income: @stock.income, portfolio_id: @portfolio.id)
+        new_position = Position.create(open_date: transaction.trade_date, symbol: transaction.symbol, 
+          quantity: (-1 * transaction.quantity), cost_per_share: (transaction_sell_income / transaction.quantity).round(6), 
+          commission_and_fee: add_cost(transaction), realized_profit_loss: @stock.realized_profit_loss, income: @stock.income, 
+          reinvested_income: @stock.reinvested_income, portfolio_id: @portfolio.id)
         @cash_position.update(quantity: @cash_position.quantity + transaction_sell_income)
       end
     end
@@ -343,12 +349,10 @@ module TransactionsHelper
     if symbol_exist?(transaction)
       if long_position_exist?(transaction)
         unless closing_date_earlier_than_opening_date?(transaction)
-          #TODO This below should be update_current_long_position method
           current_position_total = @position.quantity * @position.cost_per_share
           new_reinvest_div_amount = transaction.quantity * transaction.price
           @position.update(quantity: @position.quantity + transaction.quantity)
           @position.update(cost_per_share: (current_position_total + new_reinvest_div_amount) / @position.quantity)
-          # @position.update(commission_and_fee: @position.commission_and_fee + add_cost(transaction))
           @position.update(income: @stock.income)
           @position.update(reinvested_income: @stock.reinvested_income)
           @position.save
