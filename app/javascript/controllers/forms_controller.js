@@ -38,6 +38,8 @@ export default class extends Controller {
   hideUncommonFields() {
     this.getFields('Uncommon').forEach((field) => {
       field.classList.add('hidden');
+      field.setAttribute('value', '');
+      field.removeAttribute('required');
     });
   }
 
@@ -77,6 +79,8 @@ export default class extends Controller {
     this.getFields('Stock Split').forEach((field) => {
       field.removeAttribute('required');
       field.classList.add('hidden');
+      if (field === document.getElementById('transaction_quantity')) field.setAttribute('value', '1');
+      if (field === document.getElementById('transaction_price')) field.setAttribute('value', '1');
     });
     this.showSymbolField();
   }

@@ -8,7 +8,7 @@ class TransactionsController < ApplicationController
   # GET /transactions or /transactions.json
   def index
     reset_instance_variable
-    @transactions = Transaction.where(portfolio_id: params[:portfolio_id])
+    @transactions = Transaction.where(portfolio_id: params[:portfolio_id]).order('trade_date ASC')
   end
 
   # GET /transactions/1 or /transactions/1.json
@@ -164,6 +164,14 @@ class TransactionsController < ApplicationController
               format.html do
                 redirect_to current_transaction, alert: 'You do not have a long position in this security.'
               end
+            end
+          when 'Stock Split'
+            if closing_date_earlier_than_opening_date?(@transaction)
+              format.html do
+                redirect_to current_transaction, alert: 'Trying to record a stock split transaction before the buy or sell short transaction. Check your transaction date!'
+              end
+            else
+              transaction_save(@transaction, format)
             end
           end
         else
