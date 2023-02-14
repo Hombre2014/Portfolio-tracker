@@ -23,7 +23,8 @@
       ['Interest Inc.', 'Interest Inc.'],
       ['Misc. Exp.', 'Misc. Exp.'],
       ['Dividend', 'Dividend'],
-      ['Reinvest Div.', 'Reinvest Div.']],
+      ['Reinvest Div.', 'Reinvest Div.'],
+      ['Stock Split', 'Stock Split']],
       class:"block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full text-red-800", required: true %>
   </div>
 
@@ -42,6 +43,14 @@
   </div>
 
   <div class="my-5">
+    <%= form.number_field :new_shares, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full hidden", placeholder:"New shares ratio" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.number_field :old_shares, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full hidden", placeholder:"Old shares ratio" %>
+  </div>
+
+  <div class="my-5">
     <%= form.number_field :price, min: 0.00001, step: 0.00001, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Price" %>
   </div>
 
@@ -51,14 +60,6 @@
 
   <div class="my-5">
     <%= form.number_field :closing_price, min: 0.01, step: 0.01, class: "block shadow rounded-md hidden border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Closing price before dividend's day" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.number_field :new_shares, min: 1, step: 1, class: "block shadow rounded-md border hidden border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"New shares ratio" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.number_field :old_shares, min: 1, step: 1, class: "block shadow rounded-md border hidden border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder:"Existing shares ratio" %>
   </div>
 
   <div class="my-5">

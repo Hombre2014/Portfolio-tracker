@@ -8,6 +8,8 @@
           <th class="border border-slate-300 px-4">Date</th>
           <th class="border border-slate-300 px-4">Symbol</th>
           <th class="border border-slate-300 px-4">Quantity</th>
+          <th class="border border-slate-300 px-4">Quantity Old</th>
+          <th class="border border-slate-300 px-4">Split ratio</th>
           <th class="border border-slate-300 px-4">Price</th>
           <th class="border border-slate-300 px-4">Commission</th>
           <th class="border border-slate-300 px-4">Fee</th>
@@ -21,7 +23,7 @@
       <tfoot>
         <tr>
           <td class="border border-slate-300 px-4 font-bold">Total</td>
-          <% 4.times do %>
+          <% 6.times do %>
             <td class="border border-slate-300 px-4"></td>
           <% end %>
           <td class="border border-slate-300 px-4 text-red-600">-<%= number_to_currency(@total_commissions) %></td>

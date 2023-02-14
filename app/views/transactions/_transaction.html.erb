@@ -7,8 +7,15 @@
     <td class="border border-slate-300 px-4"><%= transaction.tr_type %></td>
     <td class="border border-slate-300 px-4"><%= transaction.trade_date %></td>
     <td class="border border-slate-300 px-4"><%= transaction.symbol %></td>
-    <td class="border border-slate-300 px-4"><%= transaction.quantity %></td>
-    <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.price, precision: 5, strip_insignificant_zeros: true) %></td>
+    <td class="border border-slate-300 px-4"><%= transaction.tr_type == 'Sell short' ? (-1 * transaction.quantity).to_fs(:delimited) : transaction.quantity.to_fs(:delimited) %></td>
+    <% if transaction.tr_type == 'Stock Split' %>
+      <td class="border border-slate-300 px-4"><%= (transaction.quantity * transaction.old_shares / transaction.new_shares).to_fs(:delimited) %></td>
+      <td class="border border-slate-300 px-4"><%= transaction.new_shares %> for <%= transaction.old_shares %></td>
+    <% else %>
+      <td class="border border-slate-300 px-4"></td>
+      <td class="border border-slate-300 px-4"></td>
+    <% end %>
+    <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.price, precision: 5, strip_insignificant_zeros: true) if transaction.tr_type != 'Stock Split' %></td>
     <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.commission) %></td>
     <% @total_commissions += transaction.commission %>
     <td class="border border-slate-300 px-4"><%= number_to_currency(transaction.fee) %></td>
@@ -19,6 +26,8 @@
     <% elsif transaction.tr_type == 'Sell' || transaction.tr_type == 'Sell short' || transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.' || transaction.tr_type == 'Dividend' || transaction.tr_type == 'Reinvest Div.' %>
       <td class="border border-slate-300 px-4 text-green-600"><%= number_to_currency(transaction_amount - added_cost) %></td>
       <% @income_spent += transaction_amount - added_cost %>
+    <% elsif transaction.tr_type ==  'Stock Split' %>
+      <td class="border border-slate-300 px-4"></td>
     <% end %>
     <% if action_name != "show" %>
       <td class="border border-slate-300 px-4 py-1"><%= link_to "Show", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}", class: "rounded-lg px-2 bg-dollar-split_blue block font-medium text-white hover:bg-dollar-triad_blue" %></td>

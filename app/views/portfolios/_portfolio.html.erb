@@ -44,7 +44,7 @@
         <tr class="text-sm">
           <% if position.symbol != 'Cash' %>
             <td class="border border-slate-300 px-2 py-1"><%= link_to position.symbol, "/stocks/#{stock_id}", class:"px-2 py-0.5 rounded bg-dollar hover:bg-dollar-dark active:bg-dollar-light focus:outline-none focus:ring focus:ring-dollar-saturated text-white" %></td>
-            <td class="border border-slate-300 px-2"><%= number_to_rounded(position.quantity, precision: 3, strip_insignificant_zeros: true) %></td>
+            <td class="border border-slate-300 px-2"><%= number_with_delimiter(position.quantity, precision: 3, strip_insignificant_zeros: true) %></td>
             <td class="border border-slate-300 px-2"><%= number_to_currency(position.cost_per_share, precision: 5, strip_insignificant_zeros: true) %></td>
           <% else %>
             <td class="border border-slate-300 px-2"><%= position.symbol %></td>

@@ -66,6 +66,9 @@ module TransactionsHelper
       existing_stock_opened_date = @portfolio.opened_date
     elsif transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.'
       existing_stock_opened_date = (Transaction.where(symbol: transaction.symbol, tr_type: 'Cash In').order('trade_date ASC').first.trade_date if !nil) || @portfolio.opened_date
+    elsif transaction.tr_type == 'Stock Split'
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date if long_position_exist?(transaction)
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date if short_position_exist?(transaction)
     end
     transaction.trade_date < existing_stock_opened_date
   end
@@ -84,12 +87,31 @@ module TransactionsHelper
     transaction.trade_date >= @portfolio.opened_date
   end
 
+  def adjust_stock_split(transaction)
+    @historical_transactions = Transaction.where(symbol: transaction.symbol).order('trade_date ASC')
+    puts @historical_transactions.inspect
+    @historical_transactions.each do |trans|
+      if trans.trade_date < transaction.trade_date && trans.tr_type != 'Stock Split'
+        trans.update(quantity: trans.quantity * transaction.new_shares.to_f / transaction.old_shares.to_f)
+        trans.update(price: trans.price * transaction.old_shares.to_f / transaction.new_shares.to_f)
+        trans.save
+      end
+    end
+    @stock = Stock.find_by(ticker: transaction.symbol)
+    @stock.shares_owned = @stock.shares_owned * transaction.new_shares.to_f / transaction.old_shares.to_f
+    @stock.save
+  end
+
   def transaction_save(transaction, format)
     transaction.quantity *= @stock.shares_owned if transaction.tr_type == 'Dividend'
     transaction.price = transaction.div_per_share if transaction.tr_type == 'Dividend'
     if transaction.tr_type == 'Reinvest Div.'
       transaction.price = transaction.closing_price
       transaction.quantity = (transaction.div_per_share * @stock.shares_owned / transaction.closing_price).round(3)
+    end
+    if transaction.tr_type == 'Stock Split'
+      adjust_stock_split(transaction)
+      transaction.quantity = @stock.shares_owned
     end
     if transaction.save
       format.html do
@@ -365,6 +387,16 @@ module TransactionsHelper
     end
   end
 
+  def position_with_stock_split(transaction)
+    if symbol_exist?(transaction)
+      unless closing_date_earlier_than_opening_date?(transaction)
+        @position.update(quantity: @position.quantity * transaction.new_shares / transaction.old_shares)
+        @position.update(cost_per_share: @position.cost_per_share * transaction.old_shares / transaction.new_shares)
+        @position.save
+      end
+    end
+  end
+
   def create_update_position(transaction)
     if ticker_exist?(transaction) && date_valid?(transaction) || transaction.symbol == 'Cash'
       @stock = @stocks.find_by(ticker: transaction.symbol)
@@ -395,6 +427,8 @@ module TransactionsHelper
         position_with_dividend(transaction)
       when 'Reinvest Div.'
         position_with_reinvest_dividend(transaction)
+      when 'Stock Split'
+        position_with_stock_split(transaction)
       end
     end
   end
