@@ -24,6 +24,7 @@ export default class extends Controller {
     if (transactionType === 'Cash') return [symbol, price, dividendPerShare, closingPrice, newShares, oldShares, newSymbol];
     if (transactionType === 'Dividend') return [quantity, price, newShares, oldShares, newSymbol];
     if (transactionType === 'Stock Split') return [quantity, price, dividendPerShare, closingPrice, newSymbol];
+    if (transactionType === 'Symbol Change') return [quantity, price, dividendPerShare, closingPrice, newShares, oldShares];
     if (transactionType === 'All') return [symbol, quantity, price, commission, fee];
     if (transactionType === 'Uncommon') return [closingPrice, newShares, oldShares, newSymbol, dividendPerShare];
   }
@@ -48,6 +49,13 @@ export default class extends Controller {
     symbol.classList.remove('hidden');
     symbol.setAttribute('required', 'true');
     symbol.setAttribute('value', '');
+  }
+
+  showNewSymbolField() {
+    const newSymbol = document.getElementById('transaction_new_symbol');
+    newSymbol.classList.remove('hidden');
+    newSymbol.setAttribute('required', 'true');
+    newSymbol.setAttribute('value', '');
   }
 
   hideFieldsForCashTransactions() {
@@ -83,6 +91,15 @@ export default class extends Controller {
       if (field === document.getElementById('transaction_price')) field.setAttribute('value', '1');
     });
     this.showSymbolField();
+  }
+
+  hideFieldsForSymbolChange() {
+    this.getFields('Symbol Change').forEach((field) => {
+      field.removeAttribute('required');
+      field.classList.add('hidden');
+    });
+    this.showSymbolField();
+    this.showNewSymbolField();
   }
 
   removeHidden(field) {
@@ -151,6 +168,10 @@ export default class extends Controller {
         this.hideCommonFields();
         this.hideFieldsForStockSplit();
         this.showFieldsForStockSplit();
+        break;
+      case 'Symbol Change':
+        this.hideCommonFields();
+        this.hideFieldsForSymbolChange();
         break;
       default:
         this.showAllFields();
