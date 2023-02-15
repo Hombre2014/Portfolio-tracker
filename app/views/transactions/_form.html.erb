@@ -24,7 +24,8 @@
       ['Misc. Exp.', 'Misc. Exp.'],
       ['Dividend', 'Dividend'],
       ['Reinvest Div.', 'Reinvest Div.'],
-      ['Stock Split', 'Stock Split']],
+      ['Stock Split', 'Stock Split'],
+      ['Symbol Change', 'Symbol Change']],
       class:"block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full text-red-800", required: true %>
   </div>
 
@@ -36,6 +37,10 @@
 
   <div class="my-5">
     <%= form.text_field :symbol, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true, placeholder:"Symbol" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.text_field :new_symbol, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full hidden", placeholder:"New Symbol" %>
   </div>
 
   <div class="my-5">
