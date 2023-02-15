@@ -173,6 +173,14 @@ class TransactionsController < ApplicationController
             else
               transaction_save(@transaction, format)
             end
+          when 'Symbol Change'
+            if closing_date_earlier_than_opening_date?(@transaction)
+              format.html do
+                redirect_to current_transaction, alert: 'Trying to record a symbol change transaction before the buy or sell short transaction. Check your transaction date!'
+              end
+            else
+              transaction_save(@transaction, format)
+            end
           end
         else
           format.html do
