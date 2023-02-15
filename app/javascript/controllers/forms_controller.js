@@ -72,12 +72,16 @@ export default class extends Controller {
     amount.setAttribute('value', '');
   }
 
+  setFieldsForNoneCashTransactions(field) {
+    if (field === document.getElementById('transaction_quantity')) field.setAttribute('value', '1');
+    if (field === document.getElementById('transaction_price')) field.setAttribute('value', '1');
+  }
+
   hideFieldsForDivTransactions() {
     this.getFields('Dividend').forEach((field) => {
       field.removeAttribute('required');
       field.classList.add('hidden');
-      if (field === document.getElementById('transaction_quantity')) field.setAttribute('value', '1');
-      if (field === document.getElementById('transaction_price')) field.setAttribute('value', '1');
+      this.setFieldsForNoneCashTransactions(field);
     });
     const closingPrice = document.getElementById('transaction_closing_price');
     closingPrice.classList.add('hidden');
@@ -87,8 +91,7 @@ export default class extends Controller {
     this.getFields('Stock Split').forEach((field) => {
       field.removeAttribute('required');
       field.classList.add('hidden');
-      if (field === document.getElementById('transaction_quantity')) field.setAttribute('value', '1');
-      if (field === document.getElementById('transaction_price')) field.setAttribute('value', '1');
+      this.setFieldsForNoneCashTransactions(field);
     });
     this.showSymbolField();
   }
@@ -97,6 +100,7 @@ export default class extends Controller {
     this.getFields('Symbol Change').forEach((field) => {
       field.removeAttribute('required');
       field.classList.add('hidden');
+      this.setFieldsForNoneCashTransactions(field);
     });
     this.showSymbolField();
     this.showNewSymbolField();
