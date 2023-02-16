@@ -50,7 +50,7 @@ export default class extends Controller {
     symbol.setAttribute('required', 'true');
     symbol.setAttribute('value', '');
   }
-
+// TODO: Refactor this method - it is the same as the one above
   showNewSymbolField() {
     const newSymbol = document.getElementById('transaction_new_symbol');
     newSymbol.classList.remove('hidden');

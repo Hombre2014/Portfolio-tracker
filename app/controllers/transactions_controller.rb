@@ -36,7 +36,6 @@ class TransactionsController < ApplicationController
 
     respond_to do |format|
       if ticker_exist?(@transaction)
-        # @transaction.symbol = @transaction.symbol.upcase
         if date_valid?(@transaction)
           case @transaction.tr_type
           when ''
@@ -190,12 +189,18 @@ class TransactionsController < ApplicationController
               transaction_save(@transaction, format)
             end
           when 'Symbol Change'
-            if closing_date_earlier_than_opening_date?(@transaction)
-              format.html do
-                redirect_to current_transaction, alert: 'Trying to record a symbol change transaction before the buy or sell short transaction. Check your transaction date!'
+            if @stock_symbols.include?(@transaction.symbol)
+              if closing_date_earlier_than_opening_date?(@transaction)
+                format.html do
+                  redirect_to current_transaction, alert: 'Trying to record a symbol change transaction before the buy or sell short transaction. Check your transaction date!'
+                end
+              else
+                transaction_save(@transaction, format)
               end
             else
-              transaction_save(@transaction, format)
+              format.html do
+                redirect_to current_transaction, alert: 'You have not used this stock before. There is no need to record a symbol change.'
+              end
             end
           end
         else
