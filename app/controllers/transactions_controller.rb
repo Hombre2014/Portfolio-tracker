@@ -3,6 +3,7 @@ require_relative '../helpers/transactions_helper'
 class TransactionsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_transaction, only: %i[show edit update destroy]
+
   include TransactionsHelper
 
   # GET /transactions or /transactions.json
@@ -35,6 +36,7 @@ class TransactionsController < ApplicationController
 
     respond_to do |format|
       if ticker_exist?(@transaction)
+        # @transaction.symbol = @transaction.symbol.upcase
         if date_valid?(@transaction)
           case @transaction.tr_type
           when ''

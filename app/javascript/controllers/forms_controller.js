@@ -6,7 +6,7 @@ export default class extends Controller {
   }
 
   initialize() {
-    this.element.setAttribute('data-action', 'change->forms#handleChange');
+    this.element.setAttribute('data-action', 'change->forms#handleChange input->forms#handleInput');
   }
 
   getFields(transactionType) {
@@ -181,5 +181,12 @@ export default class extends Controller {
         this.showAllFields();
         this.hideUncommonFields();
     }
+  }
+
+  handleInput(event) {
+    const symbol = document.getElementById('transaction_symbol');
+    const newSymbol = document.getElementById('transaction_new_symbol');
+    symbol.value = symbol.value.toUpperCase();
+    newSymbol.value = newSymbol.value.toUpperCase();
   }
 }
