@@ -3,6 +3,7 @@ require_relative '../helpers/transactions_helper'
 class TransactionsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_transaction, only: %i[show edit update destroy]
+
   include TransactionsHelper
 
   # GET /transactions or /transactions.json
@@ -35,6 +36,7 @@ class TransactionsController < ApplicationController
 
     respond_to do |format|
       if ticker_exist?(@transaction)
+        # @transaction.symbol = @transaction.symbol.upcase
         if date_valid?(@transaction)
           case @transaction.tr_type
           when ''
@@ -146,9 +148,23 @@ class TransactionsController < ApplicationController
               else
                 transaction_save(@transaction, format)
               end
+            elsif short_position_exist?(@transaction)
+              if enough_cash?(@transaction)
+                if closing_date_earlier_than_opening_date?(@transaction)
+                  format.html do
+                    redirect_to current_transaction, alert: 'Trying to record a dividend transaction before the sell short transaction. Check your transaction date!'
+                  end
+                else
+                  transaction_save(@transaction, format)
+                end
+              else
+                format.html do
+                  redirect_to current_transaction, alert: 'Not enough cash to complete the transaction. Raise more cash before recording a dividend transaction for short position.'
+                end
+              end
             else
               format.html do
-                redirect_to current_transaction, alert: 'You do not have a long position in this security.'
+                redirect_to current_transaction, alert: 'You do not have a position in this security.'
               end
             end
           when 'Reinvest Div.'

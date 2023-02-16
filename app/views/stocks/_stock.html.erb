@@ -22,7 +22,8 @@
 
   <div class="mb-2 mr-4">
     <span class="inline-block font-medium mb-1">Your income is:</span>
-    <span class="font-bold text-green-600"><%= number_to_currency(stock.income.round(2)) %></span>
+    <% red_or_green = stock.income >= 0 ? 'text-green-600' : 'text-red-600' %>
+    <span class="font-bold <%= red_or_green %>"><%= number_to_currency(stock.income.round(2)) %></span>
   </div>
 
   <div class="mb-2 mr-4">

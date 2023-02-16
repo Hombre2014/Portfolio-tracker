@@ -18,8 +18,7 @@ module TransactionsHelper
   end
 
   def transaction_amount(transaction)
-    transaction.quantity * transaction.div_per_share if transaction.tr_type == ('Dividend' || 'Reinvest Div.')
-    transaction.quantity * transaction.price
+    (transaction.tr_type == 'Reinvest Div.' || transaction.tr_type == 'Dividend') ? @stock.shares_owned * transaction.div_per_share : transaction.quantity * transaction.price
   end
 
   def add_cost(transaction)
@@ -30,12 +29,10 @@ module TransactionsHelper
 
   def enough_cash?(transaction)
     @cash_position = Position.where(portfolio_id: params[:portfolio_id], symbol: 'Cash').first
-    if transaction.tr_type == 'Buy' || transaction.tr_type == 'Buy to cover' || transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.'
+    if transaction.tr_type == 'Buy' || transaction.tr_type == 'Buy to cover' || transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.' || (transaction.tr_type == 'Dividend' && @stock.shares_owned < 0)
       @transaction_net_cost = transaction_amount(transaction) + add_cost(transaction)
-    elsif transaction.tr_type == 'Sell' || transaction.tr_type == 'Sell short' || transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.' || transaction.tr_type == 'Dividend'
-      @transaction_net_cost = transaction_amount(transaction) - add_cost(transaction)
     end
-    @cash_position.quantity >= @transaction_net_cost
+    @cash_position.quantity >= @transaction_net_cost.abs
   end
 
   def symbol_exist?(transaction) # in position table
@@ -58,15 +55,19 @@ module TransactionsHelper
   end
 
   def closing_date_earlier_than_opening_date?(transaction)
-    if transaction.tr_type == 'Sell' || transaction.tr_type == 'Dividend' || transaction.tr_type == 'Reinvest Div.'
+    if transaction.tr_type == 'Sell' || transaction.tr_type == 'Reinvest Div.'
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date
     elsif transaction.tr_type == 'Buy to cover'
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date
     elsif transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.'
       existing_stock_opened_date = @portfolio.opened_date
     elsif transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.'
-      existing_stock_opened_date = (Transaction.where(symbol: transaction.symbol, tr_type: 'Cash In').order('trade_date ASC').first.trade_date if !nil) || @portfolio.opened_date
+      cash_in = Transaction.where(symbol: transaction.symbol, tr_type: 'Cash In').order('trade_date ASC').first
+      cash_in == nil ? existing_stock_opened_date = @portfolio.opened_date : existing_stock_opened_date = cash_in.trade_date
     elsif transaction.tr_type == 'Stock Split'
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date if long_position_exist?(transaction)
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date if short_position_exist?(transaction)
+    elsif transaction.tr_type == 'Dividend'
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date if long_position_exist?(transaction)
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date if short_position_exist?(transaction)
     end
@@ -89,7 +90,6 @@ module TransactionsHelper
 
   def adjust_stock_split(transaction)
     @historical_transactions = Transaction.where(symbol: transaction.symbol).order('trade_date ASC')
-    puts @historical_transactions.inspect
     @historical_transactions.each do |trans|
       if trans.trade_date < transaction.trade_date && trans.tr_type != 'Stock Split'
         trans.update(quantity: trans.quantity * transaction.new_shares.to_f / transaction.old_shares.to_f)
@@ -97,14 +97,16 @@ module TransactionsHelper
         trans.save
       end
     end
-    @stock = Stock.find_by(ticker: transaction.symbol)
     @stock.shares_owned = @stock.shares_owned * transaction.new_shares.to_f / transaction.old_shares.to_f
     @stock.save
   end
 
   def transaction_save(transaction, format)
-    transaction.quantity *= @stock.shares_owned if transaction.tr_type == 'Dividend'
-    transaction.price = transaction.div_per_share if transaction.tr_type == 'Dividend'
+    if transaction.tr_type == 'Dividend'
+      transaction.quantity *= @stock.shares_owned
+      transaction.price = transaction.div_per_share
+
+    end
     if transaction.tr_type == 'Reinvest Div.'
       transaction.price = transaction.closing_price
       transaction.quantity = (transaction.div_per_share * @stock.shares_owned / transaction.closing_price).round(3)
@@ -208,6 +210,13 @@ module TransactionsHelper
         unless closing_date_earlier_than_opening_date?(transaction)
           @stock.income += transaction_amount(transaction)
           @stock.save
+        end
+      elsif short_position_exist?(transaction)
+        if enough_cash?(transaction)
+          unless closing_date_earlier_than_opening_date?(transaction)
+            @stock.income += transaction_amount(transaction)
+            @stock.save
+          end
         end
       end
     end
@@ -362,6 +371,16 @@ module TransactionsHelper
           @position.save
           @portfolio.income += transaction_amount(transaction)
           @portfolio.save
+        end
+      elsif short_position_exist?(transaction)
+        if enough_cash?(transaction)
+          unless closing_date_earlier_than_opening_date?(transaction)
+            @cash_position.update(quantity: @cash_position.quantity + transaction_amount(transaction))
+            @position.update(income: @stock.income)
+            @position.save
+            @portfolio.income += transaction_amount(transaction)
+            @portfolio.save
+          end
         end
       end
     end
