@@ -1,21 +1,22 @@
 <div class="w-full">
+  <% cell = "border border-slate-300 px-4" %>
   <h1 class="font-bold text-4xl mb-8">Transactions</h1>
   <div id="transactions" class="min-w-full">
     <table class="table-auto mb-6 border-collapse border border-slate-400">
       <thead>
         <tr>
-          <th class="border border-slate-300 px-4">Type</th>
-          <th class="border border-slate-300 px-4">Date</th>
-          <th class="border border-slate-300 px-4">Symbol</th>
-          <th class="border border-slate-300 px-4">New Symbol</th>
-          <th class="border border-slate-300 px-4">Quantity</th>
-          <th class="border border-slate-300 px-4">Old Quantity</th>
-          <th class="border border-slate-300 px-4">Split ratio</th>
-          <th class="border border-slate-300 px-4">Price</th>
-          <th class="border border-slate-300 px-4">Commission</th>
-          <th class="border border-slate-300 px-4">Fee</th>
-          <th class="border border-slate-300 px-4">Total</th>
-          <th colspan="2" class="border border-slate-300 px-4">Action</th>
+          <th class="<%= cell %>">Type</th>
+          <th class="<%= cell %>">Date</th>
+          <th class="<%= cell %>">Symbol</th>
+          <th class="<%= cell %>">New Symbol</th>
+          <th class="<%= cell %>">Quantity</th>
+          <th class="<%= cell %>">Old Quantity</th>
+          <th class="<%= cell %>">Split ratio</th>
+          <th class="<%= cell %>">Price</th>
+          <th class="<%= cell %>">Commission</th>
+          <th class="<%= cell %>">Fee</th>
+          <th class="<%= cell %>">Total</th>
+          <th colspan="2" class="<%= cell %>">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -23,15 +24,15 @@
       </tbody>
       <tfoot>
         <tr>
-          <td class="border border-slate-300 px-4 font-bold">Total</td>
+          <td class="<%= cell %> font-bold">Total</td>
           <% 6.times do %>
-            <td class="border border-slate-300 px-4"></td>
+            <td class="<%= cell %>"></td>
           <% end %>
-          <td class="border border-slate-300 px-4 text-red-600">-<%= number_to_currency(@total_commissions) %></td>
-          <td class="border border-slate-300 px-4 text-red-600">-<%= number_to_currency(@total_fees) %></td>
+          <td class="<%= cell %> text-red-600">-<%= number_to_currency(@total_commissions) %></td>
+          <td class="<%= cell %> text-red-600">-<%= number_to_currency(@total_fees) %></td>
           <% red_or_green = @income_spent > 0 ? 'text-green-600' : 'text-red-600' %>
-          <td class="border border-slate-300 px-4 <%= red_or_green %>"><%= number_to_currency(@income_spent) %></td>
-          <td colspan="2"  class="border border-slate-300 px-4"></td>
+          <td class="<%= cell %> <%= red_or_green %>"><%= number_to_currency(@income_spent) %></td>
+          <td colspan="2"  class="<%= cell %>"></td>
         </tr>
       </tfoot>
     </table>
