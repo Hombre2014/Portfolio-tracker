@@ -6,7 +6,7 @@ export default class extends Controller {
   }
 
   initialize() {
-    this.element.setAttribute('data-action', 'change->forms#handleChange input->forms#handleInput');
+    this.element.setAttribute('data-action', 'change->forms#handleChange'); // This  input->forms#handleInput is not working
   }
 
   getFields(transactionType) {
@@ -133,7 +133,7 @@ export default class extends Controller {
   handleChange(event) {
     event.preventDefault();
     const selectedTransactionType = document.getElementById('transaction_tr_type');
-    switch(selectedTransactionType.value) {
+    switch (selectedTransactionType.value) {
       case 'Cash In':
       case 'Cash Out':
       case 'Interest Inc.':
@@ -168,10 +168,10 @@ export default class extends Controller {
     }
   }
 
-  handleInput(event) {
-    const symbol = document.getElementById('transaction_symbol');
-    const newSymbol = document.getElementById('transaction_new_symbol');
-    symbol.value = symbol.value.toUpperCase();
-    newSymbol.value = newSymbol.value.toUpperCase();
-  }
+  // handleInput(event) {
+  //   const symbol = document.getElementById('transaction_symbol');
+  //   const newSymbol = document.getElementById('transaction_new_symbol');
+  //   symbol.value = symbol.value.toUpperCase();
+  //   newSymbol.value = newSymbol.value.toUpperCase();
+  // }
 }
