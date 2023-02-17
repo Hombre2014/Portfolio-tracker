@@ -62,7 +62,8 @@ module TransactionsHelper
     elsif transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.'
       existing_stock_opened_date = @portfolio.opened_date
     elsif transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.'
-      cash_in = Transaction.where(symbol: transaction.symbol, tr_type: 'Cash In').order('trade_date ASC').first
+      cash_in = Transaction.where(symbol: transaction.symbol, tr_type: 'Cash In').order('trade_date ASC').first ||
+                Transaction.where(symbol: transaction.symbol, tr_type: 'Interest Inc.').order('trade_date ASC').first
       cash_in == nil ? existing_stock_opened_date = @portfolio.opened_date : existing_stock_opened_date = cash_in.trade_date
     elsif transaction.tr_type == 'Stock Split' || transaction.tr_type == 'Dividend'
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date if long_position_exist?(transaction)
