@@ -67,11 +67,8 @@ module TransactionsHelper
     elsif transaction.tr_type == 'Stock Split' || transaction.tr_type == 'Dividend'
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date if long_position_exist?(transaction)
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date if short_position_exist?(transaction)
-    # elsif transaction.tr_type == 'Dividend'
-    #   existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date if long_position_exist?(transaction)
-    #   existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date if short_position_exist?(transaction)
     elsif transaction.tr_type == 'Symbol Change'
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol).order('trade_date ASC').first.trade_date #if @stock_symbols.include?(transaction.symbol)
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol).order('trade_date ASC').first.trade_date if @stock_symbols.include?(transaction.symbol)
     end
     transaction.trade_date < existing_stock_opened_date
   end

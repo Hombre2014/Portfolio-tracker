@@ -1,62 +1,62 @@
 <div id="<%= dom_id stock %>", class="container w-full">
-  <div class="mb-2 mr-4">
+  <div class="mb-1 mr-4">
     <span class="inline-block font-medium mb-1">Name:</span>
     <span class="font-bold"><%= @stock_data.name %></span>
   </div>
 
-  <div class="mb-2 mr-4">
+  <div class="mb-1 mr-4">
     <span class="inline-block font-medium mb-1">Ticker:</span>
     <span class="font-bold"><%= stock.ticker %></span>
   </div>
 
-  <div class="mb-2 mr-4">
-    <span class="inline-block font-medium mb-1">Your reliazed P/L in this portfolio is:</span>
+  <div class="mb-1 mr-4">
+    <span class="inline-block font-medium mb-1">Reliazed P/L:</span>
     <% red_or_green = stock.realized_profit_loss > 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_currency(stock.realized_profit_loss) %></span>
   </div>
 
-  <div class="mb-2 mr-4">
-    <span class="inline-block font-medium mb-1">Transactions cost in this portfolio is:</span>
+  <div class="mb-1 mr-4">
+    <span class="inline-block font-medium mb-1">Transactions cost :</span>
     <span class="font-bold text-red-600"><%= number_to_currency(-1 * stock.commission_and_fee) %></span>
   </div>
 
-  <div class="mb-2 mr-4">
-    <span class="inline-block font-medium mb-1">Your income is:</span>
+  <div class="mb-1 mr-4">
+    <span class="inline-block font-medium mb-1">Income:</span>
     <% red_or_green = stock.income >= 0 ? 'text-green-600' : 'text-red-600' %>
     <span class="font-bold <%= red_or_green %>"><%= number_to_currency(stock.income.round(2)) %></span>
   </div>
 
-  <div class="mb-2 mr-4">
+  <div class="mb-1 mr-4">
     <span class="inline-block font-medium mb-1">You have:</span>
     <span class="font-bold"><%= stock.shares_owned.round(3).to_fs(:delimited) %> shares</span>
   </div>
 
-  <div class="mb-2 mr-4">
+  <div class="mb-1 mr-4">
     <span class="inline-block font-medium mb-1">Exchange:</span>
     <span class="font-bold"><%= @stock_data.exchange %></span>
   </div>
 
-  <div class="mb-2 mr-4">
+  <div class="mb-1 mr-4">
     <span class="inline-block font-medium mb-1">Country:</span>
     <span class="font-bold"><%= @stock_data.country %></span>
   </div>
 
-  <div class="mb-2 mr-4">
+  <div class="mb-1 mr-4">
     <span class="inline-block font-medium mb-1">Currency:</span>
     <span class="font-bold"><%= @stock_data.currency %></span>
   </div>
 
-  <div class="mb-2 mr-4">
+  <div class="mb-1 mr-4">
     <span class="inline-block font-medium mb-1">IPO date:</span>
     <span class="font-bold"><%= @stock_data.ipo %></span>
   </div>
 
-  <div class="mb-2 mr-4">
+  <div class="mb-1 mr-4">
     <span class="inline-block font-medium mb-1">Web URL:</span>
     <span class="font-bold text-dollar-split_blue hover:text-dollar-triad_blue curson-pointer"><%= link_to @stock_data.weburl, @stock_data.weburl, target: :'_blank', rel: :'noopener noreferrer' %></span>
   </div>
 
-  <div class="mb-2 mr-4">
+  <div class="mb-1 mr-4">
     <span class="inline-block w-32"><%= image_tag @stock_data.logo || "company_logo.svg", alt:"company logo" %></span>
   </div>
 
