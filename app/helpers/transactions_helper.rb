@@ -64,12 +64,11 @@ module TransactionsHelper
     elsif transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.'
       cash_in = Transaction.where(symbol: transaction.symbol, tr_type: 'Cash In').order('trade_date ASC').first
       cash_in == nil ? existing_stock_opened_date = @portfolio.opened_date : existing_stock_opened_date = cash_in.trade_date
-    elsif transaction.tr_type == 'Stock Split'
+    elsif transaction.tr_type == 'Stock Split' || transaction.tr_type == 'Dividend'
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date if long_position_exist?(transaction)
       existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date if short_position_exist?(transaction)
-    elsif transaction.tr_type == 'Dividend'
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date if long_position_exist?(transaction)
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date if short_position_exist?(transaction)
+    elsif transaction.tr_type == 'Symbol Change'
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol).order('trade_date ASC').first.trade_date if @stock_symbols.include?(transaction.symbol)
     end
     transaction.trade_date < existing_stock_opened_date
   end
@@ -97,6 +96,7 @@ module TransactionsHelper
         trans.save
       end
     end
+    # TODO: this should be moved to a split_stock method in create_update_stock switch case.
     @stock.shares_owned = @stock.shares_owned * transaction.new_shares.to_f / transaction.old_shares.to_f
     @stock.save
   end
@@ -105,7 +105,6 @@ module TransactionsHelper
     if transaction.tr_type == 'Dividend'
       transaction.quantity *= @stock.shares_owned
       transaction.price = transaction.div_per_share
-
     end
     if transaction.tr_type == 'Reinvest Div.'
       transaction.price = transaction.closing_price
@@ -114,6 +113,16 @@ module TransactionsHelper
     if transaction.tr_type == 'Stock Split'
       adjust_stock_split(transaction)
       transaction.quantity = @stock.shares_owned
+    end
+    if transaction.tr_type == 'Symbol Change'
+      @historical_transactions = Transaction.where(symbol: transaction.symbol).order('trade_date ASC')
+      puts @historical_transactions
+      puts 'New symbol is: '
+      puts transaction.new_symbol
+      @historical_transactions.each do |trans|
+        trans.update(symbol: transaction.new_symbol)
+        trans.save
+      end
     end
     if transaction.save
       format.html do
@@ -235,6 +244,15 @@ module TransactionsHelper
     end
   end
 
+  def symbol_change_stock(transaction)
+    if @stock_symbols.include?(transaction.symbol)
+      unless closing_date_earlier_than_opening_date?(transaction)
+        @stock.ticker = transaction.new_symbol
+        @stock.save
+      end
+    end
+  end
+
   def create_update_stock(transaction)
     @portfolio = Portfolio.find(params[:portfolio_id])
     if ticker_exist?(transaction) && date_valid?(transaction)
@@ -251,6 +269,8 @@ module TransactionsHelper
         dividend_stock(transaction)
       when 'Reinvest Div.'
         reinvest_dividend_stock(transaction)
+      when 'Symbol Change'
+        symbol_change_stock(transaction)
       end
     end
   end
@@ -416,6 +436,15 @@ module TransactionsHelper
     end
   end
 
+  def position_with_symbol_change(transaction)
+    if symbol_exist?(transaction)
+      unless closing_date_earlier_than_opening_date?(transaction)
+        @position.update(symbol: transaction.new_symbol)
+        @position.save
+      end
+    end
+  end
+
   def create_update_position(transaction)
     if ticker_exist?(transaction) && date_valid?(transaction) || transaction.symbol == 'Cash'
       @stock = @stocks.find_by(ticker: transaction.symbol)
@@ -448,6 +477,8 @@ module TransactionsHelper
         position_with_reinvest_dividend(transaction)
       when 'Stock Split'
         position_with_stock_split(transaction)
+      when 'Symbol Change'
+        position_with_symbol_change(transaction)
       end
     end
   end

@@ -36,40 +36,40 @@ export default class extends Controller {
     });
   }
 
+  addHidden(field) {
+    field.classList.add('hidden');
+    field.removeAttribute('required');
+  }
+
   hideUncommonFields() {
     this.getFields('Uncommon').forEach((field) => {
-      field.classList.add('hidden');
+      this.addHidden(field);
       field.setAttribute('value', '');
-      field.removeAttribute('required');
     });
   }
 
-  showSymbolField() {
-    const symbol = document.getElementById('transaction_symbol');
-    symbol.classList.remove('hidden');
-    symbol.setAttribute('required', 'true');
-    symbol.setAttribute('value', '');
+  showField(filedName) {
+    const field = document.getElementById(filedName);
+    field.classList.remove('hidden');
+    field.setAttribute('required', 'true');
+    field.setAttribute('value', '');
   }
 
-  showNewSymbolField() {
-    const newSymbol = document.getElementById('transaction_new_symbol');
-    newSymbol.classList.remove('hidden');
-    newSymbol.setAttribute('required', 'true');
-    newSymbol.setAttribute('value', '');
+  removeHidden(field) {
+    field.classList.remove('hidden');
+    field.setAttribute('required', 'true');
+    field.setAttribute('value', '');
   }
 
   hideFieldsForCashTransactions() {
     this.getFields('Cash').forEach((field) => {
-      field.removeAttribute('required');
-      field.classList.add('hidden');
+      this.addHidden(field);
       if (field === document.getElementById('transaction_symbol')) field.setAttribute('value', 'Cash');
       if (field === document.getElementById('transaction_price')) field.setAttribute('value', '1');
     });
     const amount = document.getElementById('transaction_quantity');
-    amount.classList.remove('hidden');
+    this.removeHidden(amount);
     amount.setAttribute('placeholder', 'Amount');
-    amount.setAttribute('required', 'true');
-    amount.setAttribute('value', '');
   }
 
   setFieldsForNoneCashTransactions(field) {
@@ -79,8 +79,7 @@ export default class extends Controller {
 
   hideFieldsForDivTransactions() {
     this.getFields('Dividend').forEach((field) => {
-      field.removeAttribute('required');
-      field.classList.add('hidden');
+      this.addHidden(field);
       this.setFieldsForNoneCashTransactions(field);
     });
     const closingPrice = document.getElementById('transaction_closing_price');
@@ -89,45 +88,30 @@ export default class extends Controller {
 
   hideFieldsForStockSplit() {
     this.getFields('Stock Split').forEach((field) => {
-      field.removeAttribute('required');
-      field.classList.add('hidden');
+      this.addHidden(field);
       this.setFieldsForNoneCashTransactions(field);
     });
-    this.showSymbolField();
+    this.showField('transaction_symbol');
   }
 
   hideFieldsForSymbolChange() {
     this.getFields('Symbol Change').forEach((field) => {
-      field.removeAttribute('required');
-      field.classList.add('hidden');
+      this.addHidden(field);
       this.setFieldsForNoneCashTransactions(field);
     });
-    this.showSymbolField();
-    this.showNewSymbolField();
-  }
-
-  removeHidden(field) {
-    field.classList.remove('hidden');
-    field.setAttribute('required', 'true');
-    field.setAttribute('value', '');
+    this.showField('transaction_symbol');
+    this.showField('transaction_new_symbol');
   }
 
   showFieldsForDivTransactions() {
     const dividendPerShare = document.getElementById('transaction_div_per_share');
     this.removeHidden(dividendPerShare);
-    this.showSymbolField();
+    this.showField('transaction_symbol');
   }
 
   showFieldsForReinvestDivTransactions() {
     const closingPrice = document.getElementById('transaction_closing_price');
     this.removeHidden(closingPrice);
-  }
-
-  showFieldsForStockSplit() {
-    const newShares = document.getElementById('transaction_new_shares');
-    this.removeHidden(newShares);
-    const oldShares = document.getElementById('transaction_old_shares');
-    this.removeHidden(oldShares);
   }
 
   showAllFields() {
@@ -171,7 +155,8 @@ export default class extends Controller {
       case 'Stock Split':
         this.hideCommonFields();
         this.hideFieldsForStockSplit();
-        this.showFieldsForStockSplit();
+        this.showField('transaction_new_shares');
+        this.showField('transaction_old_shares');
         break;
       case 'Symbol Change':
         this.hideCommonFields();
