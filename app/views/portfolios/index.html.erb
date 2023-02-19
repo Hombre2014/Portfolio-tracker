@@ -21,7 +21,7 @@
   <div>
     <% unless @portfolios.length == 0 %>
       <span class="block font-medium mb-1 inline-block text-base">Net Worth:</span>
-      <% red_or_green = @net_worth >= @net_worth - @net_worth_profit ? 'text-green-600' : 'text-red-600' %>
+      <% red_or_green = @net_worth >= @net_worth - @net_worth_return ? 'text-green-600' : 'text-red-600' %>
       <span class="font-bold text-base <%= red_or_green %>"><%= number_to_currency(@net_worth) %></span> *
       <%# @net_worth_return = @net_worth_profit + @net_worth_income %>
       <span class="block font-medium mb-1 inline-block text-base">Return:</span>
