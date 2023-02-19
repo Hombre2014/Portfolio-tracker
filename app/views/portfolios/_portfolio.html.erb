@@ -83,10 +83,7 @@
             <% end %>
             <td class="<%= cell %>"><%= number_to_currency(position.commission_and_fee) %></td>
             <td class="<%= cell %>"><%= number_to_currency(position_cost) %></td>
-
-            <%# stock_in_position = Stock.find_by(ticker: position.symbol) %>
-
-            <td class="<%= cell %> text-red-600"><%= number_to_currency(-1 * position.commission_and_fee) %></td>
+            <td class="<%= cell %> text-red-600"><%= number_to_currency(-1 * Stock.where(ticker: position.symbol, portfolio_id: position.portfolio_id).first.commission_and_fee) %></td>
             <% red_or_green = position.realized_profit_loss >= 0 ? 'text-green-600' : 'text-red-600' %>
             <td class="<%= cell %> <%= red_or_green %>"><%= number_to_currency(position.realized_profit_loss) %></td>
             <% red_or_green = position.income >= 0 ? 'text-green-600' : 'text-red-600' %>
