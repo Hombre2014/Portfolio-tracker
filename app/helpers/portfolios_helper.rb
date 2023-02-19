@@ -10,18 +10,22 @@ module PortfoliosHelper
     @total_comm_and_fee = 0
     @total_position_gain = 0
     @total_income = 0
-    @position_profit_loss = 0
     @total_portfolio_value = 0
+    @total_reinvested_income = 0
+    
+    @position_profit_loss = 0
+
     @closed_stock_rpl = 0
     @closed_stock_income = 0
     @closed_stock_comm_and_fee = 0
+
     @portfolio_closed_rpl = 0
     @portfolio_closed_income = 0
     @portfolio_closed_comm_and_fee = 0
-    @closed_stock_gain = 0
-    @total_closed_stock_gain = 0
-    @total_reinvested_income = 0
     @portfolio_closed_reinvested_income = 0
+
+    # @closed_stock_gain = 0
+    # @total_closed_stock_gain = 0
   end
 
   def initial_setup
