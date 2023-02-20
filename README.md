@@ -1,6 +1,6 @@
 # Portfolio tracker
 
->  A portfolio tracker you dreamed about!
+> A portfolio tracker you dreamed about!
 
 ## Description
 
@@ -18,7 +18,7 @@ Deployed using [Heroku](https://heroku.com/)
 
 ## Version
 
-latest version: [1.1.0](https://github.com/Hombre2014/Portfolio-tracker/releases/tag/v1.1.0)
+latest version: [1.5.2](https://github.com/Hombre2014/Portfolio-tracker/releases/tag/v.1.5.2)
 
 ## Built With
 
