@@ -83,7 +83,6 @@ Rails.application.configure do
     open_timeout:         5,
     read_timeout:         5 }
 
-
   # # Adding config for bullet gem
   # config.after_initialize do
   #   Bullet.enable = true
