@@ -18,7 +18,7 @@ Deployed using [Heroku](https://heroku.com/)
 
 ## Version
 
-latest version: [1.5.4](https://github.com/Hombre2014/Portfolio-tracker/releases/tag/v.1.5.4)
+latest version: [1.5.6](https://github.com/Hombre2014/Portfolio-tracker/releases/tag/v.1.5.6)
 
 ## Built With
 
