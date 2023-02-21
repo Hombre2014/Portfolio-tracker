@@ -1,12 +1,16 @@
-<div class="mx-auto md:w-3/4 w-full flex">
-  <div class="mx-auto">
+<h1 class="font-bold text-4xl mb-8">Transaction</h1>
+<div class="mx-auto md:w-full w-full flex">
+  <div class="">
     <table class="table-auto mb-6 border-collapse border border-slate-400">
       <thead>
         <tr>
           <th class="border border-slate-300 px-4">Type</th>
           <th class="border border-slate-300 px-4">Date</th>
           <th class="border border-slate-300 px-4">Symbol</th>
+          <th class="border border-slate-300 px-4">New Symbol</th>
           <th class="border border-slate-300 px-4">Quantity</th>
+          <th class="border border-slate-300 px-4">Old Quantity</th>
+          <th class="border border-slate-300 px-4">Split ratio</th>
           <th class="border border-slate-300 px-4">Price</th>
           <th class="border border-slate-300 px-4">Commission</th>
           <th class="border border-slate-300 px-4">Fee</th>
@@ -17,6 +21,7 @@
         <%= render @transaction %>
       </tbody>
     </table>
+    <%= link_to 'New transaction', new_user_portfolio_transaction_path, class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white font-medium" %>
     <%= link_to 'Back to transactions', user_portfolio_transactions_path, class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white inline-block font-medium hover:bg-dollar-triad_blue" %>
   </div>
 </div>

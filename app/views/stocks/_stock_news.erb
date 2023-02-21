@@ -1,16 +1,20 @@
-<% @company_news.first(10).each do |news| %>
-  <div class="my-5 mr-5 flex">
-    <div class="w-44">
-      <div class="block w-44"><%= image_tag news.image.empty? ? "news.png" : news.image, class:"rounded" %></div>
-      <span class="inline-block font-medium mb-1">Source:</span>
-      <span class="font-bold"><%= news.source %></span>
+<% if @company_news.length == 0 %>
+  <p>No recent company news</p>
+<% else %>
+  <% @company_news.first(10).each do |news| %>
+    <div class="my-5 mr-5 flex">
+      <div class="w-44">
+        <div class="block w-44"><%= image_tag news.image.empty? ? "news.png" : news.image, class:"rounded" %></div>
+        <span class="inline-block font-medium mb-1">Source:</span>
+        <span class="font-bold"><%= news.source %></span>
+      </div>
+      <div class="ml-4">
+        <span class="font-semibold hover:text-dollar-triad_blue"><%= link_to news.headline, news.url, target: :'_blank', rel: :'noopener noreferrer' %></span><br>
+        <span><%= DateTime.strptime(news.datetime.to_i.to_s,'%s').strftime("%d-%m-%y") %></span>
+        <br>
+        <p class="mt-2"><%= news.summary %></p>
+        <span class="font-semibold hover:text-dollar-triad_blue text-sm"><%= link_to 'Read more', news.url, target: :'_blank', rel: :'noopener noreferrer' %></span>
+      </div>
     </div>
-    <div class="ml-4">
-      <span class="font-semibold hover:text-dollar-triad_blue"><%= link_to news.headline, news.url, target: :'_blank', rel: :'noopener noreferrer' %></span><br>
-      <span><%= DateTime.strptime(news.datetime.to_i.to_s,'%s').strftime("%d-%m-%y") %></span>
-      <br>
-      <p class="mt-2"><%= news.summary %></p>
-      <span class="font-semibold hover:text-dollar-triad_blue text-sm"><%= link_to 'Read more', news.url, target: :'_blank', rel: :'noopener noreferrer' %></span>
-    </div>
-  </div>
+  <% end %>
 <% end %>

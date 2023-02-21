@@ -1,6 +1,6 @@
 # Portfolio tracker
 
->  A portfolio tracker you dreamed about!
+> A portfolio tracker you dreamed about!
 
 ## Description
 
@@ -15,6 +15,10 @@ Get detailed information about your portfolio stocks (US market only). Read the 
 ## Deployment
 
 Deployed using [Heroku](https://heroku.com/)
+
+## Version
+
+latest version: [1.5.4](https://github.com/Hombre2014/Portfolio-tracker/releases/tag/v.1.5.4)
 
 ## Built With
 

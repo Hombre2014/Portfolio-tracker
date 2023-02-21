@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root "pages#home"
   get 'pages/about'
   get 'pages/contact'
   resources :stocks
@@ -13,6 +14,4 @@ Rails.application.routes.draw do
       resources :transactions
     end
   end
-
-  root "pages#home"
 end

@@ -1,25 +1,27 @@
 <%= form_with(model: @portfolio, url: "/users/#{current_user.id}/portfolios", class: "contents w-1/4") do |form| %>
   <div class=" flex flex-col">
+    <% portfolio = "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
     <div class="mb-8">
-      <%= form.text_field :name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder: "Portfolio's name", required: true %>
+      <%= form.text_field :name, class: "#{portfolio}", placeholder: "Portfolio's name", required: true %>
     </div>
 
     <div class="mb-8">
-      <%= form.text_field :acc_number, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder: 'Account number', required: true %>
+      <%= form.text_field :acc_number, class: "#{portfolio}", placeholder: 'Account number', required: true %>
     </div>
 
     <div class="mb-8">
-      <%= form.number_field :cash, step: 0.01, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder: 'Initial capital - Cash', required: true %>
+      <%= form.number_field :cash, min: 0, step: 0.01, class: "#{portfolio}", placeholder: 'Initial capital - Cash', required: true %>
     </div>
 
     <div class="mb-5">
       <%= form.label :opened_date %><span class="text-red-800"> *</span>
-      <%= form.date_field :opened_date, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", required: true %>
+      <%= form.date_field :opened_date, class: "#{portfolio}", required: true %>
     </div>
 
     <%= form.hidden_field :user_id, value: current_user.id %>
     <%= form.hidden_field :realized_profit_loss, value: 0 %>
     <%= form.hidden_field :transactions_cost, value: 0 %>
+    <%= form.hidden_field :income, value: 0 %>
 
     <div class="mb-8">
       <span class="text-red-800">* The date portfolio was created. All transactions in the portfolio should be on or after this date!</span>

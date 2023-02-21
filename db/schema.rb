@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_21_151022) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,6 +24,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.decimal "income", precision: 10, scale: 2, default: "0.0"
+    t.decimal "reinvested_income", precision: 10, scale: 5
     t.index ["user_id"], name: "index_portfolios_on_user_id"
   end
 
@@ -37,6 +39,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
     t.bigint "portfolio_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "income", precision: 10, scale: 2
+    t.decimal "reinvested_income", precision: 10, scale: 5
     t.index ["portfolio_id"], name: "index_positions_on_portfolio_id"
   end
 
@@ -49,6 +53,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
     t.bigint "portfolio_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "income"
+    t.decimal "reinvested_income", precision: 10, scale: 5
     t.index ["portfolio_id"], name: "index_stocks_on_portfolio_id"
   end
 
@@ -56,13 +62,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
     t.string "tr_type"
     t.date "trade_date"
     t.string "symbol"
-    t.integer "quantity"
+    t.decimal "quantity"
     t.decimal "price"
     t.decimal "commission"
     t.decimal "fee"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "portfolio_id", null: false
+    t.decimal "div_per_share", precision: 10, scale: 5
+    t.decimal "closing_price", precision: 10, scale: 2
+    t.integer "new_shares"
+    t.integer "old_shares"
+    t.string "new_symbol"
     t.index ["portfolio_id"], name: "index_transactions_on_portfolio_id"
   end
 
@@ -78,6 +89,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_03_210354) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.string "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string "unconfirmed_email"
+    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
