@@ -2,7 +2,7 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-
+  config.hosts << "yuriy-portfolio-tracker.herokuapp.com"
   config.action_mailer.default_url_options = { host: 'yuriy-portfolio-tracker.herokuapp.com', protocol: 'https' }
   config.action.mailer.perform_deliveries = true
   config.action_mailer.delivery_method = :smtp
