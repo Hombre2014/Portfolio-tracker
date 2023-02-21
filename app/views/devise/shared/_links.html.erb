@@ -7,7 +7,9 @@
 <% end %>
 
 <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
-  <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
+  <div class="container flex flex-col items-center my-4">
+    <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %>
+  </div>
 <% end %>
 
 <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
