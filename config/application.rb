@@ -35,6 +35,6 @@ module PortfolioTracker
     config.generators.system_tests = nil
 
     # Add this, because I had a precompiled assets error trying to deploy on Heroku:
-    config.assets.initialize_on_precompile = true
+    config.assets.initialize_on_precompile = false
   end
 end
