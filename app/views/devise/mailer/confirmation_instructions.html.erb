@@ -1,5 +1,28 @@
-<p>Welcome <%= @email %>!</p>
-
-<p>You can confirm your account email through the link below:</p>
-
-<p><%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %></p>
+<table cellspacing="0" cellpadding="0" border="0">
+  <tr style="margin: 2rem;">
+    <td width="650">
+      <p class="welcome">Welcome <%= @user.name %>!</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="650">
+      <p style="padding: 0 2rem;">Thanks for signing up for Portfolio Tracker - the unique way for tracking your stock porfolio investments.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="650">
+      <p style="padding: 0 2rem;">You are one step away of taking control over your stock performance. Simply confirm your account email through the link below:</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="650">
+      <p class="confirm"><%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token), class: "confirm-link" %></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="650">
+      <p style="padding: 0 2rem;">Thanks for joining!</p>
+      <p style="padding: 0 2rem;">Portfolio Tracker</p>
+    </td>
+  </tr>
+</table>
