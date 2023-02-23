@@ -62,6 +62,12 @@ gem 'dotenv-rails', groups: %i[development test]
 # Add bullet gem for performance monitoring
 gem 'bullet', groups: :development # Problem uninitialized constant #<Class:UniformNotifier::SentryNotifier>::Sentry
 
+# Add premailer-rails gem for email styling
+gem 'premailer-rails'
+
+# Add nokogiiri gem for parsing html
+gem 'nokogiri'
+
 # Use Sass to process CSS
 # gem "sassc-rails"
 
