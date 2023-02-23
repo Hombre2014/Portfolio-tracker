@@ -326,6 +326,7 @@ DEPENDENCIES
   finnhub_ruby (~> 1.1.16)
   importmap-rails
   jbuilder
+  nokogiri
   omniauth
   omniauth-google-oauth2
   omniauth-rails_csrf_protection (~> 1.0)
