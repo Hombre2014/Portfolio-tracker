@@ -1,4 +1,4 @@
-# if defined? Bullet
-#   Bullet.enable = true
-#   Bullet.alert = true
-# end
+if defined? Bullet
+  Bullet.enable = true
+  Bullet.alert = true
+end
