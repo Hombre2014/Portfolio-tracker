@@ -68,6 +68,9 @@ gem 'premailer-rails'
 # Add nokogiiri gem for parsing html
 gem 'nokogiri'
 
+# Add responders gem for handling ajax requests, needed for devise
+gem "responders"
+
 # Use Sass to process CSS
 # gem "sassc-rails"
 

@@ -334,6 +334,7 @@ DEPENDENCIES
   premailer-rails
   puma (~> 5.0)
   rails (~> 7.0.3)
+  responders
   rspec-core!
   rspec-expectations!
   rspec-mocks!
