@@ -46,7 +46,7 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem 'bootsnap', require: false
 
 # Add devise for authentication
-gem 'devise', '~> 4.7'
+gem 'devise', '~> 4.9.0'
 
 # Add gems for Google authentication
 gem 'omniauth'
