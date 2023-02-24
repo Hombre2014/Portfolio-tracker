@@ -58,3 +58,14 @@ body {
   color: #fff;
   padding: 1rem;
 }
+
+.img-profile {
+  width: 32px;
+  height: auto;
+  border-radius: 50%;
+}
+
+.logo {
+  height: 24px;
+  width: auto;
+}

@@ -46,7 +46,7 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem 'bootsnap', require: false
 
 # Add devise for authentication
-gem 'devise', '~> 4.7'
+gem 'devise', '~> 4.9.0'
 
 # Add gems for Google authentication
 gem 'omniauth'
@@ -67,6 +67,9 @@ gem 'premailer-rails'
 
 # Add nokogiiri gem for parsing html
 gem 'nokogiri'
+
+# Add responders gem for handling ajax requests, needed for devise
+gem "responders"
 
 # Use Sass to process CSS
 # gem "sassc-rails"
