@@ -69,3 +69,13 @@ body {
   height: 24px;
   width: auto;
 }
+
+.gravatar {
+  width: 100%;
+  height: auto;
+}
+
+.avatar {
+  max-width: 128px !important;
+  height: auto !important;
+}
