@@ -39,9 +39,7 @@
 
   <div class="flex flex-col items-center">
     <h3 class="mt-12 text-sm text-center">Whant to cancel my account?</h3>
-
     <%= link_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?", turbo_method: :delete }, method: :delete, class: "mt-2 rounded-lg py-1 px-3 bg-dollar-triad_red font-medium text-white hover:bg-dollar-square_red" %>
-
     <%= link_to "Back", :back, class: "mt-12 rounded-lg py-1 px-3 bg-dollar-split_blue inline-block font-medium text-white hover:bg-dollar-triad_blue" %>
   </div>
 </div>

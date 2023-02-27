@@ -1,5 +1,9 @@
 {
-  "githubPullRequests.ignoredPullRequestBranches": [
-    "dev"
-  ]
+  "githubPullRequests.ignoredPullRequestBranches": ["dev"],
+
+  "editor.formatOnSave": true,
+
+  "[ruby]": {
+    "editor.defaultFormatter": "testdouble.vscode-standard-ruby"
+  }
 }
