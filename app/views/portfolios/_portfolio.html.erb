@@ -53,7 +53,7 @@
             <td class="<%= cell %>">-</td>
           <% end %>
           <% if position.symbol != 'Cash' %>
-            <% price = @finnhub_client.quote(position.symbol) %>
+            <% price = @finnhub_client.quote(position.symbol) #TODO Needs to handle nil! %>
             <% position_value = (position.quantity * price.c).round(2) %>
             <% @position_profit_loss = position_value - position_cost %>
             <% day_gain = position.quantity * price.d.round(2) %>

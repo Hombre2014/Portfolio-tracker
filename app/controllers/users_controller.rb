@@ -17,6 +17,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @portfolios = @user.portfolios.includes([:positions])
     @positions = Position.where(portfolio_id: @portfolios.ids).where.not(symbol: 'Cash')
+    
     @finnhub_client = FinnhubRuby::DefaultApi.new
   end
 
