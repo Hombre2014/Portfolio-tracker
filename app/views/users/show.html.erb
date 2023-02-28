@@ -20,10 +20,11 @@
     </div>
     <div class="flex flex-col w-1/3">
       <div>
-        <h2>Your top gaining positions</h2>
-          <% @position_winners = {} %>
-          <% @portfolio_position = {} %>
-          <% @position_loosers = {} %>
+        <h2 class="mb-2 text-lg font-medium">Top $ winning positions:</h2>
+          <% @winners_amount = {} %>
+          
+          <% @portfolio_name = {} %>
+          <% @loosers_amount = {} %>
           <% @winners = 0 %>
           <% @loosers = 0 %>
           <% @stats = {} %>
@@ -31,27 +32,23 @@
             <% price = @finnhub_client.quote(position.symbol) %>
             <% position_cost = position.quantity * position.cost_per_share - position.reinvested_income %>
             <% position_value = (position.quantity * price.c).round(2) %>
+            <% @stats.store('amount', position_value - position_cost) %>
+            <% portfolio_name = @portfolios.where(id: position.portfolio_id).pluck(:name)[0] %>
+            <% @stats.store('portfolio_name', portfolio_name) %>
+            <% @portfolio_name.store(position.symbol, @stats['portfolio_name']) %>
             <% if (position_value - position_cost >= 0) %>
               <% @winners += 1 %>
-              <% @stats.store('amount', position_value - position_cost) %>
-              <% @position_winners.store(position.symbol, @stats['amount']) %>
-              <% portfolio_name = @portfolios.where(id: position.portfolio_id).pluck(:name)[0] %>
-              <% @stats.store('portfolio_name', portfolio_name) %>
-              <% @portfolio_position.store(position.symbol, @stats['portfolio_name']) %>
+              <% @winners_amount.store(position.symbol, @stats['amount']) %>
             <% else %>
               <% @loosers += 1 %>
-              <% @stats.store('amount', position_value - position_cost) %>
-              <% @position_loosers.store(position.symbol, @stats['amount']) %>
-              <% portfolio_name = @portfolios.where(id: position.portfolio_id).pluck(:name)[0] %>
-              <% @stats.store('portfolio_name', portfolio_name) %>
-              <% @portfolio_position.store(position.symbol, @stats['portfolio_name']) %>
+              <% @loosers_amount.store(position.symbol, @stats['amount']) %>
             <% end %>
           <% end %>
           <% position_cost = 0 %>
           <% position_value = 0 %>
-          <% @position_winners = @position_winners.sort_by {|_key, amount| amount}.reverse.to_h %>
-          <% @position_winners = @position_winners.first(3) %>
-          <% @position_winners.each do |key, position| %>
+          <% @winners_amount = @winners_amount.sort_by {|_key, amount| amount}.reverse.to_h %>
+          <% @winners_amount = @winners_amount.first(3) %>
+          <% @winners_amount.each do |key, position| %>
             <% if @winners > 0 %>
             <div class="flex", style="column-gap: 1rem;">
               <div class="flex justify-between w-1/3">
@@ -59,7 +56,7 @@
                 <span class="text-green-600"><%= number_to_currency(position) %></span>
               </div>
               <div>
-                <span class="text-600"><%= @portfolio_position[key] %></span>
+                <span class="text-600"><%= @portfolio_name[key] %></span>
               </div>
             </div>
             <% else %>
@@ -70,10 +67,10 @@
     </div>
     <div class="flex flex-col w-1/3">
       <div>
-        <h2>Your top loosing positions</h2>
-        <% @position_loosers = @position_loosers.sort_by {|_key, position| position}.to_h %>
-          <% @position_loosers = @position_loosers.first(3) %>
-          <% @position_loosers.each do |key, position| %>
+        <h2 class="mb-2 text-lg font-medium">Top $ loosing positions:</h2>
+        <% @loosers_amount = @loosers_amount.sort_by {|_key, position| position}.to_h %>
+          <% @loosers_amount = @loosers_amount.first(3) %>
+          <% @loosers_amount.each do |key, position| %>
             <% if @loosers > 0 %>
               <div class="flex", style="column-gap: 1rem;">
                 <div class="flex justify-between w-1/3">
@@ -81,7 +78,7 @@
                   <span class="text-red-600"><%= number_to_currency(position) %></span>
                 </div>
                 <div>
-                  <span class="text-600"><%= @portfolio_position[key] %></span>
+                  <span class="text-600"><%= @portfolio_name[key] %></span>
                 </div>
             </div>
             <% else %>
