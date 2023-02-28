@@ -21,13 +21,27 @@
     <div class="flex flex-col w-1/3">
       <% @winners_amount = {} %>
       <% @winners_percent = {} %>
-      <% @loosers_percent = {} %>
       <% @portfolio_name = {} %>
+      <% @portfolio_id = {} %>
       <% @loosers_amount = {} %>
+      <% @loosers_percent = {} %>
+      <% @stock_rpl_winners = {} %>
+      <% @stock_rpl_loosers = {} %>
       <% @winners = 0 %>
+      <% @winners_rpl = 0 %>
       <% @loosers = 0 %>
+      <% @loosers_rpl = 0 %>
       <% @stats = {} %>
       <% @positions.each do |position| %>
+        <% portfolio_id = @portfolios.where(id: position.portfolio_id).pluck(:id)[0] %>
+        <% @stats.store('portfolio_id', portfolio_id) %>
+        <% @portfolio_id.store(position.symbol, @stats['portfolio_id']) %>
+
+        
+        <% stock_rpl = Stock.find_by(ticker: position.symbol, portfolio_id: @stats['portfolio_id']).realized_profit_loss %>
+        <% @stats.store('realized_profit_loss', stock_rpl) %>
+        
+        
         <% price = @finnhub_client.quote(position.symbol) %>
         <% position_cost = position.quantity * position.cost_per_share - position.reinvested_income %>
         <% position_value = (position.quantity * price.c).round(2) %>
@@ -52,19 +66,30 @@
           <% @loosers_amount.store(position.symbol, @stats['amount']) %>
           <% @loosers_percent.store(position.symbol, @stats['percent']) %>
         <% end %>
+
+        <% if (@stats['realized_profit_loss'] >= 0) %>
+          <% @winners_rpl += 1 %>
+          <% @stock_rpl_winners.store(position.symbol, @stats['realized_profit_loss']) %>
+        <% else %>
+          <% @loosers_rpl += 1 %>
+          <% @stock_rpl_loosers.store(position.symbol, @stats['realized_profit_loss']) %>
+        <% end %>
+
       <% end %>
       <% position_cost = 0 %>
       <% position_value = 0 %>
       <% @winners_amount = @winners_amount.sort_by {|_key, amount| amount}.reverse.to_h %>
       <% @winners_amount = @winners_amount.first(3) %>
       <div>
-        <h2 class="mb-2 text-lg font-medium">Top $ winning positions:</h2>
-          <% @winners_amount.each do |key, position| %>
+        <h2 class="mb-2 text-lg font-medium mt-4">Top $ winning positions:</h2>
+          <% @winners_amount.each do |key, value| %>
             <% if @winners > 0 %>
+            <% @stock_data = @finnhub_client.company_profile2({ symbol: key }) %>
+            <% @stock_id = Stock.find_by(ticker: key, portfolio_id: @portfolio_id[key]).id %>
             <div class="flex", style="column-gap: 1rem;">
               <div class="flex justify-between w-1/3">
-                <span><%= key %></span>
-                <span class="text-green-600"><%= number_to_currency(position) %></span>
+                <span><%= link_to key, "/stocks/#{@stock_id}" %></span>
+                <span class="text-green-600"><%= number_to_currency(value) %></span>
               </div>
               <div>
                 <span class="text-600"><%= @portfolio_name[key] %></span>
@@ -79,13 +104,14 @@
       <% @winners_percent = @winners_percent.first(3) %>
       <div>
         <h2 class="mb-2 text-lg font-medium mt-4">Top % winning positions:</h2>
-          <% @winners_percent.each do |key, position| %>
+          <% @winners_percent.each do |key, value| %>
+            <% @stock_data = @finnhub_client.company_profile2({ symbol: key }) %>
+            <% @stock_id = Stock.find_by(ticker: key, portfolio_id: @portfolio_id[key]).id %>
             <% if @winners > 0 %>
             <div class="flex", style="column-gap: 1rem;">
               <div class="flex justify-between w-1/3">
-                <span><%= key %></span>
-                <span class="text-green-600"><%= number_to_percentage(position.round(2)).to_f %>%</span>
-                
+                <span><%= link_to key, "/stocks/#{@stock_id}" %></span>
+                <span class="text-green-600"><%= number_to_percentage(value.round(2)).to_f %>%</span>
               </div>
               <div>
                 <span class="text-600"><%= @portfolio_name[key] %></span>
@@ -96,38 +122,66 @@
             <% end %>
           <% end %>
       </div>
-    </div>
-    <div class="flex flex-col w-1/3">
+      
+      <% @stock_rpl_winners = @stock_rpl_winners.sort_by {|_key, realized_profit_loss| realized_profit_loss}.reverse.to_h %>
+      <% @stock_rpl_winners = @stock_rpl_winners.first(3) %>
       <div>
-        <h2 class="mb-2 text-lg font-medium">Top $ loosing positions:</h2>
-        <% @loosers_amount = @loosers_amount.sort_by {|_key, position| position}.to_h %>
-          <% @loosers_amount = @loosers_amount.first(3) %>
-          <% @loosers_amount.each do |key, position| %>
-            <% if @loosers > 0 %>
-              <div class="flex", style="column-gap: 1rem;">
-                <div class="flex justify-between w-1/3">
-                  <span><%= key %></span>
-                  <span class="text-red-600"><%= number_to_currency(position) %></span>
-                </div>
-                <div>
-                  <span class="text-600"><%= @portfolio_name[key] %></span>
-                </div>
-            </div>
-            <% else %>
-              <%= puts "You don't have any $ loosers" %>
-            <% end %>
-          <% end %> 
-      </div>
-      <div>
-        <h2 class="mb-2 text-lg font-medium mt-4">Top % loosing positions:</h2>
-        <% @loosers_percent = @loosers_percent.sort_by {|_key, position| position}.to_h %>
-        <% @loosers_percent = @loosers_percent.first(3) %>
-        <% @loosers_percent.each do |key, position| %>
-          <% if @loosers > 0 %>
+        <h2 class="mb-2 text-lg font-medium mt-4">Best realized profits:</h2>
+          <% @stock_rpl_winners.each do |key, value| %>
+            <% if @winners_rpl > 0 %>
+            <% @stock_data = @finnhub_client.company_profile2({ symbol: key }) %>
+            <% @stock_id = Stock.find_by(ticker: key, portfolio_id: @portfolio_id[key]).id %>
             <div class="flex", style="column-gap: 1rem;">
               <div class="flex justify-between w-1/3">
                 <span><%= key %></span>
-                <span class="text-red-600"><%= number_to_percentage(position.round(2)).to_f %>%</span>
+                <span class="text-green-600"><%= number_to_currency(value) %></span>
+              </div>
+              <div>
+                <span class="text-600"><%= @portfolio_name[key] %></span>
+              </div>
+            </div>
+            <% else %>
+              <%= puts "You don't have realized profits" %>
+            <% end %>
+          <% end %>
+      </div>
+    </div>
+
+    <div class="flex flex-col w-1/3">
+      <div>
+        <h2 class="mb-2 text-lg font-medium">Top $ loosing positions:</h2>
+        <% @loosers_amount = @loosers_amount.sort_by {|_key, value| value}.to_h %>
+        <% @loosers_amount = @loosers_amount.first(3) %>
+        <% @loosers_amount.each do |key, value| %>
+          <% if @loosers > 0 %>
+            <% @stock_data = @finnhub_client.company_profile2({ symbol: key }) %>
+            <% @stock_id = Stock.find_by(ticker: key, portfolio_id: @portfolio_id[key]).id %>
+            <div class="flex", style="column-gap: 1rem;">
+              <div class="flex justify-between w-1/3">
+                <span><%= link_to key, "/stocks/#{@stock_id}" %></span>
+                <span class="text-red-600"><%= number_to_currency(value) %></span>
+              </div>
+              <div>
+                <span class="text-600"><%= @portfolio_name[key] %></span>
+              </div>
+          </div>
+          <% else %>
+            <%= puts "You don't have any $ loosers" %>
+          <% end %>
+        <% end %> 
+      </div>
+      <div>
+        <h2 class="mb-2 text-lg font-medium mt-4">Top % loosing positions:</h2>
+        <% @loosers_percent = @loosers_percent.sort_by {|_key, value| value}.to_h %>
+        <% @loosers_percent = @loosers_percent.first(3) %>
+        <% @loosers_percent.each do |key, value| %>
+          <% if @loosers > 0 %>
+            <% @stock_data = @finnhub_client.company_profile2({ symbol: key }) %>
+            <% @stock_id = Stock.find_by(ticker: key, portfolio_id: @portfolio_id[key]).id %>
+            <div class="flex", style="column-gap: 1rem;">
+              <div class="flex justify-between w-1/3">
+                <span><%= link_to key, "/stocks/#{@stock_id}" %></span>
+                <span class="text-red-600"><%= number_to_percentage(value.round(2)).to_f %>%</span>
               </div>
               <div>
                 <span class="text-600"><%= @portfolio_name[key] %></span>
@@ -137,6 +191,30 @@
             <%= puts "You don't have any % loosers" %>
           <% end %>
         <% end %>
+      </div>
+
+      <% @stock_rpl_loosers = @stock_rpl_loosers.sort_by {|_key, realized_profit_loss| realized_profit_loss}.to_h %>
+      <% @stock_rpl_loosers = @stock_rpl_loosers.first(3) %>
+      <div>
+        <h2 class="mb-2 text-lg font-medium mt-4">Worst realized losses:</h2>
+          <% @stock_rpl_loosers.each do |key, value| %>
+            <% if @loosers_rpl > 0 %>
+            <% @stock_data = @finnhub_client.company_profile2({ symbol: key }) %>
+            <% @stock_id = Stock.find_by(ticker: key, portfolio_id: @portfolio_id[key]).id %>
+            <div class="flex", style="column-gap: 1rem;">
+              <div class="flex justify-between w-1/3">
+                <span><%= key %></span>
+                <span class="text-red-600"><%= number_to_currency(value) %></span>
+              </div>
+              <div>
+                <span class="text-600"><%= @portfolio_name[key] %></span>
+              </div>
+            </div>
+            <% else %>
+              <%= puts "You don't have realized losses" %>
+            <% end %>
+          <% end %>
+      </div>
     </div>
   </div>
 </div>
