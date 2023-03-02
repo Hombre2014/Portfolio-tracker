@@ -31,6 +31,7 @@
       ['Shares in', 'Shares in'],
       ['Shares out', 'Shares out']],
       class:"#{field_style} text-red-800", required: true %>
+      <sup class="block-inline text-red-600 text-lg"> **</sup>
   </div>
 
   <div class="my-5">
@@ -85,12 +86,12 @@
     <%= form.text_field :notes, class: "#{field_style}", placeholder:"Notes" %>
   </div>
 
-  <div class="my-5">
-    <span class="text-sm text-red-600">* All transactions have to be recorded chronologicaly.</span><br>
-    <span class="text-sm text-red-600">** For 'Shares in' type, enter 0 for 'Average price per share' if received as a gift or matching shares.</span>
+  <div class="mt-5">
+    <div class="text-xs text-red-600 leading-3">* All transactions have to be recorded chronologicaly.</div>
+    <div class="text-xs text-red-600 leading-3">** For 'Shares in' type, enter 0 for 'Average price per share' if received as a gift or matching shares.</div>
   </div>
 
-  <div class="inline">
+  <div class="flex justify-center">
     <%= form.submit class: "mt-8 rounded-lg py-1 px-3 bg-dollar-split_blue inline-block font-medium text-white hover:bg-dollar-triad_blue" %>
   </div>
 <% end %>
