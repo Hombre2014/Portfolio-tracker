@@ -27,7 +27,9 @@
       ['Dividend', 'Dividend'],
       ['Reinvest Div.', 'Reinvest Div.'],
       ['Stock Split', 'Stock Split'],
-      ['Symbol Change', 'Symbol Change']],
+      ['Symbol Change', 'Symbol Change'],
+      ['Shares in', 'Shares in'],
+      ['Shares out', 'Shares out']],
       class:"#{field_style} text-red-800", required: true %>
   </div>
 
@@ -57,7 +59,7 @@
     <%= form.number_field :old_shares, class: "#{field_style} hidden", placeholder:"Old shares ratio" %>
   </div>
 
-  <div class="my-5">
+  <div class="my-5" id="price-div">
     <%= form.number_field :price, min: 0.000001, step: 0.000001, class: "#{field_style}", required: true, placeholder:"Price" %>
   </div>
 
@@ -78,6 +80,15 @@
   </div>
 
   <%= form.hidden_field :portfolio_id, value: @portfolio.id %>
+
+  <div class="my-5 hidden">
+    <%= form.text_field :notes, class: "#{field_style}", placeholder:"Notes" %>
+  </div>
+
+  <div class="my-5">
+    <span class="text-sm text-red-600">* All transactions have to be recorded chronologicaly.</span><br>
+    <span class="text-sm text-red-600">** For 'Shares in' type, enter 0 for 'Average price per share' if received as a gift or matching shares.</span>
+  </div>
 
   <div class="inline">
     <%= form.submit class: "mt-8 rounded-lg py-1 px-3 bg-dollar-split_blue inline-block font-medium text-white hover:bg-dollar-triad_blue" %>

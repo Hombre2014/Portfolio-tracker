@@ -6,7 +6,7 @@ export default class extends Controller {
   }
 
   initialize() {
-    this.element.setAttribute('data-action', 'change->forms#handleChange'); // This  input->forms#handleInput is not working
+    this.element.setAttribute('data-action', 'change->forms#handleChange');
   }
 
   getFields(transactionType) {
@@ -48,8 +48,8 @@ export default class extends Controller {
     });
   }
 
-  showField(filedName) {
-    const field = document.getElementById(filedName);
+  showField(fieldName) {
+    const field = document.getElementById(fieldName);
     field.classList.remove('hidden');
     field.setAttribute('required', 'true');
     field.setAttribute('value', '');
@@ -130,6 +130,11 @@ export default class extends Controller {
     });
   }
 
+  handleQuantity() {
+    const price = document.getElementById('transaction_price');
+    price.setAttribute('placeholder', 'Average price per share');
+  }
+
   handleChange(event) {
     event.preventDefault();
     const selectedTransactionType = document.getElementById('transaction_tr_type');
@@ -162,16 +167,21 @@ export default class extends Controller {
         this.hideCommonFields();
         this.hideFieldsForSymbolChange();
         break;
+      case 'Shares in':
+        this.showAllFields();
+        this.hideCommonFields();
+        this.hideUncommonFields();
+        this.handleQuantity();
+        break;
+      case 'Shares out':
+        this.showAllFields();
+        this.hideCommonFields();
+        this.hideUncommonFields();
+        this.addHidden(document.getElementById('transaction_price'));
+        break;
       default:
         this.showAllFields();
         this.hideUncommonFields();
     }
   }
-
-  // handleInput(event) {
-  //   const symbol = document.getElementById('transaction_symbol');
-  //   const newSymbol = document.getElementById('transaction_new_symbol');
-  //   symbol.value = symbol.value.toUpperCase();
-  //   newSymbol.value = newSymbol.value.toUpperCase();
-  // }
 }
