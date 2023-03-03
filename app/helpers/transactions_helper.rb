@@ -116,7 +116,7 @@ module TransactionsHelper
       transaction.quantity = @stock.shares_owned
     end
     if transaction.tr_type == 'Symbol Change'
-      @historical_transactions = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id).includes([:portfolio]).order('trade_date ASC')
+      @historical_transactions = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id).order('trade_date ASC')
       @historical_transactions.each do |trans|
         trans.update(symbol: transaction.new_symbol)
         trans.save
