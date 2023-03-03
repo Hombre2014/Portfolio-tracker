@@ -15,6 +15,7 @@
   <% field_style = "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
 
   <div class="my-5">
+    <label for="transaction_tr_type"></label>
     <%= form.select :tr_type, [["Transaction type", ''],
       ['Buy', 'Buy'],
       ['Sell', 'Sell'],
@@ -24,14 +25,14 @@
       ['Cash Out', 'Cash Out'],
       ['Interest Inc.', 'Interest Inc.'],
       ['Misc. Exp.', 'Misc. Exp.'],
-      ['Dividend', 'Dividend'],
-      ['Reinvest Div.', 'Reinvest Div.'],
-      ['Stock Split', 'Stock Split'],
-      ['Symbol Change', 'Symbol Change'],
-      ['Shares in', 'Shares in'],
+      ['Dividend ***', 'Dividend'],
+      ['Reinvest Div. ***', 'Reinvest Div.'],
+      ['Stock Split ***', 'Stock Split'],
+      ['Symbol Change ***', 'Symbol Change'],
+      ['Shares in **', 'Shares in'],
       ['Shares out', 'Shares out']],
       class:"#{field_style} text-red-800", required: true %>
-      <sup class="block-inline text-red-600 text-lg"> **</sup>
+      <sup class="block-inline text-red-600 text-lg ml-1"> **, ***</sup>
   </div>
 
   <div class="my-5">
@@ -82,13 +83,10 @@
 
   <%= form.hidden_field :portfolio_id, value: @portfolio.id %>
 
-  <div class="my-5 hidden">
-    <%= form.text_field :notes, class: "#{field_style}", placeholder:"Notes" %>
-  </div>
-
   <div class="mt-5">
     <div class="text-xs text-red-600 leading-3">* All transactions have to be recorded chronologicaly.</div>
-    <div class="text-xs text-red-600 leading-3">** For 'Shares in' type, enter 0 for 'Average price per share' if received as a gift or matching shares.</div>
+    <div class="text-xs text-red-600 leading-3">** Enter 0 for 'Average price per share' if received as a gift or matching shares.</div>
+    <div class="text-xs text-red-600 leading-3">*** Must be entered in each portfolio, which holds the same stock separetely.</div>
   </div>
 
   <div class="flex justify-center">

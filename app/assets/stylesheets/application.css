@@ -79,3 +79,7 @@ body {
   max-width: 128px !important;
   height: auto !important;
 }
+
+select > option:nth-child(n + 10):nth-child(-n + 14) {
+  color: red;
+}
