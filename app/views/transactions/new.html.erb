@@ -1,5 +1,5 @@
 <div class="mx-auto md:w-1/4 w-full">
-  <h1 class="font-bold text-2xl">New transaction</h1>
+  <h1 class="font-bold text-2xl text-center mt-12 mb-8">New transaction<sup class="block-inline text-red-600"> *</sup></h1>
   <%= render "form", transaction: @transaction %>
-  <%= link_to 'Back to transactions', user_portfolio_transactions_path, class: "mt-8 rounded-lg py-1 px-3 bg-dollar-split_blue inline-block font-medium text-white hover:bg-dollar-triad_blue" %>
+  <%= link_to 'Back to transactions', user_portfolio_transactions_path, class: "w-fit mt-8 mx-auto rounded-lg py-1 px-3 bg-dollar-split_blue block font-medium text-white hover:bg-dollar-triad_blue" %>
 </div>

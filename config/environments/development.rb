@@ -86,7 +86,7 @@ Rails.application.configure do
   # Adding config for bullet gem
   config.after_initialize do
     Bullet.enable = true
-    Bullet.sentry = true
+    # Bullet.sentry = true
     Bullet.alert = true
     Bullet.bullet_logger = true
     Bullet.console = true

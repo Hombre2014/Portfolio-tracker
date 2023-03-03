@@ -56,20 +56,20 @@ module TransactionsHelper
 
   def closing_date_earlier_than_opening_date?(transaction)
     if transaction.tr_type == 'Sell' || transaction.tr_type == 'Reinvest Div.'
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Buy').order('trade_date ASC').first.trade_date
     elsif transaction.tr_type == 'Buy to cover'
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Sell short').order('trade_date ASC').first.trade_date
     elsif transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.'
       existing_stock_opened_date = @portfolio.opened_date
     elsif transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.'
-      cash_in = Transaction.where(symbol: transaction.symbol, tr_type: 'Cash In').order('trade_date ASC').first ||
-                Transaction.where(symbol: transaction.symbol, tr_type: 'Interest Inc.').order('trade_date ASC').first
+      cash_in = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Cash In').order('trade_date ASC').first ||
+                Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Interest Inc.').order('trade_date ASC').first
       cash_in == nil ? existing_stock_opened_date = @portfolio.opened_date : existing_stock_opened_date = cash_in.trade_date
     elsif transaction.tr_type == 'Stock Split' || transaction.tr_type == 'Dividend'
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date if long_position_exist?(transaction)
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date if short_position_exist?(transaction)
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Buy').order('trade_date ASC').first.trade_date if long_position_exist?(transaction)
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Sell short').order('trade_date ASC').first.trade_date if short_position_exist?(transaction)
     elsif transaction.tr_type == 'Symbol Change'
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol).order('trade_date ASC').first.trade_date if @stock_symbols.include?(transaction.symbol)
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id).order('trade_date ASC').first.trade_date if @stock_symbols.include?(transaction.symbol)
     end
     transaction.trade_date < existing_stock_opened_date
   end
@@ -89,7 +89,7 @@ module TransactionsHelper
   end
 
   def adjust_stock_split(transaction)
-    @historical_transactions = Transaction.where(symbol: transaction.symbol).order('trade_date ASC')
+    @historical_transactions = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id).order('trade_date ASC')
     @historical_transactions.each do |trans|
       if trans.trade_date < transaction.trade_date && trans.tr_type != 'Stock Split'
         trans.update(quantity: trans.quantity * transaction.new_shares.to_f / transaction.old_shares.to_f)
@@ -116,10 +116,7 @@ module TransactionsHelper
       transaction.quantity = @stock.shares_owned
     end
     if transaction.tr_type == 'Symbol Change'
-      @historical_transactions = Transaction.where(symbol: transaction.symbol).order('trade_date ASC')
-      puts @historical_transactions
-      puts 'New symbol is: '
-      puts transaction.new_symbol
+      @historical_transactions = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id).order('trade_date ASC')
       @historical_transactions.each do |trans|
         trans.update(symbol: transaction.new_symbol)
         trans.save

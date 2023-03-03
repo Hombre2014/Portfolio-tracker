@@ -19,7 +19,7 @@
   </head>
 
   <body>
-    <main class="container mx-auto mt-12 px-5 flex-col">
+    <main class="container mx-auto mt-8 px-5 flex-col">
       <div class="container flex justify-center align-center">
         <% if notice %>
           <span class="bg-green-100 text-green-500 mb-2 p-2 rounded-md"><%= notice %></span>
@@ -60,8 +60,8 @@
         </nav>
       </header>
       <%= yield %>
-      <footer class="flex flex-col justify-center items-center container bg-dollar h-14 my-16">
-        <div class="">
+      <footer class="flex flex-col justify-center items-center container bg-dollar h-14 my-16 mb-8">
+        <div>
           <p>Copyright<sup>&copy;</sup> 2022-2023 <%= link_to 'AXE_BIT', 'https://yuriy-portfolio.netlify.app/',  target: :'_blank', rel: :'noopener noreferrer', class:"text-dollar-split_blue font-bold hover:text-dollar-complement" %>. All  rights reserved.</p>
         </div>
       </footer>
