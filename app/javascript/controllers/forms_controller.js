@@ -122,6 +122,7 @@ export default class extends Controller {
       if (field === document.getElementById('transaction_price')) {
         field.setAttribute('required', 'true');
         field.setAttribute('placeholder', 'Price');
+        field.setAttribute('min', '0.000001');
       }
       if (field === document.getElementById('transaction_quantity')) {
         field.setAttribute('required', 'true');
@@ -130,9 +131,15 @@ export default class extends Controller {
     });
   }
 
-  handleQuantity() {
+  handleSharesIn() {
     const price = document.getElementById('transaction_price');
-    price.setAttribute('placeholder', 'Average price per share');
+    price.setAttribute('placeholder', 'Cost per share');
+    price.removeAttribute('min');
+  }
+
+  handleSharesOut() {
+    const price = document.getElementById('transaction_price');
+    price.setAttribute('placeholder', 'Cost per share (see portfolio)');
   }
 
   handleChange(event) {
@@ -171,13 +178,13 @@ export default class extends Controller {
         this.showAllFields();
         this.hideCommonFields();
         this.hideUncommonFields();
-        this.handleQuantity();
+        this.handleSharesIn();
         break;
       case 'Shares out':
         this.showAllFields();
         this.hideCommonFields();
         this.hideUncommonFields();
-        this.addHidden(document.getElementById('transaction_price'));
+        this.handleSharesOut();
         break;
       default:
         this.showAllFields();
