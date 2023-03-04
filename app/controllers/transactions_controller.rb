@@ -46,7 +46,7 @@ class TransactionsController < ApplicationController
             if enough_cash?(@transaction)
               if short_position_exist?(@transaction)
                 format.html do
-                  redirect_to current_transaction, alert: 'You have a short position in this security.'
+                  redirect_to current_transaction, alert: 'You have a short position in this security. You cannot buy shares, before you cover the short position.'
                 end
               else
                 transaction_save(@transaction, format)
@@ -73,7 +73,7 @@ class TransactionsController < ApplicationController
               end
             else
               format.html do
-                redirect_to current_transaction, alert: 'You have a short position in this security.'
+                redirect_to current_transaction, alert: 'You have a short position in this security. If you want to sell more shares use Sell short transaction.'
               end
             end
           when 'Sell short'
@@ -200,6 +200,34 @@ class TransactionsController < ApplicationController
             else
               format.html do
                 redirect_to current_transaction, alert: 'You have not used this stock before. There is no need to record a symbol change.'
+              end
+            end
+          when 'Shares in'
+            if short_position_exist?(@transaction)
+              format.html do
+                redirect_to current_transaction, alert: 'You have a short position in this security. You cannot record a Shares in transaction. First you need to cover the short position.'
+              end
+            else
+              transaction_save(@transaction, format)
+            end
+          when 'Shares out'
+            if long_position_exist?(@transaction)
+              if enough_shares?(@transaction)
+                if closing_date_earlier_than_opening_date?(@transaction)
+                  format.html do
+                    redirect_to current_transaction, alert: 'Trying to record a shares out transaction before the Buy or Shares in transactions. Check your transaction date!'
+                  end
+                else
+                  transaction_save(@transaction, format)
+                end
+              else
+                format.html do
+                  redirect_to current_transaction, alert: 'Not enough shares to complete the transaction.'
+                end
+              end
+            else
+              format.html do
+                redirect_to current_transaction, alert: 'You do not have a long position in this security.'
               end
             end
           end
