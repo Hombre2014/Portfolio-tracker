@@ -71,7 +71,7 @@
             <% if position.quantity < 0 %>
               <td class="<%= cell %> <%= red_or_green %>"><%= number_to_percentage(-1 * (day_gain / position_cost) * 100).to_f.round(2) %>%</td>
             <% else %>
-              <td class="<%= cell %> <%= red_or_green %>"><%= number_to_percentage((day_gain / position_cost) * 100).to_f.round(2) %>%</td>
+              <td class="<%= cell %> <%= red_or_green %>"><%= number_to_percentage((day_gain / position_cost.to_f) * 100).to_f.round(2) %>%</td>
             <% end %>
             <% red_or_green_all = @position_profit_loss > 0 ? 'text-green-600' : 'text-red-600' %>
             <td class="<%= cell %> <%= red_or_green_all %>"><%= number_to_currency(@position_profit_loss) %></td>
