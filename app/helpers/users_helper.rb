@@ -43,8 +43,8 @@ module UsersHelper
       @stats.store('portfolio_name', portfolio_name)
       @portfolio_name.store(position.symbol, @stats['portfolio_name'])
       position.quantity < 0 ? 
-        @stats.store('percent', profit_loss / position_cost * -100) : 
-        @stats.store('percent', profit_loss / position_cost * 100)
+        @stats.store('percent', profit_loss / position_cost.to_f * -100) : 
+        @stats.store('percent', profit_loss / position_cost.to_f * 100)
       @stats.store('percent', @stats['percent'].round(2))
       if profit_loss > 0
         @winners_amount.store(position.symbol, @stats['amount'])
