@@ -4,9 +4,9 @@
 
 ## Description
 
-Record all your transactions and watch your portfolio performance in real time. It gives you detailed individual stock and total portfolio value, daily profit/loss, percentage profit/loss, realized profit/loss and transactions cost.
-You can create multiple portfolios and track the investments per each portfolio, but also have the big picture. See your total Net Worth. What is your gain today as a dollar value and as a percentage.
-Get detailed information about your portfolio stocks (US market only). Read the latest company news and announcements, look for the insider tradings and the company's earnings surprises.
+Record all your transactions and watch your portfolio performance in real-time. It gives you detailed individual stock and total portfolio value, daily profit/loss, percentage profit/loss, realized profit/loss, and transaction cost.
+You can create multiple portfolios and track the investments per portfolio but also have the big picture. See your total Net Worth. What is your gain today as a dollar value and as a percentage?
+Get detailed information about your portfolio stocks (US market only). Read the latest company news and announcements, and look for insider trading and the company's earnings surprises.
 
 ## Live demo
 
@@ -20,11 +20,23 @@ Deployed using [Heroku](https://heroku.com/)
 
 latest version: [1.5.6](https://github.com/Hombre2014/Portfolio-tracker/releases/tag/v.1.5.6)
 
-## Built With
+## Tech Stack
+Hombre2014/Portfolio-tracker is built on the following main stack:
+- [Twilio SendGrid](http://sendgrid.com) – Transactional Email
+- [Ruby](https://www.ruby-lang.org) – Languages
+- [Rails](http://rubyonrails.org/) – Frameworks (Full Stack)
+- [PostgreSQL](http://www.postgresql.org/) – Databases
+- [Puma](http://puma.io/) – Web Servers
+- [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) – Languages
+- [Devise](https://github.com/plataformatec/devise) – User Management and Authentication
+- [OmniAuth](https://github.com/intridea/omniauth) – User Management and Authentication
+- [Shell](https://en.wikipedia.org/wiki/Shell_script) – Shells
+- [Stylelint](http://stylelint.io/) – Code Review
+- [Bootsnap](https://github.com/shopify/bootsnap) – Ruby Utilities
+- [GitHub Actions](https://github.com/features/actions) – Continuous Integration
 
-- Languages: Ruby
-- Framework: Ruby on Rails
-- Database: PostgreSQL
+Full tech stack [here](/techstack.md)
+
 
 ## Usage
 
