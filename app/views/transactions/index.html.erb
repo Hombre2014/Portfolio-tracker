@@ -6,14 +6,14 @@
     <table class="table-auto mb-6 border-collapse border border-slate-400">
       <thead>
         <tr>
-          <th class="<%= cell %>">Type</th>
-          <th class="<%= cell %>">Date</th>
-          <th class="<%= cell %>">Symbol</th>
+          <th class="<%= cell %>"><%= sort_link(@q, :tr_type, "Type") %></th>
+          <th class="<%= cell %>"><%= sort_link(@q, :trade_date, default_order: :desc) %></th>
+          <th class="<%= cell %>"><%= sort_link(@q, :symbol) %></th>
           <th class="<%= cell %>">New Symbol</th>
-          <th class="<%= cell %>">Quantity</th>
+          <th class="<%= cell %>"><%= sort_link(@q, :quantity) %></th>
           <th class="<%= cell %>">Old Quantity</th>
           <th class="<%= cell %>">Split ratio</th>
-          <th class="<%= cell %>">Price</th>
+          <th class="<%= cell %>"><%= sort_link(@q, :price) %></th>
           <th class="<%= cell %>">Commission</th>
           <th class="<%= cell %>">Fee</th>
           <th class="<%= cell %>">Total</th>

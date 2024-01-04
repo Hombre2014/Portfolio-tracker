@@ -62,6 +62,9 @@ gem 'dotenv-rails', groups: %i[development test]
 # Add bullet gem for performance monitoring
 gem 'bullet', groups: :development # Problem uninitialized constant #<Class:UniformNotifier::SentryNotifier>::Sentry
 
+# Add ransack gem for sorting
+gem 'ransack'
+
 # Add premailer-rails gem for email styling
 gem 'premailer-rails'
 

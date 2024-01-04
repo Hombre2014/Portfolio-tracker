@@ -9,7 +9,9 @@ class TransactionsController < ApplicationController
   # GET /transactions or /transactions.json
   def index
     reset_instance_variable
-    @transactions = Transaction.where(portfolio_id: params[:portfolio_id]).order('trade_date DESC')
+    @q = Transaction.ransack(params[:q])
+    @transactions = @q.result(distinct: true)
+    # @transactions = Transaction.where(portfolio_id: params[:portfolio_id]).order('trade_date DESC')
   end
 
   # GET /transactions/1 or /transactions/1.json
