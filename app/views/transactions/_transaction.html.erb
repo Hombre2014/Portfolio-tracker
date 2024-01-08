@@ -43,6 +43,12 @@
       <% @income_spent += transaction_amount - added_cost %>
     <% elsif transaction.tr_type ==  'Stock Split' || transaction.tr_type ==  'Symbol Change' %>
       <td class="<%= cell %>"></td>
+    <% elsif transaction.tr_type == 'Shares in' %>
+      <td class="<%= cell %> text-green-600"><%= number_to_currency(transaction_amount  + added_cost) %></td>
+      <% @income_spent += transaction_amount - added_cost %>
+    <% elsif transaction.tr_type == 'Shares out' %>
+      <td class="<%= cell %> text-red-600"><%= number_to_currency(-1 * transaction_amount  + added_cost) %></td>
+      <% @income_spent -= transaction_amount + added_cost %>
     <% end %>
     <% if action_name != "show" %>
       <td class="<%= cell %> py-1"><%= link_to "Show", "/users/#{current_user.id}/portfolios/#{params[:portfolio_id]}/transactions/#{transaction.id}", class: "rounded-lg px-2 bg-dollar-split_blue block font-medium text-white hover:bg-dollar-triad_blue" %></td>

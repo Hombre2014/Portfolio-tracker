@@ -17,3 +17,69 @@
 body {
   background-color: #ebf4e5;
 }
+
+#email-body {
+  display: block;
+  margin: 0 auto;
+}
+
+#email-body-header {
+  background-color: #68a047;
+  color: #001e57;
+  padding: 10px;
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.welcome {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 4rem;
+  margin-bottom: 2rem;
+  margin-left: 2rem;
+  color: #001e57;
+}
+
+.confirm {
+  border-radius: 12px;
+  margin: 2rem;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 600;
+  background-color: #001e57;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.confirm-link {
+  text-decoration: none;
+  color: #fff;
+  padding: 1rem;
+}
+
+.img-profile {
+  width: 32px;
+  height: auto;
+  border-radius: 50%;
+}
+
+.logo {
+  height: 24px;
+  width: auto;
+}
+
+.gravatar {
+  width: 100%;
+  height: auto;
+}
+
+.avatar {
+  max-width: 128px !important;
+  height: auto !important;
+}
+
+select > option:nth-child(n + 10):nth-child(-n + 14) {
+  color: red;
+}

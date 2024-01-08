@@ -55,21 +55,21 @@ module TransactionsHelper
   end
 
   def closing_date_earlier_than_opening_date?(transaction)
-    if transaction.tr_type == 'Sell' || transaction.tr_type == 'Reinvest Div.'
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date
+    if transaction.tr_type == 'Sell' || transaction.tr_type == 'Reinvest Div.' || transaction.tr_type == 'Shares out'
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Buy').order('trade_date ASC').first.trade_date || Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Shares in').order('trade_date ASC').first.trade_date
     elsif transaction.tr_type == 'Buy to cover'
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Sell short').order('trade_date ASC').first.trade_date
     elsif transaction.tr_type == 'Cash In' || transaction.tr_type == 'Interest Inc.'
       existing_stock_opened_date = @portfolio.opened_date
     elsif transaction.tr_type == 'Cash Out' || transaction.tr_type == 'Misc. Exp.'
-      cash_in = Transaction.where(symbol: transaction.symbol, tr_type: 'Cash In').order('trade_date ASC').first ||
-                Transaction.where(symbol: transaction.symbol, tr_type: 'Interest Inc.').order('trade_date ASC').first
+      cash_in = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Cash In').order('trade_date ASC').first ||
+                Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Interest Inc.').order('trade_date ASC').first
       cash_in == nil ? existing_stock_opened_date = @portfolio.opened_date : existing_stock_opened_date = cash_in.trade_date
     elsif transaction.tr_type == 'Stock Split' || transaction.tr_type == 'Dividend'
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Buy').order('trade_date ASC').first.trade_date if long_position_exist?(transaction)
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, tr_type: 'Sell short').order('trade_date ASC').first.trade_date if short_position_exist?(transaction)
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Buy').order('trade_date ASC').first.trade_date if long_position_exist?(transaction)
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id, tr_type: 'Sell short').order('trade_date ASC').first.trade_date if short_position_exist?(transaction)
     elsif transaction.tr_type == 'Symbol Change'
-      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol).order('trade_date ASC').first.trade_date if @stock_symbols.include?(transaction.symbol)
+      existing_stock_opened_date = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id).order('trade_date ASC').first.trade_date if @stock_symbols.include?(transaction.symbol)
     end
     transaction.trade_date < existing_stock_opened_date
   end
@@ -89,7 +89,7 @@ module TransactionsHelper
   end
 
   def adjust_stock_split(transaction)
-    @historical_transactions = Transaction.where(symbol: transaction.symbol).order('trade_date ASC')
+    @historical_transactions = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id).order('trade_date ASC')
     @historical_transactions.each do |trans|
       if trans.trade_date < transaction.trade_date && trans.tr_type != 'Stock Split'
         trans.update(quantity: trans.quantity * transaction.new_shares.to_f / transaction.old_shares.to_f)
@@ -116,10 +116,7 @@ module TransactionsHelper
       transaction.quantity = @stock.shares_owned
     end
     if transaction.tr_type == 'Symbol Change'
-      @historical_transactions = Transaction.where(symbol: transaction.symbol).order('trade_date ASC')
-      puts @historical_transactions
-      puts 'New symbol is: '
-      puts transaction.new_symbol
+      @historical_transactions = Transaction.where(symbol: transaction.symbol, portfolio_id: transaction.portfolio_id).order('trade_date ASC')
       @historical_transactions.each do |trans|
         trans.update(symbol: transaction.new_symbol)
         trans.save
@@ -254,6 +251,31 @@ module TransactionsHelper
     end
   end
 
+  def shares_in_stock(transaction)
+    if @stock_symbols.include?(transaction.symbol)
+      @stock.shares_owned += transaction.quantity
+      @stock.save
+    else
+      new_stock = Stock.create(ticker: transaction.symbol, transaction_id: transaction.id, realized_profit_loss: 0, income: 0,
+                              reinvested_income: 0, commission_and_fee: 0, shares_owned: transaction.quantity,
+                              portfolio_id: @portfolio.id)
+      new_stock.save
+    end
+  end
+
+  def shares_out_stock(transaction)
+    if @stock_symbols.include?(transaction.symbol)
+      if long_position_exist?(transaction)
+        if enough_shares?(transaction)
+          unless closing_date_earlier_than_opening_date?(transaction)
+            @stock.shares_owned -= transaction.quantity
+            @stock.save
+          end
+        end
+      end
+    end
+  end
+
   def create_update_stock(transaction)
     @portfolio = Portfolio.find(params[:portfolio_id])
     if ticker_exist?(transaction) && date_valid?(transaction)
@@ -272,6 +294,10 @@ module TransactionsHelper
         reinvest_dividend_stock(transaction)
       when 'Symbol Change'
         symbol_change_stock(transaction)
+      when 'Shares in'
+        shares_in_stock(transaction)
+      when 'Shares out'
+        shares_out_stock(transaction)
       end
     end
   end
@@ -446,6 +472,33 @@ module TransactionsHelper
     end
   end
 
+  def position_with_shares_in(transaction)
+    if long_position_exist?(transaction)
+      existing_cost = @position.cost_per_share * @position.quantity
+      @position.update(quantity: @position.quantity + transaction.quantity)
+      if transaction.price == 0
+        @position.update(cost_per_share: existing_cost / @position.quantity)
+        @position.save
+      else
+        @position.update(cost_per_share: (existing_cost + transaction.quantity * transaction.price) / @position.quantity)
+        @position.save
+      end
+    else
+      @position = Position.new(portfolio_id: params[:portfolio_id], symbol: transaction.symbol, quantity: transaction.quantity, cost_per_share: 0.000001, commission_and_fee: 0, income: 0, realized_profit_loss: 0, reinvested_income: 0)
+    end
+  end
+
+  def position_with_shares_out(transaction)
+    if long_position_exist?(transaction)
+      if enough_shares?(transaction)
+        unless closing_date_earlier_than_opening_date?(transaction)
+          @position.update(quantity: @position.quantity - transaction.quantity)
+          @position.save
+        end
+      end
+    end
+  end
+
   def create_update_position(transaction)
     if ticker_exist?(transaction) && date_valid?(transaction) || transaction.symbol == 'Cash'
       @stock = @stocks.find_by(ticker: transaction.symbol)
@@ -480,6 +533,10 @@ module TransactionsHelper
         position_with_stock_split(transaction)
       when 'Symbol Change'
         position_with_symbol_change(transaction)
+      when 'Shares in'
+        position_with_shares_in(transaction)
+      when 'Shares out'
+        position_with_shares_out(transaction)
       end
     end
   end

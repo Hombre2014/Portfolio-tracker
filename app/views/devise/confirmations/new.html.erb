@@ -5,7 +5,6 @@
     <%= render "devise/shared/error_messages", resource: resource %>
 
     <div class="field mb-5">
-      <%#= f.label :email, class: "mb-2" %>
       <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full", placeholder: 'Email', value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
     </div>
 

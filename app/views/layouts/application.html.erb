@@ -19,7 +19,7 @@
   </head>
 
   <body>
-    <main class="container mx-auto mt-12 px-5 flex-col">
+    <main class="container mx-auto mt-8 px-5 flex-col">
       <div class="container flex justify-center align-center">
         <% if notice %>
           <span class="bg-green-100 text-green-500 mb-2 p-2 rounded-md"><%= notice %></span>
@@ -42,13 +42,15 @@
                 <%= link_to 'SIGN UP', new_user_registration_path, class: 'my-4 mr-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
               </div>
             <% else %>
-              <div class="flex justify-end">
-                <%= link_to 'PORTFOLIOS', "/users/#{current_user.id}/portfolios", method: :delete, class: 'my-4 mr-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
+              <div class="flex justify-end items-center">
+                <%= link_to 'PORTFOLIOS', "/users/#{current_user.id}/portfolios", class: 'my-4 mr-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
                 <% if current_user.provider != 'google_oauth2' %>
-                  <%= gravatar_for(current_user) %>
+                  <div class="w-8 h-8 mr-6 flex items-center">
+                    <%= link_to gravatar_for(current_user), "/users/#{current_user.id}" %>
+                  </div>
                 <% else %>
                   <% if current_user.avatar_url %>
-                    <%= image_tag current_user.avatar_url, style: "max-width: 32px; hight: auto; margin: auto; margin-right: 1rem; border-radius: 50%;" %>
+                    <%= link_to image_tag(current_user.avatar_url, class:"img-profile"), "/users/#{current_user.id}", style: "max-width: 32px; height: auto; margin: auto; margin-right: 1rem;" %>
                   <% end %>
                 <% end %>
                 <%= button_to 'LOG OUT', destroy_user_session_path, method: :delete, class: 'my-4 mr-6 text-dollar-split_blue font-bold hover:text-dollar-complement cursor-pointer' %>
@@ -58,9 +60,9 @@
         </nav>
       </header>
       <%= yield %>
-      <footer class="flex flex-col justify-center items-center container bg-dollar h-14 my-16">
-        <div class="">
-          <p>Copyright<sup>&copy;</sup> 2022-2023 <%= link_to 'Hombre2014', 'https://github.com/Hombre2014',  target: :'_blank', rel: :'noopener noreferrer', class:"text-dollar-split_blue font-bold hover:text-dollar-complement" %>. All  rights reserved.</p>
+      <footer class="flex flex-col justify-center items-center container bg-dollar h-14 my-16 mb-8">
+        <div>
+          <p>Copyright<sup>&copy;</sup> 2022-2023 <%= link_to 'AXE_BIT', 'https://yuriy-portfolio.netlify.app/',  target: :'_blank', rel: :'noopener noreferrer', class:"text-dollar-split_blue font-bold hover:text-dollar-complement" %>. All  rights reserved.</p>
         </div>
       </footer>
     </main>

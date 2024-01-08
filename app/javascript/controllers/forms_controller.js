@@ -6,7 +6,7 @@ export default class extends Controller {
   }
 
   initialize() {
-    this.element.setAttribute('data-action', 'change->forms#handleChange'); // This  input->forms#handleInput is not working
+    this.element.setAttribute('data-action', 'change->forms#handleChange');
   }
 
   getFields(transactionType) {
@@ -48,8 +48,8 @@ export default class extends Controller {
     });
   }
 
-  showField(filedName) {
-    const field = document.getElementById(filedName);
+  showField(fieldName) {
+    const field = document.getElementById(fieldName);
     field.classList.remove('hidden');
     field.setAttribute('required', 'true');
     field.setAttribute('value', '');
@@ -122,12 +122,24 @@ export default class extends Controller {
       if (field === document.getElementById('transaction_price')) {
         field.setAttribute('required', 'true');
         field.setAttribute('placeholder', 'Price');
+        field.setAttribute('min', '0.000001');
       }
       if (field === document.getElementById('transaction_quantity')) {
         field.setAttribute('required', 'true');
         field.setAttribute('placeholder', 'Quantity');
       }
     });
+  }
+
+  handleSharesIn() {
+    const price = document.getElementById('transaction_price');
+    price.setAttribute('placeholder', 'Cost per share');
+    price.removeAttribute('min');
+  }
+
+  handleSharesOut() {
+    const price = document.getElementById('transaction_price');
+    price.setAttribute('placeholder', 'Cost per share (see portfolio)');
   }
 
   handleChange(event) {
@@ -162,16 +174,21 @@ export default class extends Controller {
         this.hideCommonFields();
         this.hideFieldsForSymbolChange();
         break;
+      case 'Shares in':
+        this.showAllFields();
+        this.hideCommonFields();
+        this.hideUncommonFields();
+        this.handleSharesIn();
+        break;
+      case 'Shares out':
+        this.showAllFields();
+        this.hideCommonFields();
+        this.hideUncommonFields();
+        this.handleSharesOut();
+        break;
       default:
         this.showAllFields();
         this.hideUncommonFields();
     }
   }
-
-  // handleInput(event) {
-  //   const symbol = document.getElementById('transaction_symbol');
-  //   const newSymbol = document.getElementById('transaction_new_symbol');
-  //   symbol.value = symbol.value.toUpperCase();
-  //   newSymbol.value = newSymbol.value.toUpperCase();
-  // }
 }

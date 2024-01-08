@@ -12,14 +12,18 @@ class StocksController < ApplicationController
 
   # GET /stocks/1 or /stocks/1.json
   def show
+    @stock_symbols = Stock.all.map(&:ticker)
     @finnhub_client = FinnhubRuby::DefaultApi.new
     @transaction = Transaction.find_by(symbol: @stock.ticker)
     @position = Position.find_by(symbol: @stock.ticker)
-    @stock_data = @finnhub_client.company_profile2({ symbol: @position.symbol })
-    @stock_symbols = Stock.all.map(&:ticker)
-    @company_news = @finnhub_client.company_news(@position.symbol, Date.today - 14, Date.today)
-    @insider = @finnhub_client.insider_transactions(@position.symbol)
-    @earnings = @finnhub_client.company_earnings(@position.symbol, { limit: 5})
+    @position ? @stock_data = @finnhub_client.company_profile2({ symbol: @position.symbol }) :
+                @stock_data = @finnhub_client.company_profile2({ symbol: @stock.ticker })
+    @position ? @company_news = @finnhub_client.company_news(@position.symbol, Date.today - 14, Date.today) :
+                @company_news = @finnhub_client.company_news(@stock.ticker, Date.today - 14, Date.today)
+    @position ? @insider = @finnhub_client.insider_transactions(@position.symbol) :
+                @insider = @finnhub_client.insider_transactions(@stock.ticker)
+    @position ? @earnings = @finnhub_client.company_earnings(@position.symbol, { limit: 5}) :
+                @earnings = @finnhub_client.company_earnings(@stock.ticker, { limit: 5})
   end
 
   def get_stock_id(ticker)
