@@ -1,7 +1,7 @@
 <div class="w-full">
   <% cell = "border border-slate-300 px-4" %>
   <h1 class="font-bold text-4xl mb-8">Transactions</h1>
-  <div class="flex">
+  <div class="flex mb-4">
     <%= link_to 'New transaction', new_user_portfolio_transaction_path, class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white font-medium" %>
     <p class="ml-4 mt-1">Click on a column header (Type, Date, Symbol, Quantity or Price) to sort</p>
   </div>
@@ -47,5 +47,7 @@
 
   <%== pagy_nav(@pagy) %>
 
-  <%= link_to 'New transaction', new_user_portfolio_transaction_path, class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white font-medium" %>
+  <div class="mt-4">
+    <%= link_to 'New transaction', new_user_portfolio_transaction_path, class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white font-medium" %>
+  </div>
 </div>
