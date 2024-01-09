@@ -1,4 +1,6 @@
 module TransactionsHelper
+  include Pagy::Frontend
+
   def reset_instance_variable
     @total_fees = 0
     @income_spent = 0

@@ -1,6 +1,8 @@
 require_relative '../helpers/transactions_helper'
 
 class TransactionsController < ApplicationController
+include Pagy::Backend
+
   before_action :authenticate_user!
   before_action :set_transaction, only: %i[show edit update destroy]
 
@@ -10,7 +12,8 @@ class TransactionsController < ApplicationController
   def index
     reset_instance_variable
     @q = Transaction.ransack(params[:q])
-    @transactions = @q.result(distinct: true).where(portfolio_id: params[:portfolio_id]).order('trade_date DESC')
+    # @transactions = @q.result(distinct: true).where(portfolio_id: params[:portfolio_id]).order('trade_date DESC')
+    @pagy, @transactions = pagy(@q.result(distinct: true).where(portfolio_id: params[:portfolio_id]).order('trade_date DESC'), items: 10)
   end
 
   # GET /transactions/1 or /transactions/1.json
