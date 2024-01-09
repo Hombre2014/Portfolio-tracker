@@ -219,6 +219,7 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
+    pagy (6.2.0)
     pg (1.4.5)
     premailer (1.19.0)
       addressable
@@ -331,6 +332,7 @@ DEPENDENCIES
   omniauth
   omniauth-google-oauth2
   omniauth-rails_csrf_protection (~> 1.0)
+  pagy
   pg (~> 1.1)
   premailer-rails
   puma (~> 5.0)

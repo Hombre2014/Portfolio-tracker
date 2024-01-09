@@ -6,6 +6,8 @@
     <p class="ml-4 mt-1">Click on a column header (Type, Date, Symbol, Quantity or Price) to sort</p>
   </div>
 
+  <%== pagy_nav(@pagy) %>
+
   <div id="transactions" class="min-w-full mt-6">
     <table class="table-auto mb-6 border-collapse border border-slate-400">
       <thead>
@@ -42,5 +44,8 @@
       </tfoot>
     </table>
   </div>
+
+  <%== pagy_nav(@pagy) %>
+
   <%= link_to 'New transaction', new_user_portfolio_transaction_path, class: "rounded-lg py-1 px-3 bg-dollar-split_blue text-white font-medium" %>
 </div>

@@ -65,6 +65,9 @@ gem 'bullet', groups: :development # Problem uninitialized constant #<Class:Unif
 # Add ransack gem for sorting
 gem 'ransack'
 
+# Add pagy gem for pagination
+gem 'pagy'
+
 # Add premailer-rails gem for email styling
 gem 'premailer-rails'
 
