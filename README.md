@@ -4,6 +4,8 @@
 
 ## Description
 
+![Portfolio Tracker](.//app/assets/images/portfolio_tracker.jpg)
+
 Record all your transactions and watch your portfolio performance in real-time. It gives you detailed individual stock and total portfolio value, daily profit/loss, percentage profit/loss, realized profit/loss, and transaction cost.
 You can create multiple portfolios and track the investments per portfolio but also have the big picture. See your total Net Worth. What is your gain today as a dollar value and as a percentage?
 Get detailed information about your portfolio stocks (US market only). Read the latest company news and announcements, and look for insider trading and the company's earnings surprises.
@@ -18,25 +20,7 @@ Deployed using [Heroku](https://heroku.com/)
 
 ## Version
 
-latest version: [1.5.6](https://github.com/Hombre2014/Portfolio-tracker/releases/tag/v.1.5.6)
-
-
-## Tech Stack
-Hombre2014/Portfolio-tracker is built on the following main stack:
-- <img width='25' height='25' src='https://img.stackshare.io/service/43/kQ_6nwmP.jpg' alt='Twilio SendGrid'/> [Twilio SendGrid](http://sendgrid.com) – Transactional Email
-- <img width='25' height='25' src='https://img.stackshare.io/service/989/ruby.png' alt='Ruby'/> [Ruby](https://www.ruby-lang.org) – Languages
-- <img width='25' height='25' src='https://img.stackshare.io/service/990/x57_Lorv.png' alt='Rails'/> [Rails](http://rubyonrails.org/) – Frameworks (Full Stack)
-- <img width='25' height='25' src='https://img.stackshare.io/service/1028/ASOhU5xJ.png' alt='PostgreSQL'/> [PostgreSQL](http://www.postgresql.org/) – Databases
-- <img width='25' height='25' src='https://img.stackshare.io/service/1055/favicon.png' alt='Puma'/> [Puma](http://puma.io/) – Web Servers
-- <img width='25' height='25' src='https://img.stackshare.io/service/1209/javascript.jpeg' alt='JavaScript'/> [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) – Languages
-- <img width='25' height='25' src='https://img.stackshare.io/service/1432/devise.png' alt='Devise'/> [Devise](https://github.com/plataformatec/devise) – User Management and Authentication
-- <img width='25' height='25' src='https://img.stackshare.io/service/1433/omniauth.png' alt='OmniAuth'/> [OmniAuth](https://github.com/intridea/omniauth) – User Management and Authentication
-- <img width='25' height='25' src='https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png' alt='Shell'/> [Shell](https://en.wikipedia.org/wiki/Shell_script) – Shells
-- <img width='25' height='25' src='https://img.stackshare.io/service/5446/V9JsvPul_400x400.jpg' alt='Stylelint'/> [Stylelint](http://stylelint.io/) – Code Review
-- <img width='25' height='25' src='https://img.stackshare.io/no-img-open-source.png' alt='Bootsnap'/> [Bootsnap](https://github.com/shopify/bootsnap) – Ruby Utilities
-- <img width='25' height='25' src='https://img.stackshare.io/service/11563/actions.png' alt='GitHub Actions'/> [GitHub Actions](https://github.com/features/actions) – Continuous Integration
-
-Full tech stack [here](/techstack.md)
+latest version: [1.7.1](https://github.com/Hombre2014/Portfolio-tracker/releases/tag/v.1.7.1)
 
 ## Usage
 
@@ -69,10 +53,12 @@ run `rspec`
 
 ## Attribution
 
-Special thanks to: <br>
-<a href='https://www.freepik.com/vectors/create-account'>Create account vector created by storyset - www.freepik.com</a>, <br>
-<a href='https://www.freepik.com/vectors/login-illustration'>Login illustration vector created by storyset - www.freepik.com</a> and <br>
-<a href='https://www.freepik.com/vectors/fintech'>Fintech vector created by pch.vector - www.freepik.com</a> <br>
+Special thanks to:
+
+- [Create account vector created by storyset - www.freepik.com](https://www.freepik.com/vectors/create-account)
+- [Login illustration vector created by storyset - www.freepik.com](https://www.freepik.com/vectors/login-illustration)
+- [Fintech vector created by pch.vector - www.freepik.com](https://www.freepik.com/vectors/fintech)
+
 for the images used on the site.
 
 ## 🤝 Contributing
