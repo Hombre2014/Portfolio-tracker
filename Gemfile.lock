@@ -150,6 +150,7 @@ GEM
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (3.0.2)
     ffi (1.15.5)
+    ffi (1.15.5-x64-mingw-ucrt)
     finnhub_ruby (1.1.18)
       typhoeus (~> 1.0, >= 1.0.1)
     globalid (1.1.0)
@@ -194,6 +195,8 @@ GEM
     nio4r (2.5.8)
     nokogiri (1.14.2-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.14.2-x64-mingw-ucrt)
+      racc (~> 1.4)
     nokogiri (1.14.2-x86_64-linux)
       racc (~> 1.4)
     oauth2 (2.0.9)
@@ -221,6 +224,7 @@ GEM
     orm_adapter (0.5.0)
     pagy (6.2.0)
     pg (1.4.5)
+    pg (1.4.5-x64-mingw-ucrt)
     premailer (1.19.0)
       addressable
       css_parser (>= 1.12.0)
@@ -289,6 +293,8 @@ GEM
       railties (>= 6.0.0)
     tailwindcss-rails (2.0.23-arm64-darwin)
       railties (>= 6.0.0)
+    tailwindcss-rails (2.0.23-x64-mingw-ucrt)
+      railties (>= 6.0.0)
     tailwindcss-rails (2.0.23-x86_64-linux)
       railties (>= 6.0.0)
     thor (1.2.1)
@@ -301,6 +307,8 @@ GEM
       ethon (>= 0.9.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    tzinfo-data (1.2025.2)
+      tzinfo (>= 1.0.0)
     uniform_notifier (1.16.0)
     version_gem (1.1.1)
     warden (1.2.9)
@@ -317,6 +325,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  x64-mingw-ucrt
   x86_64-linux
 
 DEPENDENCIES
