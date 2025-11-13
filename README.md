@@ -12,11 +12,11 @@ Get detailed information about your portfolio stocks (US market only). Read the 
 
 ## Live demo
 
-[Portfolio tracker](https://yuriy-portfolio-tracker.herokuapp.com/)
+[Portfolio tracker](https://portfolio-tracker.onrender.com/)
 
 ## Deployment
 
-Deployed using [Heroku](https://heroku.com/)
+Deployed using [Render](https://render.com/)
 
 ## Version
 
@@ -24,12 +24,17 @@ latest version: [1.7.1](https://github.com/Hombre2014/Portfolio-tracker/releases
 
 ## Usage
 
-Run the following commands:</br>
+### Environment Variables example
+
+Create a `.env` file based on the `.env.example` file in the project root with:
+
+### Run the following commands:</br>
 `git clone https://github.com/Hombre2014/Portfolio-tracker.git`</br>
 `cd Portfolio-tracker`</br>
 `bundle install`</br>
 `rails s`</br>
 Open a browser and go to: `https://localhost:3000` to view the app.
+
 
 ## Database setup
 
