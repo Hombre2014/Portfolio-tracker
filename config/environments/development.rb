@@ -60,8 +60,10 @@ Rails.application.configure do
   config.assets.quiet = true
 
   # Disable Sprockets file cache on Windows to avoid permission errors
-  config.assets.configure do |env|
-    env.cache = ActiveSupport::Cache.lookup_store(:null_store)
+  if Gem.win_platform?
+    config.assets.configure do |env|
+      env.cache = ActiveSupport::Cache.lookup_store(:null_store)
+    end
   end
 
   # Raises error for missing translations.

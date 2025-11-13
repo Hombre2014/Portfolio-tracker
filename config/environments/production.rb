@@ -14,9 +14,7 @@ Rails.application.configure do
     authentication:       'plain',
     enable_starttls_auto: true,
     open_timeout:         10,
-    read_timeout:         10,
-    :ssl                  => :none,
-    :tls                  => true }
+    read_timeout:         10 }
 
   # Code is not reloaded between requests.
   config.cache_classes = true
