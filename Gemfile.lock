@@ -180,6 +180,7 @@ GEM
     marcel (1.0.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
+    mini_portile2 (2.8.9)
     minitest (5.17.0)
     msgpack (1.6.0)
     multi_xml (0.6.0)
@@ -192,12 +193,9 @@ GEM
       timeout
     net-smtp (0.3.3)
       net-protocol
-    nio4r (2.5.8)
-    nokogiri (1.14.2-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.14.2-x64-mingw-ucrt)
-      racc (~> 1.4)
-    nokogiri (1.14.2-x86_64-linux)
+    nio4r (2.7.5)
+    nokogiri (1.14.2)
+      mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     oauth2 (2.0.9)
       faraday (>= 0.17.3, < 3.0)
@@ -361,7 +359,7 @@ DEPENDENCIES
   web-console
 
 RUBY VERSION
-   ruby 3.1.1p18
+   ruby 3.3.6p108
 
 BUNDLED WITH
    2.3.17
